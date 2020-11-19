@@ -34,6 +34,10 @@ public class Home extends javax.swing.JFrame {
     private final String HOME = "home";
     private final String SING = "SING";
     private final String SONG = "SONG";
+    private String activedItem = "";
+    Color tranparencyColor = new Color(0, 0, 0, 0);
+    Color hoverColor = new Color(247, 78, 105);
+
     public Home() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -47,9 +51,9 @@ public class Home extends javax.swing.JFrame {
         menuItemLines.add(lineSinger);
         menuItemLines.add(lineSong);
         menuItemLines.add(lineAccount);
+        menuItemLabels.add(lbHome);
         menuItemLabels.add(lbAbout);
         menuItemLabels.add(lbAccount);
-        menuItemLabels.add(lbHome);
         menuItemLabels.add(lbSinger);
         menuItemLabels.add(lbSong);
 
@@ -58,12 +62,12 @@ public class Home extends javax.swing.JFrame {
         plCards.add(cardAccount, ACCOUNT);
 
         for (JPanel panel : menuItems) {
-            panel.setBackground(new Color(0, 0, 0, 0));
+            panel.setBackground(tranparencyColor);
 
         }
 
         for (JPanel panel : menuItemLines) {
-            panel.setBackground(Color.white);
+            panel.setBackground(tranparencyColor);
         }
 
     }
@@ -119,6 +123,7 @@ public class Home extends javax.swing.JFrame {
         plHome.setBackground(new java.awt.Color(85, 85, 188));
         plHome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plHome.setName("home"); // NOI18N
+        plHome.setOpaque(false);
         plHome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -140,11 +145,13 @@ public class Home extends javax.swing.JFrame {
         lbHome.setForeground(new java.awt.Color(255, 255, 255));
         lbHome.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbHome.setText("Home");
+        lbHome.setAutoscrolls(true);
         lbHome.setName("home"); // NOI18N
         plHome.add(lbHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 160, 50));
 
         lineHome.setBackground(new java.awt.Color(247, 78, 105));
         lineHome.setName("home"); // NOI18N
+        lineHome.setOpaque(false);
         lineHome.setPreferredSize(new java.awt.Dimension(1, 20));
 
         javax.swing.GroupLayout lineHomeLayout = new javax.swing.GroupLayout(lineHome);
@@ -166,6 +173,7 @@ public class Home extends javax.swing.JFrame {
         plSong.setBackground(new java.awt.Color(85, 85, 188));
         plSong.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plSong.setName("song"); // NOI18N
+        plSong.setOpaque(false);
         plSong.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -192,6 +200,7 @@ public class Home extends javax.swing.JFrame {
 
         lineSong.setBackground(new java.awt.Color(247, 78, 105));
         lineSong.setName("song"); // NOI18N
+        lineSong.setOpaque(false);
         lineSong.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineSongLayout = new javax.swing.GroupLayout(lineSong);
@@ -213,6 +222,7 @@ public class Home extends javax.swing.JFrame {
         plSinger.setBackground(new java.awt.Color(85, 85, 188));
         plSinger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plSinger.setName("singer"); // NOI18N
+        plSinger.setOpaque(false);
         plSinger.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -239,6 +249,7 @@ public class Home extends javax.swing.JFrame {
 
         lineSinger.setBackground(new java.awt.Color(247, 78, 105));
         lineSinger.setName("singer"); // NOI18N
+        lineSinger.setOpaque(false);
         lineSinger.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineSingerLayout = new javax.swing.GroupLayout(lineSinger);
@@ -260,6 +271,7 @@ public class Home extends javax.swing.JFrame {
         plAccount.setBackground(new java.awt.Color(85, 85, 188));
         plAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plAccount.setName("account"); // NOI18N
+        plAccount.setOpaque(false);
         plAccount.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -281,10 +293,13 @@ public class Home extends javax.swing.JFrame {
         lbAccount.setForeground(new java.awt.Color(255, 255, 255));
         lbAccount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbAccount.setText("Account");
+        lbAccount.setAlignmentX(0.5F);
+        lbAccount.setName("account"); // NOI18N
         plAccount.add(lbAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 1, 160, 50));
 
         lineAccount.setBackground(new java.awt.Color(247, 78, 105));
         lineAccount.setName("account"); // NOI18N
+        lineAccount.setOpaque(false);
         lineAccount.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineAccountLayout = new javax.swing.GroupLayout(lineAccount);
@@ -306,6 +321,7 @@ public class Home extends javax.swing.JFrame {
         plAbout.setBackground(new java.awt.Color(85, 85, 188));
         plAbout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plAbout.setName("about"); // NOI18N
+        plAbout.setOpaque(false);
         plAbout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -327,10 +343,12 @@ public class Home extends javax.swing.JFrame {
         lbAbout.setForeground(new java.awt.Color(255, 255, 255));
         lbAbout.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbAbout.setText("About Us");
+        lbAbout.setName("about"); // NOI18N
         plAbout.add(lbAbout, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 1, 160, 50));
 
         lineAbout.setBackground(new java.awt.Color(247, 78, 105));
         lineAbout.setName("about"); // NOI18N
+        lineAbout.setOpaque(false);
         lineAbout.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineAboutLayout = new javax.swing.GroupLayout(lineAbout);
@@ -405,12 +423,18 @@ public class Home extends javax.swing.JFrame {
 
     private void changeLineColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeLineColor
         // TODO add your handling code here:
-        String nameComp = evt.getComponent().getName();
-        for (JPanel panel : menuItemLines) {
-            if (panel.getName().equals(nameComp)) {
-                panel.setBackground(new Color(247, 78, 105));
-                break;
+        try {
+            String nameComp = evt.getComponent().getName();
+
+
+            for (JLabel label : menuItemLabels) {
+                if (label.getName().equals(nameComp)) {
+                    label.setForeground(hoverColor);
+                    break;
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
 
@@ -418,17 +442,51 @@ public class Home extends javax.swing.JFrame {
 
     private void resetColorLine(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetColorLine
         // TODO add your handling code here:
-        String nameComp = evt.getComponent().getName();
-        for (JPanel panel : menuItemLines) {
-            if (panel.getName().equals(nameComp)) {
-                panel.setBackground(Color.white);
-                break;
-            }
+        try {
+            String nameComp = evt.getComponent().getName();
+       
+
+            for (JLabel label : menuItemLabels) {
+                if (label.getName().equals(nameComp) && ! label.getName().equals(activedItem)) {
+                    label.setForeground(Color.WHITE);
+                    break;
+                }
+            } 
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
         }
 
 
     }//GEN-LAST:event_resetColorLine
+    
+    private void changeColorActive(String nameComp) {                                 
+        // TODO add your handling code here:
+        try {
+            for (JPanel panel : menuItemLines) {
+                if (panel.getName().equals(nameComp)) {
+                    panel.setOpaque(true);
+                    panel.setBackground(hoverColor);
+                    
+                } else {
+                    panel.setOpaque(false);
+                    panel.setBackground(tranparencyColor);
+                }
+            }
 
+            for (JLabel label : menuItemLabels) {
+                if (label.getName().equals(nameComp)) {
+                    label.setForeground(hoverColor);
+                    
+                } else {
+                    label.setForeground(Color.white);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+
+    }          
     private void btnCloseMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseEntered
         // TODO add your handling code here:
         btnClose.setForeground(Color.WHITE);
@@ -449,7 +507,9 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseMenuItem
     private void switchCard(String cardName) {
         // TODO add your handling code here:
-
+        System.out.println(cardName);
+        activedItem = cardName;
+        changeColorActive(cardName);
         switch (cardName) {
             case ABOUT: {
                 cardLayout.show(plCards, ABOUT);
@@ -462,6 +522,7 @@ public class Home extends javax.swing.JFrame {
                 break;
             }
         }
+        
     }
 
     /**
