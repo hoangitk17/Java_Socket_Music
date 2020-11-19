@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -33,6 +33,8 @@ public class Home extends javax.swing.JFrame {
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount = new AccountPanel();
     SingerPanel cardSinger = new SingerPanel();
+    SongPanel cardSong = new SongPanel();
+    HomePanel cardHome = new HomePanel();
     CardLayout cardLayout;
     private final String ABOUT = "about";
     private final String ACCOUNT = "account";
@@ -99,6 +101,8 @@ public class Home extends javax.swing.JFrame {
         plCards.add(cardAbout, ABOUT);
         plCards.add(cardAccount, ACCOUNT);
         plCards.add(cardSinger, SINGER);
+        plCards.add(cardSong, SONG);
+        plCards.add(cardHome, HOME);
 
         // set bgcolor for item
         for (JPanel panel : menuItems) {
@@ -586,17 +590,22 @@ public class Home extends javax.swing.JFrame {
         switch (cardName) {
             case ABOUT: {
                 cardLayout.show(plCards, ABOUT);
-                System.out.println("About");
                 break;
             }
             case ACCOUNT: {
                 cardLayout.show(plCards, ACCOUNT);
-                System.out.println("Account");
                 break;
             }
             case SINGER: {
                 cardLayout.show(plCards, SINGER);
-                System.out.println("SINGER");
+                break;
+            }
+            case SONG: {
+                cardLayout.show(plCards, SONG);
+                break;
+            }
+            case HOME: {
+                cardLayout.show(plCards, HOME);
                 break;
             }
         }
