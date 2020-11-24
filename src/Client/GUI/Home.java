@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -25,11 +25,12 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
+    Client client;
     ArrayList<JPanel> menuItems = new ArrayList<>();
     ArrayList<JPanel> menuItemLines = new ArrayList<>();
     ArrayList<JLabel> menuItemLabels = new ArrayList<>();
     ArrayList<JLabel> menuItemIcons = new ArrayList<>();
-    
+
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount = new AccountPanel();
     SingerPanel cardSinger = new SingerPanel();
@@ -56,7 +57,6 @@ public class Home extends javax.swing.JFrame {
     ImageIcon pinkAboutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_about_20px_1.png"));
     HashMap<String, ImageIcon> hashWhiteIcon = new HashMap<String, ImageIcon>();
     HashMap<String, ImageIcon> hashPinkIcon = new HashMap<String, ImageIcon>();
-    
 
     public Home() {
         initComponents();
@@ -66,25 +66,25 @@ public class Home extends javax.swing.JFrame {
         menuItems.add(plSinger);
         menuItems.add(plSong);
         menuItems.add(plAccount);
-        
+
         menuItemLines.add(lineAbout);
         menuItemLines.add(lineHome);
         menuItemLines.add(lineSinger);
         menuItemLines.add(lineSong);
         menuItemLines.add(lineAccount);
-        
+
         menuItemLabels.add(lbHome);
         menuItemLabels.add(lbAbout);
         menuItemLabels.add(lbAccount);
         menuItemLabels.add(lbSinger);
         menuItemLabels.add(lbSong);
-        
+
         menuItemIcons.add(lbHomeIcon);
         menuItemIcons.add(lbAboutIcon);
         menuItemIcons.add(lbAccountIcon);
         menuItemIcons.add(lbSingerIcon);
         menuItemIcons.add(lbSongIcon);
-        
+
         hashWhiteIcon.put(HOME, whiteHomeIcon);
         hashWhiteIcon.put(ABOUT, whiteAboutIcon);
         hashWhiteIcon.put(SONG, whiteSongIcon);
@@ -95,7 +95,65 @@ public class Home extends javax.swing.JFrame {
         hashPinkIcon.put(SONG, pinkSongIcon);
         hashPinkIcon.put(SINGER, pinkSingerIcon);
         hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
-        
+
+        // add cards panel to cardlayout
+        cardLayout = (CardLayout) plCards.getLayout();
+        plCards.add(cardAbout, ABOUT);
+        plCards.add(cardAccount, ACCOUNT);
+        plCards.add(cardSinger, SINGER);
+        plCards.add(cardSong, SONG);
+        plCards.add(cardHome, HOME);
+
+        // set bgcolor for item
+        for (JPanel panel : menuItems) {
+            panel.setBackground(tranparencyColor);
+
+        }
+        for (JPanel panel : menuItemLines) {
+            panel.setBackground(tranparencyColor);
+        }
+
+    }
+
+    public Home(Client client) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.client = client;
+        menuItems.add(plAbout);
+        menuItems.add(plHome);
+        menuItems.add(plSinger);
+        menuItems.add(plSong);
+        menuItems.add(plAccount);
+
+        menuItemLines.add(lineAbout);
+        menuItemLines.add(lineHome);
+        menuItemLines.add(lineSinger);
+        menuItemLines.add(lineSong);
+        menuItemLines.add(lineAccount);
+
+        menuItemLabels.add(lbHome);
+        menuItemLabels.add(lbAbout);
+        menuItemLabels.add(lbAccount);
+        menuItemLabels.add(lbSinger);
+        menuItemLabels.add(lbSong);
+
+        menuItemIcons.add(lbHomeIcon);
+        menuItemIcons.add(lbAboutIcon);
+        menuItemIcons.add(lbAccountIcon);
+        menuItemIcons.add(lbSingerIcon);
+        menuItemIcons.add(lbSongIcon);
+
+        hashWhiteIcon.put(HOME, whiteHomeIcon);
+        hashWhiteIcon.put(ABOUT, whiteAboutIcon);
+        hashWhiteIcon.put(SONG, whiteSongIcon);
+        hashWhiteIcon.put(SINGER, whiteSingerIcon);
+        hashWhiteIcon.put(ACCOUNT, whiteAccountIcon);
+        hashPinkIcon.put(HOME, pinkHomeIcon);
+        hashPinkIcon.put(ABOUT, pinkAboutIcon);
+        hashPinkIcon.put(SONG, pinkSongIcon);
+        hashPinkIcon.put(SINGER, pinkSingerIcon);
+        hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
+
         // add cards panel to cardlayout
         cardLayout = (CardLayout) plCards.getLayout();
         plCards.add(cardAbout, ABOUT);
@@ -478,8 +536,11 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMousePressed
-        // TODO add your handling code here:
+        // TODO add your handling code here: 
+        client.send.message = "bye";
+        client.send.flag = true;
         System.exit(0);
+       
     }//GEN-LAST:event_btnCloseMousePressed
 
     private void changeLineColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeLineColor
@@ -511,33 +572,33 @@ public class Home extends javax.swing.JFrame {
         try {
             String nameComp = evt.getComponent().getName();
             for (JLabel label : menuItemIcons) {
-                if (label.getName().equals(nameComp) && ! label.getName().equals(activedItem)) {
+                if (label.getName().equals(nameComp) && !label.getName().equals(activedItem)) {
                     label.setIcon(hashWhiteIcon.get(nameComp));
                     break;
                 }
             }
 
             for (JLabel label : menuItemLabels) {
-                if (label.getName().equals(nameComp) && ! label.getName().equals(activedItem)) {
+                if (label.getName().equals(nameComp) && !label.getName().equals(activedItem)) {
                     label.setForeground(Color.WHITE);
                     break;
                 }
-            } 
-        } catch(Exception e) {
+            }
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
 
     }//GEN-LAST:event_resetColorLine
-    
-    private void changeColorActive(String nameComp) {                                 
+
+    private void changeColorActive(String nameComp) {
         // TODO add your handling code here:
         try {
             for (JPanel panel : menuItemLines) {
                 if (panel.getName().equals(nameComp)) {
                     panel.setOpaque(true);
                     panel.setBackground(hoverColor);
-                    
+
                 } else {
                     panel.setOpaque(false);
                     panel.setBackground(tranparencyColor);
@@ -547,7 +608,7 @@ public class Home extends javax.swing.JFrame {
             for (JLabel label : menuItemLabels) {
                 if (label.getName().equals(nameComp)) {
                     label.setForeground(hoverColor);
-                    
+
                 } else {
                     label.setForeground(Color.white);
                 }
@@ -563,8 +624,7 @@ public class Home extends javax.swing.JFrame {
             System.out.println(e.getMessage());
         }
 
-
-    }          
+    }
     private void btnCloseMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseEntered
         // TODO add your handling code here:
         btnClose.setForeground(Color.WHITE);
@@ -609,7 +669,7 @@ public class Home extends javax.swing.JFrame {
                 break;
             }
         }
-        
+
     }
 
     /**
