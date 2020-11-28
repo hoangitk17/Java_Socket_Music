@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  *
@@ -19,68 +20,101 @@ public class Handle {
     public Handle() {
     }
 
-    public Song GetSong(String addSong, String nameSong, String singer) {
-        String lyrics = null, urlFile = null;
-        try {
-            Document docUSong = Jsoup.connect(addSong).get();
-            int startkey = docUSong.body().html().indexOf("key1=") + 5;
-            int startKeySong = docUSong.body().html().indexOf("key=\"") + 5;
-            if (startkey != 4 && startKeySong != 4) {
-                lyrics = GetLyric(docUSong);
-                String key = docUSong.body().html().substring(startkey, startkey + 32);
-                String keySong = docUSong.body().html().substring(startKeySong, startKeySong + 12);
-                urlFile = GetUrlFile("key1", key, keySong);
+//    public String GetKeySearch() throws IOException {
+//        Document doc = Jsoup.connect("https://coccoc.com/search").data("query", "Đan%20Trường").get();
+//        String docC = doc.text();
+//        System.out.println(docC);
+//        return null;
+//    }
+    public int FindSong(Elements songSearch, String nameSearch) {
+        Handle handle = new Handle();
+        for (Element element : songSearch) {
+            String addSong = element.getElementsByTag("a").attr("href");
+            String nameSong = element.getElementsByTag("a").attr("title");
+            String singer = element.getElementsByTag("h4").text();
+            Song temp = new Song(nameSong, singer);
+            if (nameSong.toLowerCase().equals(nameSearch.toLowerCase())) {
+                try {
+                    Document docUSong = Jsoup.connect(addSong).get();
+                    temp.setLyrics(GetLyric(docUSong));
+                } catch (IOException ex) {
+                    System.out.println("Error get Lyrics.");
+                    return -2;
+                }
+                temp.setIDYoutube(GetIdYoutube(nameSong + " " + singer));
+                Server.listSongs.add(temp);
+                return Server.listSongs.size() - 1;
             }
-        } catch (IOException ex) {
-            System.out.println("API get song connection error.");
-            return null;
+            Server.listSongs.add(temp);
         }
-        Song result = new Song(nameSong, singer, lyrics, urlFile);
-        return result;
+        return -1;
     }
 
-    public Song GetMv(String addMv, String nameMv, String singer) {
-        String urlFile = null;
-        try {
-            Document docUSong = Jsoup.connect(addMv).get();
-            int startkey = docUSong.body().html().indexOf("key3=") + 5;
-            int startKeyMV = docUSong.body().html().indexOf("key=\"") + 5;
-            if (startkey != 4 && startKeyMV != 4 && docUSong.body().html().contains("html5=true")) {
-                String key = docUSong.body().html().substring(startkey, startkey + 32);
-                String keyMv = docUSong.body().html().substring(startKeyMV, startKeyMV + 13);
-                urlFile = GetUrlFile("key3", key, keyMv);
-            } else {
-                int videoId = docUSong.body().html().indexOf("videoId: '") + 10;
-                String ketVideoId = docUSong.body().html().substring(videoId, videoId + 11);
-                urlFile = "https://www.youtube.com/watch?v=" + ketVideoId;
-                System.out.println(urlFile);
+    public int FindSongAndSinger(Elements songSearch, String nameSearch, String singerSearch) {
+        Handle handle = new Handle();
+        for (Element element : songSearch) {
+            String addSong = element.getElementsByTag("a").attr("href");
+            String nameSong = element.getElementsByTag("a").attr("title");
+            String singer = element.getElementsByTag("h4").text();
+
+            Song temp = new Song(nameSong, singer, null, addSong);
+            if (nameSong.toLowerCase().equals(nameSearch.toLowerCase()) && singer.toLowerCase().contains(singerSearch.toLowerCase())) {
+                try {
+                    Document docUSong = Jsoup.connect(addSong).get();
+                    temp.setLyrics(GetLyric(docUSong));
+                } catch (IOException ex) {
+                    System.out.println("Error get Lyrics.");
+                    return -2;
+                }
+                temp.setIDYoutube(GetIdYoutube(nameSong + " " + singer));
+                Server.listSongs.add(temp);
+                return Server.listSongs.size() - 1;
             }
-
-        } catch (IOException ex) {
-            System.out.println("API get Mv connection error.");
-            return null;
+            Server.listSongs.add(temp);
         }
-        Song mv = new Song(nameMv, singer, null, urlFile);
-        return mv;
+        return -1;
     }
 
-    public String GetUrlFile(String typeKey, String key, String keySong) {//mp4 typekey="key3", mp3 typekey="key1"
-        try {
-            Document docUrl = Jsoup.connect("https://www.nhaccuatui.com/flash/xml")
-                    .data(typeKey, key)
-                    .data("html5", "true")
-                    .data("listKey", keySong)
-                    .get();
-            String Location = docUrl.getElementsByTag("location").first().html();
-            String urlFile = Location.substring(Location.indexOf("https"), Location.length() - 3);
-            System.out.println(urlFile);
-            return urlFile;
-        } catch (IOException ex) {
-            System.out.println("API get link file connection error.");
-        }
-        return null;
-    }
-
+//    public Song GetMv(String addMv, String nameMv, String singer) {
+//        String urlFile = null;
+//        try {
+//            Document docUSong = Jsoup.connect(addMv).get();
+//            int startkey = docUSong.body().html().indexOf("key3=") + 5;
+//            int startKeyMV = docUSong.body().html().indexOf("key=\"") + 5;
+//            if (startkey != 4 && startKeyMV != 4 && docUSong.body().html().contains("html5=true")) {
+//                String key = docUSong.body().html().substring(startkey, startkey + 32);
+//                String keyMv = docUSong.body().html().substring(startKeyMV, startKeyMV + 13);
+//                urlFile = GetUrlFile("key3", key, keyMv);
+//            } else {
+//                int videoId = docUSong.body().html().indexOf("videoId: '") + 10;
+//                String ketVideoId = docUSong.body().html().substring(videoId, videoId + 11);
+//                urlFile = "https://www.youtube.com/watch?v=" + ketVideoId;
+//                System.out.println(urlFile);
+//            }
+//
+//        } catch (IOException ex) {
+//            System.out.println("API get Mv connection error.");
+//            return null;
+//        }
+//        Song mv = new Song(nameMv, singer, null, urlFile);
+//        return mv;
+//    }
+//    public String GetUrlFile(String typeKey, String key, String keySong) {//mp4 typekey="key3", mp3 typekey="key1"
+//        try {
+//            Document docUrl = Jsoup.connect("https://www.nhaccuatui.com/flash/xml")
+//                    .data(typeKey, key)
+//                    .data("html5", "true")
+//                    .data("listKey", keySong)
+//                    .get();
+//            String Location = docUrl.getElementsByTag("location").first().html();
+//            String urlFile = Location.substring(Location.indexOf("https"), Location.length() - 3);
+//            System.out.println(urlFile);
+//            return urlFile;
+//        } catch (IOException ex) {
+//            System.out.println("API get link file connection error.");
+//        }
+//        return null;
+//    }
     public String GetLyric(Document docLyric) {
         if (docLyric != null) {
             Element lyric = docLyric.getElementById("divLyric");
@@ -90,4 +124,25 @@ public class Handle {
         }
         return null;
     }
+
+//    public String deAccent(String StrToLower) {
+//        String nfdNormalizedString = Normalizer.normalize(StrToLower, Normalizer.Form.NFD);
+//        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+//        String result = pattern.matcher(nfdNormalizedString).replaceAll("").replace("đ", "d");
+//        return result.replaceAll("\\s\\s+", " ").trim();
+//    }
+    public String GetIdYoutube(String nameMusic) {
+        try {
+            Document doc = Jsoup.connect("https://www.youtube.com/results")
+                    .data("search_query", nameMusic.replace(" ", "+"))
+                    .get();
+            String docST = doc.body().html();
+            int start = docST.indexOf("videoId\":\"") + 10;
+            return docST.substring(start, start + 11);
+        } catch (IOException ex) {
+            System.out.println("Error get ID Youtube.");
+            return null;
+        }
+    }
+
 }

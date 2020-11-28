@@ -67,21 +67,20 @@ public class Singer {
         this.listIDMvs = listIDMvs;
     }
 
-    public void ToString() {
-        System.out.println(name);
-        System.out.println(info);
-        System.out.println("---------Danh sách các album-------");
-        for (Album album : listAlbums) {
-            System.out.println(album.getNameAlbum() + " | " + album.getUrlAlbum());
-        }
-        System.out.println("---------Một số bài hát-----");
-        for (Integer i : listIDSongs) {
-            System.out.println(Server.listSongs.get(i).getName() + " | " + Server.listSongs.get(i).getSinger() + " | " + Server.listSongs.get(i).getUrlFile());
-        }
-        System.out.println("---------Một số mv-----");
-        for (Integer i : listIDMvs) {
-            System.out.println(Server.listSongs.get(i).getName() + " | " + Server.listSongs.get(i).getSinger() + " | " + Server.listSongs.get(i).getUrlFile());
-        }
-    }
-
+//    public void ToString() {
+//        System.out.println(name);
+//        System.out.println(info);
+//        System.out.println("---------Danh sách các album-------");
+//        for (Album album : listAlbums) {
+//            System.out.println(album.getNameAlbum() + " | " + album.getUrlAlbum());
+//        }
+//        System.out.println("---------Một số bài hát-----");
+//        for (Integer i : listIDSongs) {
+//            System.out.println(Server.listSongs.get(i).getName() + " | " + Server.listSongs.get(i).getSinger() + " | " + Server.listSongs.get(i).getUrlFile());
+//        }
+//        System.out.println("---------Một số mv-----");
+//        for (Integer i : listIDMvs) {
+//            System.out.println(Server.listSongs.get(i).getName() + " | " + Server.listSongs.get(i).getSinger() + " | " + Server.listSongs.get(i).getUrlFile());
+//        }
+//    }
 }
