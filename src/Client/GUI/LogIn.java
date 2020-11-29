@@ -69,7 +69,7 @@ public class LogIn extends javax.swing.JFrame {
         jLabel7.setText("Sign In");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 130, 120, 50));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\NetBeansProjects\\Music\\src\\Icon\\Asset 5@0.5x.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/Asset 5@0.5x.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 40, 90, 80));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/Path 3.png"))); // NOI18N
@@ -190,6 +190,9 @@ public class LogIn extends javax.swing.JFrame {
             Client client = new Client();
             client.send.message = "login;" + userName + ";" + password;
             client.send.flag = true;
+            System.out.println("Trước dialog");
+            LoadingDialog load = new LoadingDialog(this, true);
+            System.out.println("Qua dialog");
             String message;
             int i = 0;
             while (true) {
@@ -202,13 +205,15 @@ public class LogIn extends javax.swing.JFrame {
                         home.setVisible(true);
                         home.pack();
                         home.setLocationRelativeTo(null);
+                        load.Close();
                         this.dispose();
                         System.out.println("login ok");
                         break;
 
                     }
                     if (message.contains("FAIL")) {
-                        System.out.println("login fail");
+                        System.out.println("\nlogin fail - to fail");
+                        
                         JOptionPane.showMessageDialog(this, "User or Pass Wrong");
                         break;
                     }

@@ -25,7 +25,7 @@ class SendMessage implements Runnable {
     public void run() {
         try {
             while (true) {
-                System.out.println("");
+                System.out.print("");
                 if (flag) {
                     System.out.println(message);
                     System.out.println(flag);
@@ -65,7 +65,7 @@ class ReceiveMessage implements Runnable {
 
             while (true) {
                 String data = in.readLine();
-                System.out.println("");
+                System.out.print("");
                 if(!data.equals("")) {
                     Client.message = data;
                     System.out.println("\n1--" + data);

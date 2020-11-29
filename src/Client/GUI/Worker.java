@@ -35,7 +35,11 @@ public class Worker implements Runnable {
         String command = str.nextToken();
         String user = str.nextToken();
         String password = str.nextToken();
-
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
             if (user.equals("admin") && password.equals("admin")) {
                 out.write("login;OK" + '\n');
