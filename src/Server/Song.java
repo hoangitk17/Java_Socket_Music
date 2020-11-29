@@ -11,26 +11,24 @@ package Server;
  */
 public class Song {
 
-    private int ID;
     private String name;
     private String singer;
     private String lyrics;
-    private String urlFile;
+    private String IDYoutube;
 
     public Song() {
-        this.ID = Server.listSongs.size();
     }
 
-    public Song(String name, String singer, String lyrics, String urlFile) {
-        this.ID = Server.listSongs.size();
+    public Song(String name, String singer) {
+        this.name = name;
+        this.singer = singer;
+    }
+
+    public Song(String name, String singer, String lyrics, String IDYoutube) {
         this.name = name;
         this.singer = singer;
         this.lyrics = lyrics;
-        this.urlFile = urlFile;
-    }
-
-    public int getID() {
-        return ID;
+        this.IDYoutube = IDYoutube;
     }
 
     public String getName() {
@@ -57,12 +55,15 @@ public class Song {
         this.lyrics = lyrics;
     }
 
-    public String getUrlFile() {
-        return urlFile;
+    public String getIDYoutube() {
+        return IDYoutube;
     }
 
-    public void setUrlFile(String urlFile) {
-        this.urlFile = urlFile;
+    public void setIDYoutube(String IDYoutube) {
+        this.IDYoutube = IDYoutube;
     }
 
+    public void ToString() {
+        System.out.println(this.name + " - " + this.singer + ". Id>>" + this.IDYoutube);
+    }
 }

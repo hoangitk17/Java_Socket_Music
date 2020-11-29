@@ -47,6 +47,8 @@ public class YoutubeViewer {
         JWebBrowser webBrowser = new JWebBrowser();
         webBrowserPanel.add(webBrowser, BorderLayout.CENTER);
         webBrowser.setBarsVisible(false);
+        webBrowser.navigate("https://aredir.nixcdn.com/NhacCuaTui1004/ThuongQuaVietNam-DanTruong-6718609.mp3?st=Wze3N3h7k9ioD_wdw3Llfg&e=1606358366");
+
     webBrowser.navigate("https://c4-ex-swe.nixcdn.com/PreNCT18/TrenTinhBanDuoiTinhYeu-MIN-6802382.mp4?st=J2IU2P38IY8vQIstKaJ3uQ&e=1606386733&t=1606300333219");
     
         return webBrowserPanel;
