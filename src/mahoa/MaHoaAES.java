@@ -34,15 +34,14 @@ public class MaHoaAES {
         return decryptedValue;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        String chuoiBanDau = "tasda ashdhasd";
-        String maHoa = MaHoaAES.maHoaAES(chuoiBanDau, keyValue);
-        String giaiMa = MaHoaAES.giaiMaAES(maHoa, keyValue);
-
-        System.out.println("Chuỗi nhập vào : " + chuoiBanDau);
-        System.out.println("Mã hoá : " + maHoa);
-        System.out.println("Giải mã : " + giaiMa);
-    }
-
+//    public static void main(String[] args) throws Exception {
+//
+//        String chuoiBanDau = "tasda ashdhasd";
+//        String maHoa = MaHoaAES.maHoaAES(chuoiBanDau, keyValue);
+//        String giaiMa = MaHoaAES.giaiMaAES(maHoa, keyValue);
+//
+//        System.out.println("Chuỗi nhập vào : " + chuoiBanDau);
+//        System.out.println("Mã hoá : " + maHoa);
+//        System.out.println("Giải mã : " + giaiMa);
+//    }
 }

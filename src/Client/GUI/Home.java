@@ -11,6 +11,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -23,17 +25,39 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
+    Client client;
     ArrayList<JPanel> menuItems = new ArrayList<>();
     ArrayList<JPanel> menuItemLines = new ArrayList<>();
     ArrayList<JLabel> menuItemLabels = new ArrayList<>();
+    ArrayList<JLabel> menuItemIcons = new ArrayList<>();
+
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount = new AccountPanel();
+    SingerPanel cardSinger = new SingerPanel();
+    SongPanel cardSong = new SongPanel();
+    HomePanel cardHome = new HomePanel();
     CardLayout cardLayout;
     private final String ABOUT = "about";
     private final String ACCOUNT = "account";
     private final String HOME = "home";
-    private final String SING = "SING";
-    private final String SONG = "SONG";
+    private final String SONG = "song";
+    private final String SINGER = "singer";
+    private String activedItem = "";
+    Color tranparencyColor = new Color(0, 0, 0, 0);
+    Color hoverColor = new Color(247, 78, 105);
+    ImageIcon whiteHomeIcon = new ImageIcon(getClass().getResource("/Icon/icons8_home_20px.png"));
+    ImageIcon pinkHomeIcon = new ImageIcon(getClass().getResource("/Icon/icons8_home_20px_1.png"));
+    ImageIcon whiteSongIcon = new ImageIcon(getClass().getResource("/Icon/icons8_search_in_list_20px.png"));
+    ImageIcon pinkSongIcon = new ImageIcon(getClass().getResource("/Icon/icons8_search_in_list_20px_1.png"));
+    ImageIcon whiteSingerIcon = new ImageIcon(getClass().getResource("/Icon/icons8_search_23px_1.png"));
+    ImageIcon pinkSingerIcon = new ImageIcon(getClass().getResource("/Icon/icons8_search_23px_2.png"));
+    ImageIcon whiteAccountIcon = new ImageIcon(getClass().getResource("/Icon/icons8_user_20px.png"));
+    ImageIcon pinkAccountIcon = new ImageIcon(getClass().getResource("/Icon/icons8_user_20px_1.png"));
+    ImageIcon whiteAboutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_about_20px.png"));
+    ImageIcon pinkAboutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_about_20px_1.png"));
+    HashMap<String, ImageIcon> hashWhiteIcon = new HashMap<String, ImageIcon>();
+    HashMap<String, ImageIcon> hashPinkIcon = new HashMap<String, ImageIcon>();
+
     public Home() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -42,28 +66,109 @@ public class Home extends javax.swing.JFrame {
         menuItems.add(plSinger);
         menuItems.add(plSong);
         menuItems.add(plAccount);
+
         menuItemLines.add(lineAbout);
         menuItemLines.add(lineHome);
         menuItemLines.add(lineSinger);
         menuItemLines.add(lineSong);
         menuItemLines.add(lineAccount);
+
+        menuItemLabels.add(lbHome);
         menuItemLabels.add(lbAbout);
         menuItemLabels.add(lbAccount);
-        menuItemLabels.add(lbHome);
         menuItemLabels.add(lbSinger);
         menuItemLabels.add(lbSong);
 
+        menuItemIcons.add(lbHomeIcon);
+        menuItemIcons.add(lbAboutIcon);
+        menuItemIcons.add(lbAccountIcon);
+        menuItemIcons.add(lbSingerIcon);
+        menuItemIcons.add(lbSongIcon);
+
+        hashWhiteIcon.put(HOME, whiteHomeIcon);
+        hashWhiteIcon.put(ABOUT, whiteAboutIcon);
+        hashWhiteIcon.put(SONG, whiteSongIcon);
+        hashWhiteIcon.put(SINGER, whiteSingerIcon);
+        hashWhiteIcon.put(ACCOUNT, whiteAccountIcon);
+        hashPinkIcon.put(HOME, pinkHomeIcon);
+        hashPinkIcon.put(ABOUT, pinkAboutIcon);
+        hashPinkIcon.put(SONG, pinkSongIcon);
+        hashPinkIcon.put(SINGER, pinkSingerIcon);
+        hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
+
+        // add cards panel to cardlayout
         cardLayout = (CardLayout) plCards.getLayout();
         plCards.add(cardAbout, ABOUT);
         plCards.add(cardAccount, ACCOUNT);
+        plCards.add(cardSinger, SINGER);
+        plCards.add(cardSong, SONG);
+        plCards.add(cardHome, HOME);
 
+        // set bgcolor for item
         for (JPanel panel : menuItems) {
-            panel.setBackground(new Color(0, 0, 0, 0));
+            panel.setBackground(tranparencyColor);
 
         }
-
         for (JPanel panel : menuItemLines) {
-            panel.setBackground(Color.white);
+            panel.setBackground(tranparencyColor);
+        }
+
+    }
+
+    public Home(Client client) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.client = client;
+        menuItems.add(plAbout);
+        menuItems.add(plHome);
+        menuItems.add(plSinger);
+        menuItems.add(plSong);
+        menuItems.add(plAccount);
+
+        menuItemLines.add(lineAbout);
+        menuItemLines.add(lineHome);
+        menuItemLines.add(lineSinger);
+        menuItemLines.add(lineSong);
+        menuItemLines.add(lineAccount);
+
+        menuItemLabels.add(lbHome);
+        menuItemLabels.add(lbAbout);
+        menuItemLabels.add(lbAccount);
+        menuItemLabels.add(lbSinger);
+        menuItemLabels.add(lbSong);
+
+        menuItemIcons.add(lbHomeIcon);
+        menuItemIcons.add(lbAboutIcon);
+        menuItemIcons.add(lbAccountIcon);
+        menuItemIcons.add(lbSingerIcon);
+        menuItemIcons.add(lbSongIcon);
+
+        hashWhiteIcon.put(HOME, whiteHomeIcon);
+        hashWhiteIcon.put(ABOUT, whiteAboutIcon);
+        hashWhiteIcon.put(SONG, whiteSongIcon);
+        hashWhiteIcon.put(SINGER, whiteSingerIcon);
+        hashWhiteIcon.put(ACCOUNT, whiteAccountIcon);
+        hashPinkIcon.put(HOME, pinkHomeIcon);
+        hashPinkIcon.put(ABOUT, pinkAboutIcon);
+        hashPinkIcon.put(SONG, pinkSongIcon);
+        hashPinkIcon.put(SINGER, pinkSingerIcon);
+        hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
+
+        // add cards panel to cardlayout
+        cardLayout = (CardLayout) plCards.getLayout();
+        plCards.add(cardAbout, ABOUT);
+        plCards.add(cardAccount, ACCOUNT);
+        plCards.add(cardSinger, SINGER);
+        plCards.add(cardSong, SONG);
+        plCards.add(cardHome, HOME);
+
+        // set bgcolor for item
+        for (JPanel panel : menuItems) {
+            panel.setBackground(tranparencyColor);
+
+        }
+        for (JPanel panel : menuItemLines) {
+            panel.setBackground(tranparencyColor);
         }
 
     }
@@ -80,23 +185,23 @@ public class Home extends javax.swing.JFrame {
         bgPanel = new javax.swing.JPanel();
         slidePanel = new javax.swing.JPanel();
         plHome = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lbHomeIcon = new javax.swing.JLabel();
         lbHome = new javax.swing.JLabel();
         lineHome = new javax.swing.JPanel();
         plSong = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        lbSongIcon = new javax.swing.JLabel();
         lbSong = new javax.swing.JLabel();
         lineSong = new javax.swing.JPanel();
         plSinger = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        lbSingerIcon = new javax.swing.JLabel();
         lbSinger = new javax.swing.JLabel();
         lineSinger = new javax.swing.JPanel();
         plAccount = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
+        lbAccountIcon = new javax.swing.JLabel();
         lbAccount = new javax.swing.JLabel();
         lineAccount = new javax.swing.JPanel();
         plAbout = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
+        lbAboutIcon = new javax.swing.JLabel();
         lbAbout = new javax.swing.JLabel();
         lineAbout = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -107,8 +212,10 @@ public class Home extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
+        setUndecorated(true);
 
         bgPanel.setBackground(new java.awt.Color(255, 255, 255));
+        bgPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         bgPanel.setPreferredSize(new java.awt.Dimension(940, 550));
         bgPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -119,6 +226,7 @@ public class Home extends javax.swing.JFrame {
         plHome.setBackground(new java.awt.Color(85, 85, 188));
         plHome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plHome.setName("home"); // NOI18N
+        plHome.setOpaque(false);
         plHome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -132,19 +240,33 @@ public class Home extends javax.swing.JFrame {
         });
         plHome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_home_15px_1.png"))); // NOI18N
-        plHome.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 50));
+        lbHomeIcon.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbHomeIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_home_20px.png"))); // NOI18N
+        lbHomeIcon.setName("home"); // NOI18N
+        plHome.add(lbHomeIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 0, -1, 50));
 
         lbHome.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
         lbHome.setForeground(new java.awt.Color(255, 255, 255));
         lbHome.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbHome.setText("Home");
+        lbHome.setAutoscrolls(true);
         lbHome.setName("home"); // NOI18N
+        lbHome.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                changeLineColor(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                resetColorLine(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                chooseMenuItem(evt);
+            }
+        });
         plHome.add(lbHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 160, 50));
 
         lineHome.setBackground(new java.awt.Color(247, 78, 105));
         lineHome.setName("home"); // NOI18N
+        lineHome.setOpaque(false);
         lineHome.setPreferredSize(new java.awt.Dimension(1, 20));
 
         javax.swing.GroupLayout lineHomeLayout = new javax.swing.GroupLayout(lineHome);
@@ -166,6 +288,7 @@ public class Home extends javax.swing.JFrame {
         plSong.setBackground(new java.awt.Color(85, 85, 188));
         plSong.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plSong.setName("song"); // NOI18N
+        plSong.setOpaque(false);
         plSong.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -179,9 +302,10 @@ public class Home extends javax.swing.JFrame {
         });
         plSong.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_music_notation_15px.png"))); // NOI18N
-        plSong.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 50));
+        lbSongIcon.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbSongIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_search_in_list_20px.png"))); // NOI18N
+        lbSongIcon.setName("song"); // NOI18N
+        plSong.add(lbSongIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 0, -1, 50));
 
         lbSong.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
         lbSong.setForeground(new java.awt.Color(255, 255, 255));
@@ -192,6 +316,7 @@ public class Home extends javax.swing.JFrame {
 
         lineSong.setBackground(new java.awt.Color(247, 78, 105));
         lineSong.setName("song"); // NOI18N
+        lineSong.setOpaque(false);
         lineSong.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineSongLayout = new javax.swing.GroupLayout(lineSong);
@@ -213,6 +338,7 @@ public class Home extends javax.swing.JFrame {
         plSinger.setBackground(new java.awt.Color(85, 85, 188));
         plSinger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plSinger.setName("singer"); // NOI18N
+        plSinger.setOpaque(false);
         plSinger.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -226,9 +352,10 @@ public class Home extends javax.swing.JFrame {
         });
         plSinger.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_rap_15px.png"))); // NOI18N
-        plSinger.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 50));
+        lbSingerIcon.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbSingerIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_search_23px_1.png"))); // NOI18N
+        lbSingerIcon.setName("singer"); // NOI18N
+        plSinger.add(lbSingerIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 0, -1, 50));
 
         lbSinger.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
         lbSinger.setForeground(new java.awt.Color(255, 255, 255));
@@ -239,6 +366,7 @@ public class Home extends javax.swing.JFrame {
 
         lineSinger.setBackground(new java.awt.Color(247, 78, 105));
         lineSinger.setName("singer"); // NOI18N
+        lineSinger.setOpaque(false);
         lineSinger.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineSingerLayout = new javax.swing.GroupLayout(lineSinger);
@@ -260,6 +388,7 @@ public class Home extends javax.swing.JFrame {
         plAccount.setBackground(new java.awt.Color(85, 85, 188));
         plAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plAccount.setName("account"); // NOI18N
+        plAccount.setOpaque(false);
         plAccount.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -273,18 +402,22 @@ public class Home extends javax.swing.JFrame {
         });
         plAccount.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_user_15px.png"))); // NOI18N
-        plAccount.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 50));
+        lbAccountIcon.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbAccountIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_user_20px.png"))); // NOI18N
+        lbAccountIcon.setName("account"); // NOI18N
+        plAccount.add(lbAccountIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 0, -1, 50));
 
         lbAccount.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
         lbAccount.setForeground(new java.awt.Color(255, 255, 255));
         lbAccount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbAccount.setText("Account");
+        lbAccount.setAlignmentX(0.5F);
+        lbAccount.setName("account"); // NOI18N
         plAccount.add(lbAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 1, 160, 50));
 
         lineAccount.setBackground(new java.awt.Color(247, 78, 105));
         lineAccount.setName("account"); // NOI18N
+        lineAccount.setOpaque(false);
         lineAccount.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineAccountLayout = new javax.swing.GroupLayout(lineAccount);
@@ -306,6 +439,7 @@ public class Home extends javax.swing.JFrame {
         plAbout.setBackground(new java.awt.Color(85, 85, 188));
         plAbout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         plAbout.setName("about"); // NOI18N
+        plAbout.setOpaque(false);
         plAbout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 changeLineColor(evt);
@@ -319,18 +453,21 @@ public class Home extends javax.swing.JFrame {
         });
         plAbout.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_info_15px.png"))); // NOI18N
-        plAbout.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, -1, 50));
+        lbAboutIcon.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbAboutIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_about_20px.png"))); // NOI18N
+        lbAboutIcon.setName("about"); // NOI18N
+        plAbout.add(lbAboutIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 0, -1, 50));
 
         lbAbout.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
         lbAbout.setForeground(new java.awt.Color(255, 255, 255));
         lbAbout.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbAbout.setText("About Us");
+        lbAbout.setName("about"); // NOI18N
         plAbout.add(lbAbout, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 1, 160, 50));
 
         lineAbout.setBackground(new java.awt.Color(247, 78, 105));
         lineAbout.setName("about"); // NOI18N
+        lineAbout.setOpaque(false);
         lineAbout.setPreferredSize(new java.awt.Dimension(4, 20));
 
         javax.swing.GroupLayout lineAboutLayout = new javax.swing.GroupLayout(lineAbout);
@@ -365,7 +502,7 @@ public class Home extends javax.swing.JFrame {
 
         plCards.setBackground(new java.awt.Color(68, 142, 246));
         plCards.setLayout(new java.awt.CardLayout());
-        bgPanel.add(plCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 730, 570));
+        bgPanel.add(plCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 739, 568));
 
         btnClose.setBackground(new java.awt.Color(255, 51, 51));
         btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -382,13 +519,13 @@ public class Home extends javax.swing.JFrame {
                 btnCloseMousePressed(evt);
             }
         });
-        bgPanel.add(btnClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 0, 30, 30));
+        bgPanel.add(btnClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(919, 1, 30, 29));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bgPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(bgPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 950, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -399,18 +536,32 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMousePressed
-        // TODO add your handling code here:
+        // TODO add your handling code here: 
+        client.send.message = "bye";
+        client.send.flag = true;
         System.exit(0);
+       
     }//GEN-LAST:event_btnCloseMousePressed
 
     private void changeLineColor(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeLineColor
         // TODO add your handling code here:
-        String nameComp = evt.getComponent().getName();
-        for (JPanel panel : menuItemLines) {
-            if (panel.getName().equals(nameComp)) {
-                panel.setBackground(new Color(247, 78, 105));
-                break;
+        try {
+            String nameComp = evt.getComponent().getName();
+
+            for (JLabel label : menuItemIcons) {
+                if (label.getName().equals(nameComp)) {
+                    label.setIcon(hashPinkIcon.get(nameComp));
+                    break;
+                }
             }
+            for (JLabel label : menuItemLabels) {
+                if (label.getName().equals(nameComp)) {
+                    label.setForeground(hoverColor);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
 
@@ -418,17 +569,62 @@ public class Home extends javax.swing.JFrame {
 
     private void resetColorLine(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resetColorLine
         // TODO add your handling code here:
-        String nameComp = evt.getComponent().getName();
-        for (JPanel panel : menuItemLines) {
-            if (panel.getName().equals(nameComp)) {
-                panel.setBackground(Color.white);
-                break;
+        try {
+            String nameComp = evt.getComponent().getName();
+            for (JLabel label : menuItemIcons) {
+                if (label.getName().equals(nameComp) && !label.getName().equals(activedItem)) {
+                    label.setIcon(hashWhiteIcon.get(nameComp));
+                    break;
+                }
             }
+
+            for (JLabel label : menuItemLabels) {
+                if (label.getName().equals(nameComp) && !label.getName().equals(activedItem)) {
+                    label.setForeground(Color.WHITE);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
 
     }//GEN-LAST:event_resetColorLine
 
+    private void changeColorActive(String nameComp) {
+        // TODO add your handling code here:
+        try {
+            for (JPanel panel : menuItemLines) {
+                if (panel.getName().equals(nameComp)) {
+                    panel.setOpaque(true);
+                    panel.setBackground(hoverColor);
+
+                } else {
+                    panel.setOpaque(false);
+                    panel.setBackground(tranparencyColor);
+                }
+            }
+
+            for (JLabel label : menuItemLabels) {
+                if (label.getName().equals(nameComp)) {
+                    label.setForeground(hoverColor);
+
+                } else {
+                    label.setForeground(Color.white);
+                }
+            }
+            for (JLabel label : menuItemIcons) {
+                if (label.getName().equals(nameComp)) {
+                    label.setIcon(hashPinkIcon.get(nameComp));
+                } else {
+                    label.setIcon(hashWhiteIcon.get(label.getName()));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
     private void btnCloseMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseEntered
         // TODO add your handling code here:
         btnClose.setForeground(Color.WHITE);
@@ -449,19 +645,31 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseMenuItem
     private void switchCard(String cardName) {
         // TODO add your handling code here:
-
+        activedItem = cardName;
+        changeColorActive(cardName);
         switch (cardName) {
             case ABOUT: {
                 cardLayout.show(plCards, ABOUT);
-                System.out.println("About");
                 break;
             }
             case ACCOUNT: {
                 cardLayout.show(plCards, ACCOUNT);
-                System.out.println("Account");
+                break;
+            }
+            case SINGER: {
+                cardLayout.show(plCards, SINGER);
+                break;
+            }
+            case SONG: {
+                cardLayout.show(plCards, SONG);
+                break;
+            }
+            case HOME: {
+                cardLayout.show(plCards, HOME);
                 break;
             }
         }
+
     }
 
     /**
@@ -502,19 +710,19 @@ public class Home extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bgPanel;
     private javax.swing.JLabel btnClose;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbAbout;
+    private javax.swing.JLabel lbAboutIcon;
     private javax.swing.JLabel lbAccount;
+    private javax.swing.JLabel lbAccountIcon;
     private javax.swing.JLabel lbHome;
+    private javax.swing.JLabel lbHomeIcon;
     private javax.swing.JLabel lbSinger;
+    private javax.swing.JLabel lbSingerIcon;
     private javax.swing.JLabel lbSong;
+    private javax.swing.JLabel lbSongIcon;
     private javax.swing.JPanel lineAbout;
     private javax.swing.JPanel lineAccount;
     private javax.swing.JPanel lineHome;

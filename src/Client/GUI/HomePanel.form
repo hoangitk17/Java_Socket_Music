@@ -46,7 +46,7 @@
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="About Us"/>
+        <Property name="text" type="java.lang.String" value="Program search song and singer"/>
         <Property name="opaque" type="boolean" value="true"/>
       </Properties>
     </Component>

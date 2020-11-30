@@ -9,12 +9,12 @@ package Client.GUI;
  *
  * @author Nguyen Van Hoang
  */
-public class AboutPanel extends javax.swing.JPanel {
+public class HomePanel extends javax.swing.JPanel {
 
     /**
      * Creates new form AccountPanel
      */
-    public AboutPanel() {
+    public HomePanel() {
         initComponents();
     }
 
@@ -36,7 +36,7 @@ public class AboutPanel extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Berlin Sans FB", 0, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("About Us");
+        jLabel1.setText("Program search song and singer");
         jLabel1.setOpaque(true);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
