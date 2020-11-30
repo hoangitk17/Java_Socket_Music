@@ -5,12 +5,15 @@
  */
 package Server;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Thuan Lam
  */
-public class Song {
+public class Song implements Serializable {
 
+    private static final long serialVersionUID = -6500665823330706018L;
     private String name;
     private String singer;
     private String lyrics;
