@@ -67,21 +67,22 @@ public class Worker implements Runnable {
                     case "key:M":
                         int result = FindMusic(input.substring(6));
                         try {
-                            out.write(result);
-                            out.flush();
-                            System.out.println("int");
+
                             switch (result) {
                                 case -2:
-                                    obOut.writeUTF("Error Server");
+                                    obOut.writeUTF("key:music:0:Error Server");
                                     System.out.println("string");
                                     break;
                                 case -1:
+                                    obOut.writeUTF("key:music:2");
+                                    out.flush();
                                     obOut.writeObject((ArrayList<Song>) Server.listSongs);
+                                    obOut.flush();
                                     System.out.println("Array");
                                     break;
                                 default:
-                                    Song ob = Server.listSongs.get(result);
-                                    obOut.writeObject(ob);
+                                    obOut.writeUTF("key:music:1");
+                                    obOut.writeObject(Server.listSongs.get(result));
                                     obOut.flush();
                                     System.out.println("Song");
                             }
