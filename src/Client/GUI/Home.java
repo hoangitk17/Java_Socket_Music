@@ -33,8 +33,8 @@ public class Home extends javax.swing.JFrame {
 
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount = new AccountPanel();
-    SingerPanel cardSinger = new SingerPanel();
-    SongPanel cardSong = new SongPanel();
+    SingerPanel cardSinger = new SingerPanel(client);
+    SongPanel cardSong = new SongPanel(client);
     HomePanel cardHome = new HomePanel();
     CardLayout cardLayout;
     private final String ABOUT = "about";

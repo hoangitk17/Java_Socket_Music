@@ -51,14 +51,18 @@ public class ClientTest {
                 break;
             }
             int choose = in.read();
+            System.out.println(choose);
             try {
                 switch (choose) {
-                    case -2:
+                    case 2:
                         System.out.println((String) obInput.readObject());
                         break;
-                    case -1:
+                    case 1:
                         ArrayList<Song> listSongs = (ArrayList<Song>) obInput.readObject();
                         System.out.println("không tìm thấy.\nSize>>" + listSongs.size());
+                        for(Song song : listSongs) {
+                            song.ToString();
+                        }
                         break;
                     default:
                         Song resultSong = (Song) obInput.readObject();

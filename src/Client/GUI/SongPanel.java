@@ -20,6 +20,7 @@ public class SongPanel extends javax.swing.JPanel {
     private final String SONG_OF_SINGER = "songofsinger";
     private final String TOP_SONG = "topsong";
     private CardLayout cardLayout;
+    Client client;
     public SongPanel() {
         initComponents();
         // padding-left 10 px
@@ -33,6 +34,21 @@ public class SongPanel extends javax.swing.JPanel {
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
+    }
+    public SongPanel(Client client) {
+        initComponents();
+        // padding-left 10 px
+        textInputSearch.setBorder(
+                javax.swing.BorderFactory.createCompoundBorder(
+                        getBorder(),
+                        javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
+                )
+        );
+        // set speed for scroll
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        cardLayout = (CardLayout) plCards.getLayout();
+        cardLayout.show(plCards, SONG_OF_SINGER);
+        this.client = client;
     }
 
     /**
@@ -57,7 +73,7 @@ public class SongPanel extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtLyric = new javax.swing.JTextArea();
         jPanel5 = new javax.swing.JPanel();
         plNotFound = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -141,12 +157,12 @@ public class SongPanel extends javax.swing.JPanel {
 
         jLabel8.setText("Lam Trường");
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("aaaaa\nadf\ndf\nf\nsf\ndsf\ns\nfsa\nf\nsdf\nsf\nsdf\nsdf\nsdf\nsadfddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nfsd\nf\nsdaf\nsd\nfds\nfdsf\nsd\nf\nsd\nfsd\nf\nsdf\nsd\nf\n");
-        jTextArea1.setDisabledTextColor(new java.awt.Color(0, 0, 0));
-        jScrollPane1.setViewportView(jTextArea1);
+        txtLyric.setEditable(false);
+        txtLyric.setColumns(20);
+        txtLyric.setRows(5);
+        txtLyric.setText("aaaaa\nadf\ndf\nf\nsf\ndsf\ns\nfsa\nf\nsdf\nsf\nsdf\nsdf\nsdf\nsadfddddddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nfsd\nf\nsdaf\nsd\nfds\nfdsf\nsd\nf\nsd\nfsd\nf\nsdf\nsd\nf\n");
+        txtLyric.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        jScrollPane1.setViewportView(txtLyric);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -439,7 +455,6 @@ public class SongPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JPanel plCards;
     private javax.swing.JPanel plNotFound;
     private javax.swing.JPanel plSongOfSinger;
@@ -447,5 +462,6 @@ public class SongPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane scroll;
     private javax.swing.JTextField textInputSearch;
     private javax.swing.JLabel titleSearchSinger;
+    private javax.swing.JTextArea txtLyric;
     // End of variables declaration//GEN-END:variables
 }

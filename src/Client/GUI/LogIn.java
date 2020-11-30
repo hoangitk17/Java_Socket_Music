@@ -179,16 +179,47 @@ public class LogIn extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jLabel3MouseClicked
 
+    public boolean isValidData(String user, String pass) {
+        boolean isValid = true;
+        StringBuilder strBuilder = new StringBuilder();
+        if (user.equals("")) {
+            strBuilder.append("Username không được để trống");
+            isValid = false;
+        }
+        if (pass.equals("")) {
+            strBuilder.append("\nPassword không được để trống");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid; 
+        }
+        if (user.contains(" ")) {
+            strBuilder.append("Username không được chứa khoảng trắng");
+            isValid = false;
+        }
+        if (pass.contains(" ")) {
+            strBuilder.append("\nPassword không được chứa khoảng trắng");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid; 
+        }
+        return isValid;
+    }
+
     private void btnSignInMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMousePressed
         // TODO add your handling code here:
         try {
             System.out.println("start login");
             String userName = textUserName.getText();
             String password = textPassword.getText();
-            System.out.println(userName);
-            System.out.println(password);
+            if(!isValidData(userName, password)) {
+                return;
+            }
             Client client = new Client();
-            client.send.message = "login;" + userName + ";" + password;
+            client.send.message = "key:login:" + userName + " " + password;
             client.send.flag = true;
             System.out.println("Trước dialog");
             LoadingDialog load = new LoadingDialog(this, true);
@@ -213,7 +244,7 @@ public class LogIn extends javax.swing.JFrame {
                     }
                     if (message.contains("FAIL")) {
                         System.out.println("\nlogin fail - to fail");
-                        
+
                         JOptionPane.showMessageDialog(this, "User or Pass Wrong");
                         break;
                     }

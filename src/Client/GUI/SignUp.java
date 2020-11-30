@@ -203,14 +203,58 @@ public class SignUp extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jLabel3MouseClicked
 
+    public boolean isValidData(String user, String pass, String passConfirm) {
+        boolean isValid = true;
+        StringBuilder strBuilder = new StringBuilder();
+        if (user.equals("")) {
+            strBuilder.append("Username không được để trống");
+            isValid = false;
+        }
+        if (pass.equals("")) {
+            strBuilder.append("\nPassword không được để trống");
+            isValid = false;
+        }
+        if (passConfirm.equals("")) {
+            strBuilder.append("\nConfirm Password không được để trống");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid; 
+        }
+        if (user.contains(" ")) {
+            strBuilder.append("Username không được chứa khoảng trắng");
+            isValid = false;
+        }
+        if (pass.contains(" ")) {
+            strBuilder.append("\nPassword không được chứa khoảng trắng");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid; 
+        }
+        if (!pass.equals(passConfirm)) {
+            strBuilder.append("\nConfirm Password không khớp với Password");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid; 
+        }
+        return isValid;
+    }
+    
     private void btnSignUpMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignUpMousePressed
         // TODO add your handling code here:
         try {
             System.out.println("start login");
             String userName = txtUserName.getText();
             String password = txtPassword.getText();
-            System.out.println(userName);
-            System.out.println(password);
+            String passwordConfirm = txtConfirmPassword.getText();
+            if(!isValidData(userName, password, passwordConfirm)) {
+                return;
+            }
             Client.message = "";
             System.out.println(Client.message);
             client.send.message = "signup;" + userName + ";" + password;
