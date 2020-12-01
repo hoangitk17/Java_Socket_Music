@@ -20,6 +20,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import mahoa.MaHoaRSA;
+import mahoa.MaHoaAES;
+
 
 /**
  *
@@ -46,6 +49,25 @@ public class Worker implements Runnable {
         System.out.println("Client " + myName + " " + socket.toString() + " accepted");
 
         String input = "";
+        String[] RSA = new String[20];
+        String[] keyAES = new String[20];
+        int tt = Integer.parseInt(myName);
+        try {
+            RSA[tt] = in.readLine();
+
+        } catch (IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Server nhận key: " + RSA[tt] + " from " + socket.toString() + " #Client " + myName);
+        try {
+            keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
+            System.out.println("key nhan dc tu client:" + keyAES);
+            String mhaes = MaHoaAES.maHoaAES("test mahoa", keyAES[tt].getBytes());
+            System.out.println("mahoa" + mhaes);
+            System.out.println("giai ma" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
+        } catch (Exception ex) {
+            System.err.println("Key loi ");
+        }
         while (true) {
             try {
                 input = in.readLine();
@@ -53,6 +75,17 @@ public class Worker implements Runnable {
                 System.out.println("Error read data.");
                 break;
             }
+            //-------------------MaHoa--------------
+            try {
+                input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+            } catch (Exception ex) {
+                System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
+            }
+
+            System.out.println("Server nhận: " + input + " from " + socket.toString() + " #Client " + myName);
+            //------------------------------------
+            System.out.println("Server received: " + input + " from " + " #Client " + myName);
+
             System.out.println("Server received: " + input + " from " + " #Client " + myName);
 
             if (input.substring(6).equals("bye")) {

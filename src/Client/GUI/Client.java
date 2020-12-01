@@ -10,8 +10,11 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import mahoa.MaHoaAES;
+import mahoa.MaHoaRSA;
 
 class SendMessage implements Runnable {
 
@@ -30,11 +33,32 @@ class SendMessage implements Runnable {
     public void run() {
         try {
             System.out.println("Run Send");
+            //-------------Ma Hoa------
+            String chuoi = Client.randomchuoi();
+            String mahoa = "";
+            try {
+                mahoa = MaHoaRSA.maHoaRSA(chuoi);
+            } catch (Exception ex) {
+            }
+            System.out.println("Client gửi ma hoa: " + mahoa + '\n');
+            out.write(mahoa + '\n');
+            out.flush();
+            //-----------------------
             while (true) {
                 System.out.print("");// flag is always update
                 if (flag) {
                     System.out.print("Message send" + message);
-                    out.write(message);
+                  
+                    
+                    //-------------------MaHoa----------
+
+                    try {
+                        message = MaHoaAES.maHoaAES(message, chuoi.getBytes());
+                    } catch (Exception ex) {
+
+                    }
+                    //----------------------------------
+                    out.write(message + "\n");
                     out.newLine();
                     out.flush();
                     flag = false;
@@ -55,6 +79,7 @@ class SendMessage implements Runnable {
         } catch (IOException e) {
         }
     }
+
 }
 
 class ReceiveMessage implements Runnable {
@@ -239,6 +264,17 @@ public class Client {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static String randomchuoi() {
+        Random rd = new Random();
+        String data = "";
+        for (int i = 0; i < 16; i++) {
+            char c = (char) (rd.nextInt(127));
+            //char c = ktrd.charAt(rd.nextInt(ktrd.length()));
+            data = data + c;
+        }
+        return data;
     }
 
 }

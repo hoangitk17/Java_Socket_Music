@@ -1,20 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Client.GUI;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.util.Scanner;
 import Server.Song;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,23 +45,19 @@ public class ClientTest {
             if (input.equals("bye")) {
                 break;
             }
-            String data = obInput.readUTF();
-            String[] st = data.split(":");
+            int choose = in.read();
             try {
-                switch (st[2]) {
-                    case "0":
-                        System.out.println(st[3]);
+                switch (choose) {
+                    case -2:
+                        System.out.println((String) obInput.readObject());
                         break;
-                    case "2":
-                        Object resultArray = obInput.readObject();
-                        ArrayList<Song> listSongs = (ArrayList<Song>) Object.class.cast(resultArray);
+                    case -1:
+                        ArrayList<Song> listSongs = (ArrayList<Song>) obInput.readObject();
                         System.out.println("không tìm thấy.\nSize>>" + listSongs.size());
                         break;
                     default:
-                        Object resultSong = obInput.readObject();
-                        Song song = (Song) Object.class.cast(resultSong);
-                        song.ToString();
-                        break;
+                        Song resultSong = (Song) obInput.readObject();
+                        resultSong.ToString();
                 }
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
