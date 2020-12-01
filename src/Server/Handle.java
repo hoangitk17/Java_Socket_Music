@@ -5,7 +5,15 @@
  */
 package Server;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -145,4 +153,33 @@ public class Handle {
         }
     }
 
+    public void readFileLogin() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("user.txt"));
+            String text;
+            while ((text = br.readLine()) != null) {
+                System.out.println(text);
+                Server.listUsers.add(text);
+            }
+            br.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public String md5(String str) {
+        String result = "";
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+            digest.update(str.getBytes());
+            BigInteger bigInteger = new BigInteger(1, digest.digest());
+            result = bigInteger.toString(16);
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("Error hash md5.");
+        }
+        return result;
+    }
 }

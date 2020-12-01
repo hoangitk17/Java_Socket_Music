@@ -7,6 +7,7 @@ package Server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import mahoa.MaHoaAES;
 import mahoa.MaHoaRSA;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -87,45 +90,61 @@ public class Worker implements Runnable {
             //------------------------------------
             System.out.println("Server received: " + input + " from " + " #Client " + myName);
 
-            if (input.substring(6).equals("bye")) {
-                Server.workers.remove(this);
-                break;
-            } else {
-                switch (input.substring(0, 5)) {
-                    case "key:S":
-//                        Singer outputSinger = CreateSinger(input.substring(6));
-//                        result = outputSinger.getName() + "\n" + outputSinger.getInfo() + "\n" + outputSinger.getListAlbums().toString()
-//                                + "\n" + outputSinger.getListIDMvs().toString() + "\n" + outputSinger.getListIDSongs().toString();
-//                        System.out.println(result);
-                        break;
-                    case "key:M":
-                        int result = FindMusic(input.substring(6));
-                        try {
-                            out.write(result);
-                            out.flush();
-                            System.out.println("int");
-                            switch (result) {
-                                case -2:
-                                    obOut.writeUTF("Error Server");
-                                    System.out.println("string");
-                                    break;
-                                case -1:
-                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
-                                    System.out.println("Array");
-                                    break;
-                                default:
-                                    Song ob = Server.listSongs.get(result);
-                                    obOut.writeObject(ob);
-                                    obOut.flush();
-                                    System.out.println("Song");
-                            }
-
-                        } catch (IOException ex) {
-                            System.out.println("Error write object.");
+            String[] st = input.split(":");
+            String data = st[2];
+            try {
+                switch (st[1]) {
+                    case "music":
+                        int result = FindMusic(data);
+                        switch (result) {
+                            case -2:
+                                obOut.writeUTF("key:music:0:Error Server");
+                                System.out.println("string");
+                                break;
+                            case -1:
+                                obOut.writeUTF("key:music:2");
+                                obOut.writeObject((ArrayList<Song>) Server.listSongs);
+                                System.out.println("Array");
+                                break;
+                            default:
+                                obOut.writeUTF("key:music:1");
+                                obOut.writeObject(Server.listSongs.get(result));
+                                System.out.println("Song");
                         }
+                        obOut.flush();
+                        break;
+                    case "singer":
+                        break;
+                    case "login":
+                        String[] user = data.split(" ");
+                        if (checkLogin(user[0], user[1])) {
+                            obOut.writeUTF("key:login:1");
+                        } else {
+                            obOut.writeUTF("key:login:0:Tài khoản hoặc mật khẩu không đúng.");
+                        }
+                        obOut.flush();
+                        break;
+                    case "signup":
+                        String[] user1 = data.split(" ");
+                        int rs = checkSingup(user1[0], user1[1]);
+                        switch (rs) {
+                            case 1:
+                                obOut.writeUTF("key:signup:1");
+                                break;
+                            case 0:
+                                obOut.writeUTF("key:signup:0:Tài khoản đã tồn tại.");
+                                break;
+                            case -1:
+                                obOut.writeUTF("key:signup:0:Mật khẩu không thể bỏ trống.");
+                                break;
+                        }
+                        obOut.flush();
                         break;
                 }
+            } catch (IOException ex) {
+                System.out.println("Error write object.");
             }
+
         }
         System.out.println("Closed socket for Client " + myName);
         try {
@@ -163,6 +182,40 @@ public class Worker implements Runnable {
             System.out.println("API get list song connection error.");
             return -2;
         }
+    }
+
+    public boolean checkLogin(String username, String pass) {
+        Handle handle = new Handle();
+        String u = username + " " + handle.md5(pass);
+        for (String user : Server.listUsers) {
+            if (user.equals(u)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int checkSingup(String username, String pass) {
+        for (String user : Server.listUsers) {
+            String[] u = user.split(" ");
+            if (u[0].equals(username)) {
+                return 0;
+            }
+        }
+        if ("".equals(pass) || pass == null) {
+            return -1;
+        }
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("user.txt", true));
+            Handle handle = new Handle();
+            String passMd5 = handle.md5(pass);
+            bw.write(username + " " + passMd5);
+            System.out.println("Add user success");
+            bw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1;
     }
 
 }

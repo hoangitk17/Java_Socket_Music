@@ -45,19 +45,23 @@ public class ClientTest {
             if (input.equals("bye")) {
                 break;
             }
-            int choose = in.read();
+            String data = obInput.readUTF();
+            String[] st = data.split(":");
             try {
-                switch (choose) {
-                    case -2:
-                        System.out.println((String) obInput.readObject());
+                switch (st[2]) {
+                    case "0":
+                        System.out.println(st[3]);
                         break;
-                    case -1:
-                        ArrayList<Song> listSongs = (ArrayList<Song>) obInput.readObject();
+                    case "2":
+                        Object resultArray = obInput.readObject();
+                        ArrayList<Song> listSongs = (ArrayList<Song>) Object.class.cast(resultArray);
                         System.out.println("không tìm thấy.\nSize>>" + listSongs.size());
                         break;
                     default:
-                        Song resultSong = (Song) obInput.readObject();
-                        resultSong.ToString();
+                        Object resultSong = obInput.readObject();
+                        Song song = (Song) Object.class.cast(resultSong);
+                        song.ToString();
+                        break;
                 }
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
