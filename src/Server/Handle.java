@@ -6,8 +6,10 @@
 package Server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -153,19 +155,53 @@ public class Handle {
         }
     }
 
+    public boolean checkLogin(String username, String pass) {
+        String u = username + " " + md5(pass);
+        for (String user : Server.listUsers) {
+            if (user.equals(u)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int checkSingup(String username, String pass) {
+        for (String user : Server.listUsers) {
+            String[] u = user.split(" ");
+            if (u[0].equals(username)) {
+                return 0;
+            }
+        }
+        if ("".equals(pass) || pass == null) {
+            return -1;
+        }
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("user.txt", true));
+            String passMd5 = md5(pass);
+            bw.write(username + " " + passMd5);
+            bw.newLine();
+            System.out.println("Add user success");
+            Server.listUsers.add(username + " " + passMd5);
+            bw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 1;
+    }
+
     public void readFileLogin() {
         try {
             BufferedReader br = new BufferedReader(new FileReader("user.txt"));
             String text;
             while ((text = br.readLine()) != null) {
-                System.out.println(text);
                 Server.listUsers.add(text);
             }
             br.close();
+            System.out.println("Read file Login succes.>>");
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Read file Login succes.>>");
         } catch (IOException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Read file Login succes.>>");
         }
     }
 

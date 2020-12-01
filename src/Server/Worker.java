@@ -7,7 +7,6 @@ package Server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -15,12 +14,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import mahoa.MaHoaAES;
-import mahoa.MaHoaRSA;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,39 +42,39 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         System.out.println("Client " + myName + " " + socket.toString() + " accepted");
-
+        Handle handle = new Handle();
         String input = "";
-        //-------------------MaHoa------------
-        String[] RSA = new String[20];
-        String[] keyAES = new String[20];
-        int tt = Integer.parseInt(myName);
-        try {
-            RSA[tt] = in.readLine();
-
-        } catch (IOException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("Server nhận key: " + RSA[tt] + " from " + socket.toString() + " #Client " + myName);
-        try {
-            keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
-            System.out.println("key nhan dc tu client:" + keyAES);
-            String mhaes = MaHoaAES.maHoaAES("test mahoa", keyAES[tt].getBytes());
-            System.out.println("mahoa" + mhaes);
-            System.out.println("giai ma" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
-        } catch (Exception ex) {
-            System.err.println("Key loi ");
-        }
-        //-----------------------------------------------
+//        //-------------------MaHoa------------
+//        String[] RSA = new String[20];
+//        String[] keyAES = new String[20];
+//        int tt = Integer.parseInt(myName);
+//        try {
+//            RSA[tt] = in.readLine();
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        System.out.println("Server nhận key: " + RSA[tt] + " from " + socket.toString() + " #Client " + myName);
+//        try {
+//            keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
+//            System.out.println("key nhan dc tu client:" + keyAES);
+//            String mhaes = MaHoaAES.maHoaAES("test mahoa", keyAES[tt].getBytes());
+//            System.out.println("mahoa" + mhaes);
+//            System.out.println("giai ma" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
+//        } catch (Exception ex) {
+//            System.err.println("Key loi ");
+//        }
+//        //-----------------------------------------------
         while (true) {
             try {
                 input = in.readLine();
             } catch (IOException ex) {
-                System.out.println("Error read data.");
+                System.out.println("Error read data client.");
                 break;
             }
             //-------------------MaHoa--------------
             try {
-                input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                //input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
             } catch (Exception ex) {
                 System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
             }
@@ -116,8 +109,10 @@ public class Worker implements Runnable {
                     case "singer":
                         break;
                     case "login":
-                        String[] user = data.split(" ");
-                        if (checkLogin(user[0], user[1])) {
+                        StringTokenizer stLogin = new StringTokenizer(data, " ");
+                        String username = stLogin.nextToken();
+                        String pass = stLogin.hasMoreTokens() ? stLogin.nextToken() : "";
+                        if (handle.checkLogin(username, pass)) {
                             obOut.writeUTF("key:login:1");
                         } else {
                             obOut.writeUTF("key:login:0:Tài khoản hoặc mật khẩu không đúng.");
@@ -125,8 +120,10 @@ public class Worker implements Runnable {
                         obOut.flush();
                         break;
                     case "signup":
-                        String[] user1 = data.split(" ");
-                        int rs = checkSingup(user1[0], user1[1]);
+                        StringTokenizer stSignup = new StringTokenizer(data, " ");
+                        String usernameS = stSignup.nextToken();
+                        String passS = stSignup.hasMoreTokens() ? stSignup.nextToken() : "";
+                        int rs = handle.checkSingup(usernameS, passS);
                         switch (rs) {
                             case 1:
                                 obOut.writeUTF("key:signup:1");
@@ -182,40 +179,6 @@ public class Worker implements Runnable {
             System.out.println("API get list song connection error.");
             return -2;
         }
-    }
-
-    public boolean checkLogin(String username, String pass) {
-        Handle handle = new Handle();
-        String u = username + " " + handle.md5(pass);
-        for (String user : Server.listUsers) {
-            if (user.equals(u)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int checkSingup(String username, String pass) {
-        for (String user : Server.listUsers) {
-            String[] u = user.split(" ");
-            if (u[0].equals(username)) {
-                return 0;
-            }
-        }
-        if ("".equals(pass) || pass == null) {
-            return -1;
-        }
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("user.txt", true));
-            Handle handle = new Handle();
-            String passMd5 = handle.md5(pass);
-            bw.write(username + " " + passMd5);
-            System.out.println("Add user success");
-            bw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 1;
     }
 
 }

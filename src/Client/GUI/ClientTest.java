@@ -1,6 +1,5 @@
 package Client.GUI;
 
-import Server.Song;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,10 +7,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -36,8 +32,9 @@ public class ClientTest {
         while (true) {
             Scanner sc = new Scanner(System.in);
 
-            String input = "key:M;";
+            String input = "key:login:";
             input += sc.nextLine();
+            input += " " + sc.nextLine();
             System.out.println("Input>> " + input);
             out.write(input);
             out.newLine();
@@ -47,24 +44,14 @@ public class ClientTest {
             }
             String data = obInput.readUTF();
             String[] st = data.split(":");
-            try {
-                switch (st[2]) {
-                    case "0":
-                        System.out.println(st[3]);
-                        break;
-                    case "2":
-                        Object resultArray = obInput.readObject();
-                        ArrayList<Song> listSongs = (ArrayList<Song>) Object.class.cast(resultArray);
-                        System.out.println("không tìm thấy.\nSize>>" + listSongs.size());
-                        break;
-                    default:
-                        Object resultSong = obInput.readObject();
-                        Song song = (Song) Object.class.cast(resultSong);
-                        song.ToString();
-                        break;
-                }
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+
+            switch (st[2]) {
+                case "0":
+                    System.out.println(st[3]);
+                    break;
+                case "1":
+                    System.out.println("success");
+                    break;
             }
 
         }
