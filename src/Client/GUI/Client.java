@@ -6,30 +6,51 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.StringTokenizer;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import mahoa.MaHoaAES;
+import mahoa.MaHoaRSA;
 
 class SendMessage implements Runnable {
 
     private BufferedWriter out;
     private Socket socket;
-    public  boolean flag = false;
-    public  String message = "";
+    public boolean flag = false;
+    public String message = "";
+
     public SendMessage(Socket s, BufferedWriter o) {
         this.socket = s;
         this.out = o;
     }
-    
 
     public void run() {
         try {
+            //-------------Ma Hoa------
+            String chuoi = Client.randomchuoi();
+            String mahoa = "";
+            try {
+                mahoa = MaHoaRSA.maHoaRSA(chuoi);
+            } catch (Exception ex) {
+            }
+            System.out.println("Client gửi ma hoa: " + mahoa + '\n');
+            out.write(mahoa + '\n');
+            out.flush();
+            //-----------------------
             while (true) {
                 System.out.print("");
                 if (flag) {
                     System.out.println(message);
                     System.out.println(flag);
-                    System.out.print("2 --"+ message);
+                    System.out.print("2 --" + message);
+                    //-------------------MaHoa----------
+
+                    try {
+                        message = MaHoaAES.maHoaAES(message, chuoi.getBytes());
+                    } catch (Exception ex) {
+
+                    }
+                    //----------------------------------
                     out.write(message + "\n");
                     out.flush();
                     flag = false;
@@ -37,7 +58,7 @@ class SendMessage implements Runnable {
                         break;
                     }
                 } else {
-                    
+
                 }
             }
             System.out.println("Client closed connection");
@@ -47,6 +68,7 @@ class SendMessage implements Runnable {
         } catch (IOException e) {
         }
     }
+
 }
 
 class ReceiveMessage implements Runnable {
@@ -62,17 +84,15 @@ class ReceiveMessage implements Runnable {
     public void run() {
         try {
 
-
             while (true) {
                 String data = in.readLine();
                 System.out.print("");
-                if(!data.equals("")) {
+                if (!data.equals("")) {
                     Client.message = data;
                     System.out.println("\n1--" + data);
                     data = "";
                 }
-                
-              
+
             }
         } catch (IOException e) {
         }
@@ -86,13 +106,12 @@ public class Client {
     private static int port = 1234;
     private static Socket socket;
     public static String clientName = "";
-    public  static String message = "";
+    public static String message = "";
     private static BufferedWriter out;
     private static BufferedReader in;
     public static ExecutorService executor;
     public SendMessage send;
-    public  ReceiveMessage recv;
-    
+    public ReceiveMessage recv;
 
     public Client() {
         try {
@@ -108,5 +127,16 @@ public class Client {
             System.out.println(e.getMessage());
         }
     }
-    
+
+    public static String randomchuoi() {
+        Random rd = new Random();
+        String data = "";
+        for (int i = 0; i < 16; i++) {
+            char c = (char) (rd.nextInt(127));
+            //char c = ktrd.charAt(rd.nextInt(ktrd.length()));
+            data = data + c;
+        }
+        return data;
+    }
+
 }
