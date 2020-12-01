@@ -12,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author Nguyen Van Hoang
@@ -192,7 +191,7 @@ public class LogIn extends javax.swing.JFrame {
         }
         if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
-            return isValid; 
+            return isValid;
         }
         if (user.contains(" ")) {
             strBuilder.append("Username không được chứa khoảng trắng");
@@ -204,7 +203,7 @@ public class LogIn extends javax.swing.JFrame {
         }
         if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
-            return isValid; 
+            return isValid;
         }
         return isValid;
     }
@@ -215,34 +214,33 @@ public class LogIn extends javax.swing.JFrame {
             System.out.println("start login");
             String userName = textUserName.getText();
             String password = textPassword.getText();
-            if(!isValidData(userName, password)) {
+            if (!isValidData(userName, password)) {
                 return;
             }
-            Client client = new Client();
             client.send.message = "key:login:" + userName + " " + password;
             client.send.flag = true;
-            System.out.println("Trước dialog");
-            LoadingDialog load = new LoadingDialog(this, true);
-            System.out.println("Qua dialog");
+//            System.out.println("Trước dialog");
+//            LoadingDialog load = new LoadingDialog(this, true);
+//            System.out.println("Qua dialog");
             String message;
             int i = 0;
             while (true) {
-                System.out.println(i);
-                message = new String(Client.message);
+                System.out.print("");
+                message = new String(Client.userFlag);
                 if (!message.equals("")) {
-                    Client.message = "";
-                    if (message.contains("OK")) {
+                    Client.userFlag = "";
+                    if (message.equals("success")) {
                         Home home = new Home(client);
                         home.setVisible(true);
                         home.pack();
                         home.setLocationRelativeTo(null);
-                        load.Close();
+//                        load.Close();
                         this.dispose();
                         System.out.println("login ok");
                         break;
 
                     }
-                    if (message.contains("FAIL")) {
+                    if (message.equals("fail")) {
                         System.out.println("\nlogin fail - to fail");
 
                         JOptionPane.showMessageDialog(this, "User or Pass Wrong");
@@ -289,7 +287,7 @@ public class LogIn extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            public void run() {       
                 new LogIn().setVisible(true);
             }
         });

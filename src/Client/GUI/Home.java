@@ -33,8 +33,8 @@ public class Home extends javax.swing.JFrame {
 
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount = new AccountPanel();
-    SingerPanel cardSinger = new SingerPanel(client);
-    SongPanel cardSong = new SongPanel(client);
+    SingerPanel cardSinger = new SingerPanel();
+    SongPanel cardSong = new SongPanel();
     HomePanel cardHome = new HomePanel();
     CardLayout cardLayout;
     private final String ABOUT = "about";
@@ -170,7 +170,7 @@ public class Home extends javax.swing.JFrame {
         for (JPanel panel : menuItemLines) {
             panel.setBackground(tranparencyColor);
         }
-
+        cardSong.setClient(client);
     }
 
     /**
@@ -502,7 +502,7 @@ public class Home extends javax.swing.JFrame {
 
         plCards.setBackground(new java.awt.Color(68, 142, 246));
         plCards.setLayout(new java.awt.CardLayout());
-        bgPanel.add(plCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 739, 568));
+        bgPanel.add(plCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 740, 568));
 
         btnClose.setBackground(new java.awt.Color(255, 51, 51));
         btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N

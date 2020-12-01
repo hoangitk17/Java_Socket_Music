@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  *
  * @author Thuan Lam
  */
-public class Server {
+ public class Server {
 
     public static int port = 1234;
     public static int numThread = 10;

@@ -257,32 +257,26 @@ public class SignUp extends javax.swing.JFrame {
             }
             Client.message = "";
             System.out.println(Client.message);
-            client.send.message = "signup;" + userName + ";" + password;
+            client.send.message = "key:signup:" + userName + " " + password;
             client.send.flag = true;
-            System.out.println(client.send.message);
-            System.out.println(client.send.flag);
             String message;
-            int i = 0;
             while (true) {
-                message = new String(Client.message);
+                message = new String(Client.userFlag);
                 if (!message.equals("")) {
-                    Client.message = "";
-                    if (message.contains("OK")) {
-                 
-                        JOptionPane.showMessageDialog(this, "Sing up Success");  
+                    Client.userFlag = "";
+                    if (message.equals("success")) {                
+                        JOptionPane.showMessageDialog(this, "Sign up Success");  
                         break;
 
                     }
-                    if (message.contains("FAIL")) {
+                    if (message.equals("fail")) {
                         System.out.println("login fail");
-                        JOptionPane.showMessageDialog(this, "User or Pass Wrong");  
+                        JOptionPane.showMessageDialog(this, "Sign up Fail");  
                         break;
                     }
 
                 }
-                i++;
             }
-            System.out.println(i);
             System.out.println("end login");
         } catch (Exception e) {
             System.out.println(e.getMessage());

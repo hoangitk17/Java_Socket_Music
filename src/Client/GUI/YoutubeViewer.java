@@ -18,7 +18,6 @@ import javax.swing.WindowConstants;
  * @author Nguyen Van Hoang
  */
 public class YoutubeViewer {
-
     public static void main(String[] args) {
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
@@ -41,7 +40,28 @@ public class YoutubeViewer {
             }
         }));
     }
-
+    public static void showVideoYoutube(String url) {
+        NativeInterface.open();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JFrame frame = new JFrame("YouTube Viewer");
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                frame.getContentPane().add(getBrowserPanel(url), BorderLayout.CENTER);
+                frame.setSize(1000, 800);
+                frame.setLocationByPlatform(true);
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
+            }
+        });
+        NativeInterface.runEventPump();
+        // don't forget to properly close native components
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NativeInterface.close();
+            }
+        }));
+    }
     public static JPanel getBrowserPanel() {
         JPanel webBrowserPanel = new JPanel(new BorderLayout());
         JWebBrowser webBrowser = new JWebBrowser();
@@ -50,6 +70,17 @@ public class YoutubeViewer {
         webBrowser.navigate("https://aredir.nixcdn.com/NhacCuaTui1004/ThuongQuaVietNam-DanTruong-6718609.mp3?st=Wze3N3h7k9ioD_wdw3Llfg&e=1606358366");
 
     webBrowser.navigate("https://c4-ex-swe.nixcdn.com/PreNCT18/TrenTinhBanDuoiTinhYeu-MIN-6802382.mp4?st=J2IU2P38IY8vQIstKaJ3uQ&e=1606386733&t=1606300333219");
+    
+        return webBrowserPanel;
+    }
+    public static JPanel getBrowserPanel(String url) {
+        JPanel webBrowserPanel = new JPanel(new BorderLayout());
+        JWebBrowser webBrowser = new JWebBrowser();
+        webBrowserPanel.add(webBrowser, BorderLayout.CENTER);
+        webBrowser.setBarsVisible(false);
+        
+
+        webBrowser.navigate(url);
     
         return webBrowserPanel;
     }
