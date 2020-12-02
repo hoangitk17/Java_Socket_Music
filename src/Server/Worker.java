@@ -7,6 +7,7 @@ package Server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -14,6 +15,9 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,9 +46,10 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         System.out.println("Client " + myName + " " + socket.toString() + " accepted");
+//<<<<<<< HEAD
         Handle handle = new Handle();
         String input = "";
-//        //-------------------MaHoa------------
+
 //        String[] RSA = new String[20];
 //        String[] keyAES = new String[20];
 //        int tt = Integer.parseInt(myName);
@@ -64,84 +69,91 @@ public class Worker implements Runnable {
 //        } catch (Exception ex) {
 //            System.err.println("Key loi ");
 //        }
-//        //-----------------------------------------------
+//>>>>>>> 873048e8ff20887b0e3f5c1595d45782d1ae7da3
         while (true) {
             try {
                 input = in.readLine();
             } catch (IOException ex) {
-                System.out.println("Error read data client.");
+                System.out.println("Error read data.");
                 break;
             }
             //-------------------MaHoa--------------
-            try {
-                //input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
-            } catch (Exception ex) {
-                System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
-            }
-
-            System.out.println("Server nhận: " + input + " from " + socket.toString() + " #Client " + myName);
-            //------------------------------------
-            System.out.println("Server received: " + input + " from " + " #Client " + myName);
-
-            String[] st = input.split(":");
-            String data = st[2];
-            try {
-                switch (st[1]) {
-                    case "music":
-                        int result = FindMusic(data);
-                        switch (result) {
-                            case -2:
-                                obOut.writeUTF("key:music:0:Error Server");
-                                System.out.println("string");
-                                break;
-                            case -1:
-                                obOut.writeUTF("key:music:2");
-                                obOut.writeObject((ArrayList<Song>) Server.listSongs);
-                                System.out.println("Array");
-                                break;
-                            default:
-                                obOut.writeUTF("key:music:1");
-                                obOut.writeObject(Server.listSongs.get(result));
-                                System.out.println("Song");
-                        }
-                        obOut.flush();
-                        break;
-                    case "singer":
-                        break;
-                    case "login":
-                        StringTokenizer stLogin = new StringTokenizer(data, " ");
-                        String username = stLogin.nextToken();
-                        String pass = stLogin.hasMoreTokens() ? stLogin.nextToken() : "";
-                        if (handle.checkLogin(username, pass)) {
-                            obOut.writeUTF("key:login:1");
-                        } else {
-                            obOut.writeUTF("key:login:0:Tài khoản hoặc mật khẩu không đúng.");
-                        }
-                        obOut.flush();
-                        break;
-                    case "signup":
-                        StringTokenizer stSignup = new StringTokenizer(data, " ");
-                        String usernameS = stSignup.nextToken();
-                        String passS = stSignup.hasMoreTokens() ? stSignup.nextToken() : "";
-                        int rs = handle.checkSingup(usernameS, passS);
-                        switch (rs) {
-                            case 1:
-                                obOut.writeUTF("key:signup:1");
-                                break;
-                            case 0:
-                                obOut.writeUTF("key:signup:0:Tài khoản đã tồn tại.");
-                                break;
-                            case -1:
-                                obOut.writeUTF("key:signup:0:Mật khẩu không thể bỏ trống.");
-                                break;
-                        }
-                        obOut.flush();
-                        break;
+            if (!input.equals("")) {
+                try {
+                    //input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                } catch (Exception ex) {
+                    System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
                 }
-            } catch (IOException ex) {
-                System.out.println("Error write object.");
+
+                System.out.println("Server received: " + input + " from " + " #Client " + myName);
             }
 
+            if (input.equals("bye")) {
+                Server.workers.remove(this);
+                break;
+            } else if (!input.equals("")) {
+                StringTokenizer stringToken = new StringTokenizer(input, ":");
+                String key = stringToken.nextToken();
+                String keyWord = stringToken.nextToken();
+                String value = stringToken.nextToken();
+                try {
+                    switch (keyWord) {
+                        case "singer":
+//
+                            break;
+                        case "login":
+                            checkLogin(value);
+                            break;
+                        case "signup":
+                            checkSignUp(value);
+                            break;
+                        case "music":
+                            int result = FindMusic(value);
+                            switch (result) {
+                                case 0:
+                                    out.write("key:music:0:Error Server");
+                                    out.newLine();
+                                    out.flush();
+                                    break;
+                                case 1:
+                                    out.write("key:music:1");
+                                    out.newLine();
+                                    out.flush();
+                                    for (Song s : Server.listSongs) {
+                                        s.ToString();
+                                    }
+                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
+                                    obOut.flush();
+                            }
+                            break;
+                        case "musichk":
+                            int index = Integer.parseInt(value);
+                            new Handle().GetDetailSongApi(Server.listSongs.get(index).getKey(), Server.listSongs.get(index));
+                            out.write("key:musichk:1");
+                            out.newLine();
+                            out.flush();
+                            obOut.writeObject(Server.listSongs.get(index));
+                            Server.listSongs.get(index).ToString();
+                            obOut.flush();
+                            break;
+                        case "musicnk":
+                            int index2 = Integer.parseInt(value);
+                            Song s = Server.listSongs.get(index2);
+                            Server.listSongs.get(index2).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
+                            out.write("key:musicnk:1");
+                            out.newLine();
+                            out.flush();
+                            obOut.writeObject(Server.listSongs.get(index2));
+                            Server.listSongs.get(index2).ToString();
+                            obOut.flush();
+                            System.out.println("Song");
+                            break;
+                    }
+                } catch (IOException ex) {
+                    System.out.println("Error write object.");
+                }
+                input = "";
+            }
         }
         System.out.println("Closed socket for Client " + myName);
         try {
@@ -156,28 +168,102 @@ public class Worker implements Runnable {
     }
 
     public int FindMusic(String keySearch) {
-        StringTokenizer st = new StringTokenizer(keySearch.trim(), "-");
-        String nameSearch = st.nextToken();
-        String singerSearch = st.hasMoreTokens() ? st.nextToken() : null;
         Handle handle = new Handle();
         Server.listSongs.clear();
-        String addSearch = "https://www.nhaccuatui.com/tim-kiem/bai-hat";
+        GetSongFormApiShazam shazam = new GetSongFormApiShazam(keySearch);
+        shazam.start();
+
         try {
-            Document docSearch = Jsoup.connect(addSearch)
+            Document docSearch = Jsoup.connect("https://www.nhaccuatui.com/tim-kiem/bai-hat")
                     .data("q", keySearch.replace(" ", "+"))
                     .data("b", "title")
                     .data("l", "tat-ca")
                     .data("s", "default")
                     .get();
-
             Element frameSearch = docSearch.getElementsByClass("sn_search_returns_frame").first();
-            //lấy danh sách mp3
-            Elements songSearch = frameSearch.getElementsByClass("sn_search_single_song");
-            int result = singerSearch == null ? handle.FindSong(songSearch, nameSearch) : handle.FindSongAndSinger(songSearch, nameSearch, singerSearch);
-            return result;
+            Elements eleSong = frameSearch.getElementsByClass("sn_search_single_song");
+            handle.GetSongFromNCT(eleSong, keySearch);
         } catch (IOException ex) {
             System.out.println("API get list song connection error.");
-            return -2;
+            return 0;
+        }
+        while (shazam.isAlive()) {
+        }
+        System.out.println("find song end<<");
+        return 1;
+    }
+
+    public void checkLogin(String message) {
+        //Handle handle = new Handle();
+        StringTokenizer str = new StringTokenizer(message, " ");
+        String user = str.nextToken();
+        String password = str.nextToken();
+        password = new Handle().md5(password); //băm md5
+        System.out.println("Check check Login.");
+
+        String result = null;
+        for (String string : Server.listUsers) {
+            StringTokenizer st = new StringTokenizer(string, " ");
+            String u = st.nextToken();
+            String pass = st.nextToken();
+            if (user.equals(u) && password.equals(pass)) {
+                result = "key:login:1";
+                System.out.println("OK");
+                break;
+            }
+        }
+        if (result == null) {
+            result = "key:login:0:Tài khoản hoặc mật khẩu không đúng." + '\n';
+            System.out.println("FAIL");
+        }
+
+        try {
+            out.write(result);
+            out.newLine();
+            out.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void checkSignUp(String message) {
+        StringTokenizer str = new StringTokenizer(message, " ");
+        String user = str.nextToken();
+        String password = str.nextToken();
+        password = new Handle().md5(password);
+        System.out.println("Check sign up");
+
+        String result = null;
+        for (String string : Server.listUsers) {
+            StringTokenizer st = new StringTokenizer(string, " ");
+            String u = st.nextToken();
+            String pass = st.nextToken();
+            if (user.equals(u)) {
+                result = "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
+                System.out.println("FAIL");
+                break;
+            }
+        }
+        if (result == null) {
+            try {
+                BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
+                bf.write("\n" + user + " " + password);
+                bf.flush();
+                Server.listUsers.add(user + " " + password);
+                System.out.println("OKE");
+                bf.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            result = "key:signup:1";
+        }
+
+        try {
+            obOut.writeUTF(result);
+            obOut.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

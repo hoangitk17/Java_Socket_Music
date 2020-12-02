@@ -14,24 +14,48 @@ import java.io.Serializable;
 public class Song implements Serializable {
 
     private static final long serialVersionUID = -6500665823330706018L;
+    private String key;
+    private boolean hasKey;
     private String name;
     private String singer;
     private String lyrics;
     private String IDYoutube;
+    private String mp3;
+    private String Image;
 
     public Song() {
     }
 
-    public Song(String name, String singer) {
+    public Song(String key, boolean hasKey, String name, String singer) {
+        this.key = key;
+        this.hasKey = hasKey;
         this.name = name;
         this.singer = singer;
     }
 
-    public Song(String name, String singer, String lyrics, String IDYoutube) {
+    public Song(String key, boolean hasKey, String name, String singer, String lyrics, String IDYoutube) {
+        this.key = key;
+        this.hasKey = hasKey;
         this.name = name;
         this.singer = singer;
         this.lyrics = lyrics;
         this.IDYoutube = IDYoutube;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public boolean isHasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(boolean hasKey) {
+        this.hasKey = hasKey;
     }
 
     public String getName() {
@@ -67,6 +91,6 @@ public class Song implements Serializable {
     }
 
     public void ToString() {
-        System.out.println(this.name + " - " + this.singer + ". Id>>" + this.IDYoutube);
+        System.out.println(this.key + " - " + this.name + " - " + this.singer + ". Id>>" + this.IDYoutube);
     }
 }

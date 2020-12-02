@@ -12,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author Nguyen Van Hoang
@@ -179,41 +178,71 @@ public class LogIn extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jLabel3MouseClicked
 
+    public boolean isValidData(String user, String pass) {
+        boolean isValid = true;
+        StringBuilder strBuilder = new StringBuilder();
+        if (user.equals("")) {
+            strBuilder.append("Username không được để trống");
+            isValid = false;
+        }
+        if (pass.equals("")) {
+            strBuilder.append("\nPassword không được để trống");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        if (user.contains(" ")) {
+            strBuilder.append("Username không được chứa khoảng trắng");
+            isValid = false;
+        }
+        if (pass.contains(" ")) {
+            strBuilder.append("\nPassword không được chứa khoảng trắng");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        return isValid;
+    }
+
     private void btnSignInMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMousePressed
         // TODO add your handling code here:
         try {
             System.out.println("start login");
             String userName = textUserName.getText();
             String password = textPassword.getText();
-            System.out.println(userName);
-            System.out.println(password);
-            Client client = new Client();
-            client.send.message = "login;" + userName + ";" + password;
+            if (!isValidData(userName, password)) {
+                return;
+            }
+            client.send.message = "key:login:" + userName + " " + password;
             client.send.flag = true;
-            System.out.println("Trước dialog");
-            LoadingDialog load = new LoadingDialog(this, true);
-            System.out.println("Qua dialog");
+//            System.out.println("Trước dialog");
+//            LoadingDialog load = new LoadingDialog(this, true);
+//            System.out.println("Qua dialog");
             String message;
             int i = 0;
             while (true) {
-                System.out.println(i);
-                message = new String(Client.message);
+                System.out.print("");
+                message = new String(Client.userFlag);
                 if (!message.equals("")) {
-                    Client.message = "";
-                    if (message.contains("OK")) {
+                    Client.userFlag = "";
+                    if (message.equals("success")) {
                         Home home = new Home(client);
                         home.setVisible(true);
                         home.pack();
                         home.setLocationRelativeTo(null);
-                        load.Close();
+//                        load.Close();
                         this.dispose();
                         System.out.println("login ok");
                         break;
 
                     }
-                    if (message.contains("FAIL")) {
+                    if (message.equals("fail")) {
                         System.out.println("\nlogin fail - to fail");
-                        
+
                         JOptionPane.showMessageDialog(this, "User or Pass Wrong");
                         break;
                     }
@@ -258,7 +287,7 @@ public class LogIn extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            public void run() {       
                 new LogIn().setVisible(true);
             }
         });

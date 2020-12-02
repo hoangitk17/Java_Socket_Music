@@ -5,6 +5,9 @@
  */
 package music;
 
+import Client.GUI.LogIn;
+import javax.swing.UIManager;
+
 /**
  *
  * @author Nguyen Van Hoang
@@ -16,6 +19,9 @@ public class Music {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+       
+        new LogIn().setVisible(true);
+        
     }
-    
+
 }

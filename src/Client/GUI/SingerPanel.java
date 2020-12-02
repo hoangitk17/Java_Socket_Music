@@ -20,7 +20,7 @@ public class SingerPanel extends javax.swing.JPanel {
     private final String ALBUM = "album";
     private final String INFO_ARTIST = "infoartist";
     private CardLayout cardLayout;
-    
+    Client client;
     public SingerPanel() {
         initComponents();
         // padding-left 10 px
@@ -35,7 +35,21 @@ public class SingerPanel extends javax.swing.JPanel {
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, INFO_ARTIST);
     }
-
+    public SingerPanel(Client client) {
+        initComponents();
+        // padding-left 10 px
+        textInputSearch.setBorder(
+                javax.swing.BorderFactory.createCompoundBorder(
+                        getBorder(),
+                        javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
+                )
+        );
+        // set scroll speed
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        cardLayout = (CardLayout) plCards.getLayout();
+        cardLayout.show(plCards, INFO_ARTIST);
+        this.client = client;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
