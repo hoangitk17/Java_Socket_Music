@@ -23,7 +23,6 @@ import org.jsoup.select.Elements;
 import mahoa.MaHoaRSA;
 import mahoa.MaHoaAES;
 
-
 /**
  *
  * @author Thuan Lam
@@ -76,22 +75,24 @@ public class Worker implements Runnable {
                 break;
             }
             //-------------------MaHoa--------------
-            try {
-                input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
-            } catch (Exception ex) {
-                System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
+            if (!input.equals("")) {
+                try {
+                    input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                } catch (Exception ex) {
+                    System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
+                }
+
+                System.out.println("Server nhận: " + input + " from " + socket.toString() + " #Client " + myName);
+                //------------------------------------
+                System.out.println("Server received: " + input + " from " + " #Client " + myName);
+
+                System.out.println("Server received: " + input + " from " + " #Client " + myName);
             }
 
-            System.out.println("Server nhận: " + input + " from " + socket.toString() + " #Client " + myName);
-            //------------------------------------
-            System.out.println("Server received: " + input + " from " + " #Client " + myName);
-
-            System.out.println("Server received: " + input + " from " + " #Client " + myName);
-
-            if (input.substring(6).equals("bye")) {
+            if (input.equals("bye")) {
                 Server.workers.remove(this);
                 break;
-            } else {
+            } else if (!input.equals("")) {
                 StringTokenizer stringToken = new StringTokenizer(input, ":");
                 String key = stringToken.nextToken();
                 String keyWord = stringToken.nextToken();
@@ -126,7 +127,7 @@ public class Worker implements Runnable {
                                     out.flush();
 
                                     obOut.writeObject((ArrayList<Song>) Server.listSongs);
-                                    for(Song s : Server.listSongs) {
+                                    for (Song s : Server.listSongs) {
                                         s.ToString();
                                     }
                                     obOut.flush();
@@ -148,6 +149,7 @@ public class Worker implements Runnable {
                         }
                         break;
                 }
+                input = "";
             }
         }
         System.out.println("Closed socket for Client " + myName);
@@ -192,7 +194,7 @@ public class Worker implements Runnable {
         StringTokenizer str = new StringTokenizer(message, " ");
         String user = str.nextToken();
         String password = str.nextToken();
-       
+
         try {
             if (user.equals("admin") && password.equals("admin")) {
                 out.write("key:login:1");
