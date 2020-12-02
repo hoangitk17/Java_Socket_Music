@@ -69,4 +69,9 @@ public class Song implements Serializable {
     public void ToString() {
         System.out.println(this.name + " - " + this.singer + ". Id>>" + this.IDYoutube);
     }
+
+    @Override
+    public String toString() {
+        return this.name + " - " + this.singer;
+    }
 }

@@ -221,7 +221,7 @@ public class Worker implements Runnable {
         System.out.println("Check sign up");
         try {
             if (user.equals("admin") && password.equals("admin")) {
-                out.write("key:signup:1");
+                out.write("key:signup:1");  
                 out.newLine();
                 out.flush();
                 System.out.println("OK");

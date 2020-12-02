@@ -156,9 +156,9 @@ class ReceiveMessage implements Runnable {
                 Object resultArray = obInput.readObject();
                 Client.listsSongs = (ArrayList<Song>) (resultArray);
                 System.out.println("không tìm thấy.\nSize>>" + Client.listsSongs.size());
-                Client.songFlag = "nearly";
-            } else {
                 Client.songFlag = "notfound";
+            } else {
+                Client.songFlag = "topsong";
                 // xu ly fail
                 String infoError = stringToken.nextToken();
             }
