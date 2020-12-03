@@ -119,11 +119,12 @@ public class Worker implements Runnable {
                                     out.write("key:music:1");
                                     out.newLine();
                                     out.flush();
+                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
                                     for (Song s : Server.listSongs) {
                                         s.ToString();
                                     }
-                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
                                     obOut.flush();
+                                    obOut.reset();
                             }
                             break;
                         case "musichk":
@@ -155,7 +156,7 @@ public class Worker implements Runnable {
                 input = "";
             }
         }
-        System.out.println("Closed socket for Client " + myName);
+
         try {
             in.close();
             out.close();
@@ -164,7 +165,7 @@ public class Worker implements Runnable {
         } catch (IOException ex) {
             System.out.println("Error closing connection.");
         }
-
+        System.out.println("Closed socket for Client " + myName);
     }
 
     public int FindMusic(String keySearch) {
@@ -187,8 +188,16 @@ public class Worker implements Runnable {
             System.out.println("API get list song connection error.");
             return 0;
         }
-        while (shazam.isAlive()) {
+        while (shazam.isAlive()) { //chờ thread ApiShamzam
         }
+
+        ArrayList<Song> sTemp = new ArrayList<>();
+        for (Song s : Server.listSongs) { //xóa phần tử trùng
+            if (!sTemp.contains(s) && handle.checkName(s.getName(), keySearch)) {
+                sTemp.add(s);
+            }
+        }
+        Server.listSongs = sTemp.isEmpty() ? Server.listSongs : sTemp;
         System.out.println("find song end<<");
         return 1;
     }

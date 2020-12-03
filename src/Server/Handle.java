@@ -20,6 +20,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.select.Elements;
@@ -34,7 +37,6 @@ public class Handle {
     }
 
     public void GetSongFromNCT(Elements eleSong, String nameSearch) {
-        //Handle handle = new Handle();
         for (Element element : eleSong) {
             String addSong = element.getElementsByTag("a").attr("href");
             String nameSong = element.getElementsByTag("a").attr("title");
@@ -139,4 +141,21 @@ public class Handle {
         }
         return result;
     }
+
+    public void SortListSongByName(ArrayList<Song> listSongs) {
+        Collections.sort(listSongs, new Comparator<Song>() {
+            @Override
+            public int compare(Song s1, Song s2) {
+                String name1 = s1.getName() + s1.getSinger();
+                String name2 = s2.getName() + s2.getSinger();
+                return (name1.compareTo(name2));
+            }
+        });
+    }
+
+    public boolean checkName(String name, String nameSearch) {
+        String match = "^" + nameSearch.toLowerCase() + ".{0,}";
+        return name.toLowerCase().matches(match);
+    }
+
 }
