@@ -18,6 +18,8 @@ import java.util.StringTokenizer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mahoa.MaHoaAES;
+import mahoa.MaHoaRSA;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -46,30 +48,29 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         System.out.println("Client " + myName + " " + socket.toString() + " accepted");
-//<<<<<<< HEAD
         Handle handle = new Handle();
         String input = "";
 
-//        String[] RSA = new String[20];
-//        String[] keyAES = new String[20];
-//        int tt = Integer.parseInt(myName);
-//        try {
-//            RSA[tt] = in.readLine();
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        System.out.println("Server nhận key: " + RSA[tt] + " from " + socket.toString() + " #Client " + myName);
-//        try {
-//            keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
-//            System.out.println("key nhan dc tu client:" + keyAES);
-//            String mhaes = MaHoaAES.maHoaAES("test mahoa", keyAES[tt].getBytes());
-//            System.out.println("mahoa" + mhaes);
-//            System.out.println("giai ma" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
-//        } catch (Exception ex) {
-//            System.err.println("Key loi ");
-//        }
-//>>>>>>> 873048e8ff20887b0e3f5c1595d45782d1ae7da3
+        String[] RSA = new String[20];
+        String[] keyAES = new String[20];
+        int tt = Integer.parseInt(myName);
+        try {
+            RSA[tt] = in.readLine();
+
+        } catch (IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Server nhận key: " + RSA[tt] + " from " + socket.toString() + " #Client " + myName);
+        try {
+            keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
+            System.out.println("key nhan dc tu client:" + keyAES);
+            String mhaes = MaHoaAES.maHoaAES("test mahoa", keyAES[tt].getBytes());
+            System.out.println("mahoa" + mhaes);
+            System.out.println("giai ma" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
+        } catch (Exception ex) {
+            System.err.println("Key loi ");
+        }
+
         while (true) {
             try {
                 input = in.readLine();
@@ -80,7 +81,7 @@ public class Worker implements Runnable {
             //-------------------MaHoa--------------
             if (!input.equals("")) {
                 try {
-                    //input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                   input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
                 } catch (Exception ex) {
                     System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
                 }

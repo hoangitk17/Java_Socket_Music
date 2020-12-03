@@ -34,7 +34,7 @@ public class Home extends javax.swing.JFrame {
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount = new AccountPanel();
     SingerPanel cardSinger = new SingerPanel();
-    SongPanel cardSong = new SongPanel();
+    SongPanel cardSong = new SongPanel(this);
     HomePanel cardHome = new HomePanel();
     CardLayout cardLayout;
     private final String ABOUT = "about";

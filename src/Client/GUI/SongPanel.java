@@ -6,10 +6,15 @@
 package Client.GUI;
 
 import Server.Song;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.CardLayout;
+import java.awt.Frame;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import oracle.jrockit.jfr.openmbean.JFRStatsType;
 
 /**
  *
@@ -26,7 +31,8 @@ public class SongPanel extends javax.swing.JPanel {
     private CardLayout cardLayout;
     Client client;
     Song song;
-    public SongPanel() {
+    JFrame parent;
+    public SongPanel(JFrame f) {
         initComponents();
         // padding-left 10 px
         textInputSearch.setBorder(
@@ -35,7 +41,7 @@ public class SongPanel extends javax.swing.JPanel {
                         javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
                 )
         );
-      
+        parent = f;
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
     }
@@ -470,9 +476,24 @@ public class SongPanel extends javax.swing.JPanel {
 
     private void btnShowYoutubeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowYoutubeActionPerformed
         // TODO add your handling code here:
-        System.out.println(song.getIDYoutube());
 //        YoutubeViewer.showVideoYoutube("https://youtu.be/" + song.getIDYoutube());
-        YoutubeViewer.showVideoYoutube("https://youtu.be/UksigCzT2Uc");
+//        YoutubeViewer.showVideoYoutube("https://youtu.be/UksigCzT2Uc");
+        
+        NativeInterface.open();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {       
+                YoutubeViewerDialog view = new YoutubeViewerDialog(parent, true,"https://youtu.be/UksigCzT2Uc" );
+                view.setVisible(true);
+            }
+        });
+        NativeInterface.runEventPump();
+        // don't forget to properly close native components
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NativeInterface.close();
+            }
+        }));
     }//GEN-LAST:event_btnShowYoutubeActionPerformed
     
     public void showSongOfSinger(Song s) {
