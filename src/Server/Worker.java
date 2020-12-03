@@ -7,6 +7,7 @@ package Server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -14,14 +15,15 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mahoa.MaHoaAES;
+import mahoa.MaHoaRSA;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import mahoa.MaHoaRSA;
-import mahoa.MaHoaAES;
 
 /**
  *
@@ -46,8 +48,9 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         System.out.println("Client " + myName + " " + socket.toString() + " accepted");
-
+        Handle handle = new Handle();
         String input = "";
+
         String[] RSA = new String[20];
         String[] keyAES = new String[20];
         int tt = Integer.parseInt(myName);
@@ -67,6 +70,7 @@ public class Worker implements Runnable {
         } catch (Exception ex) {
             System.err.println("Key loi ");
         }
+
         while (true) {
             try {
                 input = in.readLine();
@@ -77,14 +81,10 @@ public class Worker implements Runnable {
             //-------------------MaHoa--------------
             if (!input.equals("")) {
                 try {
-                    input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                   input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
                 } catch (Exception ex) {
                     System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
                 }
-
-                System.out.println("Server nhận: " + input + " from " + socket.toString() + " #Client " + myName);
-                //------------------------------------
-                System.out.println("Server received: " + input + " from " + " #Client " + myName);
 
                 System.out.println("Server received: " + input + " from " + " #Client " + myName);
             }
@@ -97,57 +97,61 @@ public class Worker implements Runnable {
                 String key = stringToken.nextToken();
                 String keyWord = stringToken.nextToken();
                 String value = stringToken.nextToken();
-                switch (keyWord) {
-                    case "singer":
-//                        Singer outputSinger = CreateSinger(input.substring(6));
-//                        result = outputSinger.getName() + "\n" + outputSinger.getInfo() + "\n" + outputSinger.getListAlbums().toString()
-//                                + "\n" + outputSinger.getListIDMvs().toString() + "\n" + outputSinger.getListIDSongs().toString();
-//                        System.out.println(result);
-                        break;
-                    case "login":
-                        checkLogin(value);
-                        break;
-                    case "signup":
-                        checkSignUp(value);
-                        break;
-                    case "music":
-                        int result = FindMusic(value);
-                        try {
-
+                try {
+                    switch (keyWord) {
+                        case "singer":
+//
+                            break;
+                        case "login":
+                            checkLogin(value);
+                            break;
+                        case "signup":
+                            checkSignUp(value);
+                            break;
+                        case "music":
+                            int result = FindMusic(value);
                             switch (result) {
-                                case -2:
+                                case 0:
                                     out.write("key:music:0:Error Server");
                                     out.newLine();
                                     out.flush();
-                                    System.out.println("string");
                                     break;
-                                case -1:
-                                    out.write("key:music:2");
-                                    out.newLine();
-                                    out.flush();
-
-                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
-                                    for (Song s : Server.listSongs) {
-                                        s.ToString();
-                                    }
-                                    obOut.flush();
-                                    System.out.println("Array");
-                                    break;
-                                default:
+                                case 1:
                                     out.write("key:music:1");
                                     out.newLine();
                                     out.flush();
-
-                                    obOut.writeObject(Server.listSongs.get(result));
-                                    Server.listSongs.get(result).ToString();
+                                    for (Song s : Server.listSongs) {
+                                        s.ToString();
+                                    }
+                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
                                     obOut.flush();
-                                    System.out.println("Song");
                             }
-
-                        } catch (IOException ex) {
-                            System.out.println("Error write object.");
-                        }
-                        break;
+                            break;
+                        case "musichk":
+                            int index = Integer.parseInt(value);
+                            new Handle().GetDetailSongApi(Server.listSongs.get(index).getKey(), Server.listSongs.get(index));
+                            out.write("key:musichk:1");
+                            out.newLine();
+                            out.flush();
+                            obOut.writeObject(Server.listSongs.get(index));
+                            Server.listSongs.get(index).ToString();
+                            obOut.flush();
+                            break;
+                        case "musicnk":
+                            int index2 = Integer.parseInt(value);
+                            Song s = Server.listSongs.get(index2);
+                            Server.listSongs.get(index2).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
+                            out.write("key:musicnk:1");
+                            out.newLine();
+                            out.flush();
+                            obOut.writeObject(Server.listSongs.get(index2));
+                            Server.listSongs.get(index2).ToString();
+                            obOut.flush();
+                            System.out.println("Song");
+                            break;
+                    }
+                } catch (IOException ex) {
+                    System.out.println("Error write object.");
                 }
                 input = "";
             }
@@ -165,49 +169,59 @@ public class Worker implements Runnable {
     }
 
     public int FindMusic(String keySearch) {
-        StringTokenizer st = new StringTokenizer(keySearch.trim(), "-");
-        String nameSearch = st.nextToken();
-        String singerSearch = st.hasMoreTokens() ? st.nextToken() : null;
         Handle handle = new Handle();
         Server.listSongs.clear();
-        String addSearch = "https://www.nhaccuatui.com/tim-kiem/bai-hat";
+        GetSongFormApiShazam shazam = new GetSongFormApiShazam(keySearch);
+        shazam.start();
+
         try {
-            Document docSearch = Jsoup.connect(addSearch)
+            Document docSearch = Jsoup.connect("https://www.nhaccuatui.com/tim-kiem/bai-hat")
                     .data("q", keySearch.replace(" ", "+"))
                     .data("b", "title")
                     .data("l", "tat-ca")
                     .data("s", "default")
                     .get();
-
             Element frameSearch = docSearch.getElementsByClass("sn_search_returns_frame").first();
-            //lấy danh sách mp3
-            Elements songSearch = frameSearch.getElementsByClass("sn_search_single_song");
-            int result = singerSearch == null ? handle.FindSong(songSearch, nameSearch) : handle.FindSongAndSinger(songSearch, nameSearch, singerSearch);
-            return result;
+            Elements eleSong = frameSearch.getElementsByClass("sn_search_single_song");
+            handle.GetSongFromNCT(eleSong, keySearch);
         } catch (IOException ex) {
             System.out.println("API get list song connection error.");
-            return -2;
+            return 0;
         }
+        while (shazam.isAlive()) {
+        }
+        System.out.println("find song end<<");
+        return 1;
     }
 
     public void checkLogin(String message) {
+        //Handle handle = new Handle();
         StringTokenizer str = new StringTokenizer(message, " ");
         String user = str.nextToken();
         String password = str.nextToken();
+        password = new Handle().md5(password); //băm md5
+        System.out.println("Check check Login.");
+
+        String result = null;
+        for (String string : Server.listUsers) {
+            StringTokenizer st = new StringTokenizer(string, " ");
+            String u = st.nextToken();
+            String pass = st.nextToken();
+            if (user.equals(u) && password.equals(pass)) {
+                result = "key:login:1";
+                System.out.println("OK");
+                break;
+            }
+        }
+        if (result == null) {
+            result = "key:login:0:Tài khoản hoặc mật khẩu không đúng." + '\n';
+            System.out.println("FAIL");
+        }
 
         try {
-            if (user.equals("admin") && password.equals("admin")) {
-                out.write("key:login:1");
-                out.newLine();
-                out.flush();
-                System.out.println("OK");
-            } else {
-                out.write("key:login:0:lỗi gì đó rồi" + '\n');
-                out.newLine();
-                out.flush();
-                System.out.println("FAIL");
-            }
-
+            out.write(result);
+            out.newLine();
+            out.flush();
         } catch (IOException ex) {
             Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -218,24 +232,40 @@ public class Worker implements Runnable {
         StringTokenizer str = new StringTokenizer(message, " ");
         String user = str.nextToken();
         String password = str.nextToken();
+        password = new Handle().md5(password);
         System.out.println("Check sign up");
-        try {
-            if (user.equals("admin") && password.equals("admin")) {
-                out.write("key:signup:1");  
-                out.newLine();
-                out.flush();
-                System.out.println("OK");
-            } else {
-                out.write("key:signup:0:Lỗi something");
-                out.newLine();
-                out.flush();
-                System.out.println("FAIL");
-            }
 
+        String result = null;
+        for (String string : Server.listUsers) {
+            StringTokenizer st = new StringTokenizer(string, " ");
+            String u = st.nextToken();
+            String pass = st.nextToken();
+            if (user.equals(u)) {
+                result = "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
+                System.out.println("FAIL");
+                break;
+            }
+        }
+        if (result == null) {
+            try {
+                BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
+                bf.write("\n" + user + " " + password);
+                bf.flush();
+                Server.listUsers.add(user + " " + password);
+                System.out.println("OKE");
+                bf.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            result = "key:signup:1";
+        }
+
+        try {
+            obOut.writeUTF(result);
+            obOut.flush();
         } catch (IOException ex) {
             Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
 }

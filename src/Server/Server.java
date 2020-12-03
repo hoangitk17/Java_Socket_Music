@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Server;
 
 import java.io.IOException;
@@ -17,20 +12,23 @@ import java.util.concurrent.Executors;
  *
  * @author Thuan Lam
  */
- public class Server {
+public class Server {
 
     public static int port = 1234;
     public static int numThread = 10;
     private static ServerSocket server = null;
     public static Vector<Worker> workers = new Vector<>();
     public static ArrayList<Song> listSongs = new ArrayList<>();
+    public static ArrayList<String> listUsers = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         int i = 0;
+        Handle handle = new Handle();
         ExecutorService executor = Executors.newFixedThreadPool(numThread);
         try {
             server = new ServerSocket(port);
             System.out.println("Server binding at port " + port);
+            handle.readFileLogin();
             System.out.println("Waiting for client...");
             while (true) {
                 i++;
