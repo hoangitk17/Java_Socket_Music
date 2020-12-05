@@ -9,12 +9,16 @@ import Server.Song;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.CardLayout;
 import java.awt.Frame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import oracle.jrockit.jfr.openmbean.JFRStatsType;
+import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -25,13 +29,14 @@ public class SongPanel extends javax.swing.JPanel {
     /**
      * Creates new form AccountPanel
      */
-    private final String NOT_FOUND = "notfound";
+    private final String NEARLY_SONG = "nearly";
     private final String SONG_OF_SINGER = "songofsinger";
     private final String TOP_SONG = "topsong";
     private CardLayout cardLayout;
     Client client;
     Song song;
     JFrame parent;
+
     public SongPanel(JFrame f) {
         initComponents();
         // padding-left 10 px
@@ -45,6 +50,7 @@ public class SongPanel extends javax.swing.JPanel {
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
     }
+
     public SongPanel(Client client) {
         initComponents();
         // padding-left 10 px
@@ -54,7 +60,7 @@ public class SongPanel extends javax.swing.JPanel {
                         javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
                 )
         );
-       
+
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
         this.client = client;
@@ -63,7 +69,6 @@ public class SongPanel extends javax.swing.JPanel {
     public void setClient(Client client) {
         this.client = client;
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -86,7 +91,7 @@ public class SongPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         lbLyric = new javax.swing.JTextArea();
         lbSinger = new javax.swing.JLabel();
-        plNotFound = new javax.swing.JPanel();
+        plNearlySong = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -220,7 +225,7 @@ public class SongPanel extends javax.swing.JPanel {
 
         plCards.add(plSongOfSinger, "songofsinger");
 
-        plNotFound.setBackground(new java.awt.Color(255, 255, 255));
+        plNearlySong.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel9.setText("Danh sách bài hát gợi ý");
 
@@ -228,20 +233,20 @@ public class SongPanel extends javax.swing.JPanel {
 
         jScrollPane2.setViewportView(ListSong);
 
-        javax.swing.GroupLayout plNotFoundLayout = new javax.swing.GroupLayout(plNotFound);
-        plNotFound.setLayout(plNotFoundLayout);
-        plNotFoundLayout.setHorizontalGroup(
-            plNotFoundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout plNearlySongLayout = new javax.swing.GroupLayout(plNearlySong);
+        plNearlySong.setLayout(plNearlySongLayout);
+        plNearlySongLayout.setHorizontalGroup(
+            plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(plNotFoundLayout.createSequentialGroup()
-                .addGroup(plNotFoundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(plNearlySongLayout.createSequentialGroup()
+                .addGroup(plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 56, Short.MAX_VALUE))
         );
-        plNotFoundLayout.setVerticalGroup(
-            plNotFoundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(plNotFoundLayout.createSequentialGroup()
+        plNearlySongLayout.setVerticalGroup(
+            plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(plNearlySongLayout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -250,7 +255,7 @@ public class SongPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
         );
 
-        plCards.add(plNotFound, "notfound");
+        plCards.add(plNearlySong, "nearly");
 
         plTopSong.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -442,23 +447,20 @@ public class SongPanel extends javax.swing.JPanel {
             while (true) {
                 message = new String(Client.songFlag);
                 if (!message.equals("")) {
-                    switch(message) {
-                        case "exactly":
-                        {
+                    switch (message) {
+                        case "exactly": {
                             showSongOfSinger(Client.song);
                             System.out.println("Exactly");
                         }
                         break;
-                        case "topsong":
-                        {
-                            showTopSong();
+                        case "nearly": {
+                            showSongNearCorrect(Client.listsSongs);
                             System.out.println("Nearly");
                         }
                         break;
-                        case "notfound":
-                        {
-                            showNotFound(Client.listsSongs);
-                            System.out.println("Not found");
+                        case "nosong": {
+                            showNotFound();
+                            System.out.println("No song");
                         }
                         break;
                     }
@@ -473,16 +475,49 @@ public class SongPanel extends javax.swing.JPanel {
             System.out.println(e.toString());
         }
     }//GEN-LAST:event_btnSearchMousePressed
+    
+    public void SearchSongWithNoKey(){
+        try {
+            System.out.println("click");
+            String keyword = textInputSearch.getText();
+            client.send.message = "key:musicnk:" + keyword;
+            client.send.flag = true;
+            String message;
+            while (true) {
+                message = new String(Client.songFlag);
+                if (!message.equals("")) {
+                    switch (message) {
+                        case "exactly": {
+                            showSongOfSinger(Client.song);
+                            System.out.println("Exactly");
+                        }
+                        break;
+                        case "nosong": {
+                            showNotFound();
+                            System.out.println("No song");
+                        }
+                        break;
+                    }
+                    Client.song = null;
+                    Client.listsSongs = null;
+                    Client.songFlag = "";
+                    break;
+                }
 
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
     private void btnShowYoutubeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowYoutubeActionPerformed
         // TODO add your handling code here:
 //        YoutubeViewer.showVideoYoutube("https://youtu.be/" + song.getIDYoutube());
 //        YoutubeViewer.showVideoYoutube("https://youtu.be/UksigCzT2Uc");
-        
+
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {       
-                YoutubeViewerDialog view = new YoutubeViewerDialog(parent, true,"https://youtu.be/UksigCzT2Uc" );
+            public void run() {
+                YoutubeViewerDialog view = new YoutubeViewerDialog(parent, true, "https://youtu.be/UksigCzT2Uc");
                 view.setVisible(true);
             }
         });
@@ -495,7 +530,7 @@ public class SongPanel extends javax.swing.JPanel {
             }
         }));
     }//GEN-LAST:event_btnShowYoutubeActionPerformed
-    
+
     public void showSongOfSinger(Song s) {
         this.song = s;
         cardLayout.show(plCards, SONG_OF_SINGER);
@@ -503,24 +538,41 @@ public class SongPanel extends javax.swing.JPanel {
         lbSinger.setText("Ca sĩ : " + song.getSinger());
         lbLyric.setText(song.getLyrics());
     }
-    
-    public void showTopSong() {
-        cardLayout.show(plCards, TOP_SONG);
-    }
-    public void showNotFound(ArrayList<Song> listsSongs) {
+
+    public void showSongNearCorrect(ArrayList<Song> listsSongs) {
         DefaultListModel<Song> listModel = new DefaultListModel<>();
         for (Song song : listsSongs) {
             listModel.addElement(song);
             ListSong.setModel(listModel);
         }
         ListSong.setCellRenderer(new SongRenderer());
-        
-        cardLayout.show(plCards, NOT_FOUND);
+        ListSong.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ListSong.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                if (evt.getClickCount() == 2) {
+
+                    // Double-click detected
+                    int index = list.locationToIndex(evt.getPoint());
+                    final Song element = ListSong.getModel().getElementAt(index);
+                    element.ToString();
+                    System.out.println("2" + index);
+                } else if (evt.getClickCount() == 3) {
+
+                    // Triple-click detected
+                    int index = list.locationToIndex(evt.getPoint());
+                    System.out.println("3" + index);
+                }
+            }
+        });
+        cardLayout.show(plCards, NEARLY_SONG);
+
     }
-    
-  
-   
-    
+
+    public void showNotFound() {
+        cardLayout.show(plCards, TOP_SONG);
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<Song> ListSong;
@@ -546,7 +598,7 @@ public class SongPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lbNameOfSong;
     private javax.swing.JLabel lbSinger;
     private javax.swing.JPanel plCards;
-    private javax.swing.JPanel plNotFound;
+    private javax.swing.JPanel plNearlySong;
     private javax.swing.JPanel plSongOfSinger;
     private javax.swing.JPanel plTopSong;
     private javax.swing.JTextField textInputSearch;

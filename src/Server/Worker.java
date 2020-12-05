@@ -263,8 +263,9 @@ public class Worker implements Runnable {
         }
 
         try {
-            obOut.writeUTF(result);
-            obOut.flush();
+            out.write(result);
+            out.newLine();
+            out.flush();
         } catch (IOException ex) {
             Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
         }

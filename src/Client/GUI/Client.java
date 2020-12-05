@@ -146,19 +146,12 @@ class ReceiveMessage implements Runnable {
             String status = stringToken.nextToken();
             if (status.equals("1")) {
                 // xu ly success
-
-                Object resultSong = obInput.readObject();
-                Client.song = (Song) (resultSong);
-                Client.song.ToString();
-                Client.songFlag = "exactly";
-            } else if (status.equals("2")) {
-
                 Object resultArray = obInput.readObject();
                 Client.listsSongs = (ArrayList<Song>) (resultArray);
-                System.out.println("không tìm thấy.\nSize>>" + Client.listsSongs.size());
-                Client.songFlag = "notfound";
-            } else {
-                Client.songFlag = "topsong";
+                System.out.println("\nSize>>" + Client.listsSongs.size());
+                Client.songFlag = "nearly";
+            }  else {
+                Client.songFlag = "nosong";
                 // xu ly fail
                 String infoError = stringToken.nextToken();
             }
