@@ -13,6 +13,8 @@ import java.util.StringTokenizer;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mahoa.MaHoaAES;
 import mahoa.MaHoaRSA;
 
@@ -48,10 +50,8 @@ class SendMessage implements Runnable {
                 System.out.print("");// flag is always update
                 if (flag) {
                     System.out.print("Message send" + message);
-                  
-                    
-                    //-------------------MaHoa----------
 
+                    //-------------------MaHoa----------
                     try {
                         message = MaHoaAES.maHoaAES(message, chuoi.getBytes());
                     } catch (Exception ex) {
@@ -150,13 +150,23 @@ class ReceiveMessage implements Runnable {
                 Client.listsSongs = (ArrayList<Song>) (resultArray);
                 System.out.println("\nSize>>" + Client.listsSongs.size());
                 Client.songFlag = "nearly";
-            }  else {
+            } else if (status.equals("2")) {
+                // xu ly success
+                System.out.println("Server response 2");
+                Client.song = (Song) (obInput.readObject());
+                Client.songFlag = "exactly";
+                Client.song.ToString();
+            } else {
                 Client.songFlag = "nosong";
                 // xu ly fail
                 String infoError = stringToken.nextToken();
             }
         } catch (Exception e) {
-            System.out.println("Exception at Handle Search Song with message is " + e.toString());
+            System.out.println("Exception at Handle Search Song with message is " );
+            System.out.println(e);
+            e.printStackTrace(); 
+        } finally {
+           
         }
     }
 
@@ -186,7 +196,7 @@ class ReceiveMessage implements Runnable {
                 System.out.print("2"); // data is always get data from stream
                 if (!data.equals("")) {
                     System.out.println(data);
-                    if (data.length() >= 3 && data.substring(0, 3).toLowerCase().equals("key")) {
+                    if (data.contains("key")) {
                         StringTokenizer stringToken = new StringTokenizer(data, ":");
                         String key = stringToken.nextToken();
                         String keyWord = stringToken.nextToken();

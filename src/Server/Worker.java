@@ -125,10 +125,10 @@ public class Worker implements Runnable {
                                         s.ToString();
                                     }
                                     obOut.flush();
-                                    obOut.reset();
                             }
                             break;
                         case "musicE":
+                            System.out.println("Music exact");
                             int index = Integer.parseInt(value);
                             Song s = Server.listSongs.get(index);
                             if (s.isHasKey()) {
@@ -136,12 +136,12 @@ public class Worker implements Runnable {
                             } else {
                                 Server.listSongs.get(index).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
                             }
-                            out.write("key:musicE:1");
+                            out.write("key:music:2");
                             out.newLine();
                             out.flush();
-                            obOut.writeObject(Server.listSongs.get(index));
-                            Server.listSongs.get(index).ToString();
+                            obOut.writeObject((Song) s);
                             obOut.flush();
+                            s.ToString();
                             break;
                     }
                 } catch (IOException ex) {

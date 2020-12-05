@@ -58,7 +58,7 @@ public class YoutubeViewerDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
+//https://gist.github.com/nebadon2025/3143d837350ab443482b0f5a6faccd6b
     public static JPanel getBrowserPanel(String url) {
         JPanel webBrowserPanel = new JPanel(new BorderLayout());
         JWebBrowser webBrowser = new JWebBrowser();

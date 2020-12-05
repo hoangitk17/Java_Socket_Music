@@ -34,7 +34,7 @@ public class SongPanel extends javax.swing.JPanel {
     private final String TOP_SONG = "topsong";
     private CardLayout cardLayout;
     Client client;
-    Song song;
+    Song song = null;
     JFrame parent;
 
     public SongPanel(JFrame f) {
@@ -476,11 +476,11 @@ public class SongPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnSearchMousePressed
 
-    public void SearchSongWithNoKey() {
+    public void SearchSongWithIndex(int index) {
         try {
-            System.out.println("click");
+            System.out.println("Click-exactly");
             String keyword = textInputSearch.getText();
-            client.send.message = "key:musicnk:" + keyword;
+            client.send.message = "key:musicE:" + index;
             client.send.flag = true;
             String message;
             while (true) {
@@ -519,7 +519,11 @@ public class SongPanel extends javax.swing.JPanel {
                 }
             }).start();
 
+        }
+        if (song == null) {
             new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/HH0zOJVOzxs?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
+        } else {
+            new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube() + "?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
         }
         // don't forget to properly close native components
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -536,6 +540,7 @@ public class SongPanel extends javax.swing.JPanel {
         lbNameOfSong.setText("Bài hát : " + song.getName());
         lbSinger.setText("Ca sĩ : " + song.getSinger());
         lbLyric.setText(song.getLyrics());
+        System.out.println(s.getLyrics());
     }
 
     public void showSongNearCorrect(ArrayList<Song> listsSongs) {
@@ -553,8 +558,8 @@ public class SongPanel extends javax.swing.JPanel {
 
                     // Double-click detected
                     int index = list.locationToIndex(evt.getPoint());
-                    final Song element = ListSong.getModel().getElementAt(index);
-                    element.ToString();
+//                    final Song element = ListSong.getModel().getElementAt(index);
+                    SearchSongWithIndex(index);
                     System.out.println("2" + index);
                 } else if (evt.getClickCount() == 3) {
 
