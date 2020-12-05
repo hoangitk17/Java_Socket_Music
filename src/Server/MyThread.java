@@ -44,9 +44,14 @@ class GetSongFormApiShazam extends Thread {
                     .header("x-rapidapi-key", "ce4b7a0cecmsh85ab0eed6ebe521p12543djsneb4fc4e4a4b7").ignoreContentType(true)
                     .get();
         } catch (IOException ex) {
-            System.out.println("Error API Shazam!!!");
+            System.out.println("Error connection API Shazam!!!");
         }
         JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+        if (json.toString().equals("{}")) {
+            System.out.println("API Shazam empty.");
+            return;
+        }
+
         JsonArray jsonArray = json.getAsJsonObject("tracks").getAsJsonArray("hits");
 
         for (JsonElement jsonA : jsonArray) {
@@ -57,14 +62,14 @@ class GetSongFormApiShazam extends Thread {
         boolean isFirst = true;
         Handle handle = new Handle();
         for (Song s : array) {
-            if (s.getName().toLowerCase().contains(nameSearch.toLowerCase())) {
+            if (handle.checkName(s.getName(), nameSearch)) {
                 if (isFirst) {
                     handle.GetDetailSongApi(s.getKey(), s);
                     isFirst = false;
                 }
                 Server.listSongs.add(s);
-                //Server.listSongs.get(Server.listSongs.size() - 1).ToString();
             }
         }
+        System.out.println("Get API End<<");
     }
 }

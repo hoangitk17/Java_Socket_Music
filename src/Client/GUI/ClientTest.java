@@ -52,9 +52,10 @@ public class ClientTest {
                 case "1": {
                     try {
                         ArrayList<Song> arr = (ArrayList<Song>) obInput.readObject();
-                        for (Song arr1 : arr) {
+                        System.out.println("size>>" + arr.size());
+                        arr.stream().forEach((arr1) -> {
                             arr1.ToString();
-                        }
+                        });
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
                     }

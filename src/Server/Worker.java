@@ -81,7 +81,7 @@ public class Worker implements Runnable {
             //-------------------MaHoa--------------
             if (!input.equals("")) {
                 try {
-                   input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                    input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
                 } catch (Exception ex) {
                     System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
                 }
@@ -120,34 +120,28 @@ public class Worker implements Runnable {
                                     out.write("key:music:1");
                                     out.newLine();
                                     out.flush();
+                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
                                     for (Song s : Server.listSongs) {
                                         s.ToString();
                                     }
-                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
                                     obOut.flush();
+                                    obOut.reset();
                             }
                             break;
-                        case "musichk":
+                        case "musicE":
                             int index = Integer.parseInt(value);
-                            new Handle().GetDetailSongApi(Server.listSongs.get(index).getKey(), Server.listSongs.get(index));
-                            out.write("key:musichk:1");
+                            Song s = Server.listSongs.get(index);
+                            if (s.isHasKey()) {
+                                new Handle().GetDetailSongApi(s.getKey(), Server.listSongs.get(index));
+                            } else {
+                                Server.listSongs.get(index).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
+                            }
+                            out.write("key:musicE:1");
                             out.newLine();
                             out.flush();
                             obOut.writeObject(Server.listSongs.get(index));
                             Server.listSongs.get(index).ToString();
                             obOut.flush();
-                            break;
-                        case "musicnk":
-                            int index2 = Integer.parseInt(value);
-                            Song s = Server.listSongs.get(index2);
-                            Server.listSongs.get(index2).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
-                            out.write("key:musicnk:1");
-                            out.newLine();
-                            out.flush();
-                            obOut.writeObject(Server.listSongs.get(index2));
-                            Server.listSongs.get(index2).ToString();
-                            obOut.flush();
-                            System.out.println("Song");
                             break;
                     }
                 } catch (IOException ex) {
@@ -156,7 +150,7 @@ public class Worker implements Runnable {
                 input = "";
             }
         }
-        System.out.println("Closed socket for Client " + myName);
+
         try {
             in.close();
             out.close();
@@ -165,7 +159,7 @@ public class Worker implements Runnable {
         } catch (IOException ex) {
             System.out.println("Error closing connection.");
         }
-
+        System.out.println("Closed socket for Client " + myName);
     }
 
     public int FindMusic(String keySearch) {
@@ -188,8 +182,16 @@ public class Worker implements Runnable {
             System.out.println("API get list song connection error.");
             return 0;
         }
-        while (shazam.isAlive()) {
+        while (shazam.isAlive()) { //chờ thread ApiShamzam
         }
+
+        ArrayList<Song> sTemp = new ArrayList<>();
+        for (Song s : Server.listSongs) { //xóa phần tử trùng
+            if (!sTemp.contains(s) && handle.checkName(s.getName(), keySearch)) {
+                sTemp.add(s);
+            }
+        }
+        Server.listSongs = sTemp.isEmpty() ? Server.listSongs : sTemp;
         System.out.println("find song end<<");
         return 1;
     }
