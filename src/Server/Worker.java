@@ -81,7 +81,7 @@ public class Worker implements Runnable {
             //-------------------MaHoa--------------
             if (!input.equals("")) {
                 try {
-                   input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
+                    input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
                 } catch (Exception ex) {
                     System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
                 }
@@ -128,27 +128,20 @@ public class Worker implements Runnable {
                                     obOut.reset();
                             }
                             break;
-                        case "musichk":
+                        case "musicE":
                             int index = Integer.parseInt(value);
-                            new Handle().GetDetailSongApi(Server.listSongs.get(index).getKey(), Server.listSongs.get(index));
-                            out.write("key:musichk:1");
+                            Song s = Server.listSongs.get(index);
+                            if (s.isHasKey()) {
+                                new Handle().GetDetailSongApi(s.getKey(), Server.listSongs.get(index));
+                            } else {
+                                Server.listSongs.get(index).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
+                            }
+                            out.write("key:musicE:1");
                             out.newLine();
                             out.flush();
                             obOut.writeObject(Server.listSongs.get(index));
                             Server.listSongs.get(index).ToString();
                             obOut.flush();
-                            break;
-                        case "musicnk":
-                            int index2 = Integer.parseInt(value);
-                            Song s = Server.listSongs.get(index2);
-                            Server.listSongs.get(index2).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
-                            out.write("key:musicnk:1");
-                            out.newLine();
-                            out.flush();
-                            obOut.writeObject(Server.listSongs.get(index2));
-                            Server.listSongs.get(index2).ToString();
-                            obOut.flush();
-                            System.out.println("Song");
                             break;
                     }
                 } catch (IOException ex) {
