@@ -475,8 +475,8 @@ public class SongPanel extends javax.swing.JPanel {
             System.out.println(e.toString());
         }
     }//GEN-LAST:event_btnSearchMousePressed
-    
-    public void SearchSongWithNoKey(){
+
+    public void SearchSongWithNoKey() {
         try {
             System.out.println("click");
             String keyword = textInputSearch.getText();
@@ -510,18 +510,17 @@ public class SongPanel extends javax.swing.JPanel {
         }
     }
     private void btnShowYoutubeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowYoutubeActionPerformed
-        // TODO add your handling code here:
-//        YoutubeViewer.showVideoYoutube("https://youtu.be/" + song.getIDYoutube());
-//        YoutubeViewer.showVideoYoutube("https://youtu.be/UksigCzT2Uc");
+//https://sourceforge.net/p/djproject/discussion/671154/thread/e813001e/
+        if (!NativeInterface.isOpen()) {
+            NativeInterface.open();
+            new Thread(new Runnable() {
+                public void run() {
+                    NativeInterface.runEventPump();
+                }
+            }).start();
 
-        NativeInterface.open();
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                YoutubeViewerDialog view = new YoutubeViewerDialog(parent, true, "https://youtu.be/UksigCzT2Uc");
-                view.setVisible(true);
-            }
-        });
-        NativeInterface.runEventPump();
+            new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/HH0zOJVOzxs?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
+        }
         // don't forget to properly close native components
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
