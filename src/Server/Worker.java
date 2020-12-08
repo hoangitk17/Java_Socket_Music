@@ -92,7 +92,7 @@ public class Worker implements Runnable {
             if (input.equals("bye")) {
                 Server.workers.remove(this);
                 break;
-            } else if (!input.equals("")) {
+            } else if (!input.equals("") && input.contains(":")) {
                 StringTokenizer stringToken = new StringTokenizer(input, ":");
                 String key = stringToken.nextToken();
                 String keyWord = stringToken.nextToken();
@@ -120,6 +120,7 @@ public class Worker implements Runnable {
                                     out.write("key:music:1");
                                     out.newLine();
                                     out.flush();
+                                    obOut.reset();
                                     obOut.writeObject((ArrayList<Song>) Server.listSongs);
                                     for (Song s : Server.listSongs) {
                                         s.ToString();
@@ -139,7 +140,8 @@ public class Worker implements Runnable {
                             out.write("key:music:2");
                             out.newLine();
                             out.flush();
-                            obOut.writeObject((Song) s);
+                            obOut.reset();
+                            obOut.writeObject(Server.listSongs.get(index));
                             obOut.flush();
                             s.ToString();
                             break;

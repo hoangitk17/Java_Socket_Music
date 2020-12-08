@@ -207,7 +207,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="lbNameOfSong">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="B&#xe0;i h&#xe1;t: M&#xf9;a h&#xe8; xanh"/>
+                        <Property name="text" type="java.lang.String" value="B&#xe0;i h&#xe1;t:"/>
                       </Properties>
                     </Component>
                     <Container class="javax.swing.JPanel" name="jPanel5">
@@ -221,9 +221,11 @@
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                   <Component id="btnShowYoutube" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="102" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                                  <Component id="btnShowMP3" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="42" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -231,7 +233,10 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btnShowYoutube" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="btnShowYoutube" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnShowMP3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace pref="22" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -240,10 +245,18 @@
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="btnShowYoutube">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="View Youtube"/>
+                            <Property name="text" type="java.lang.String" value="Xem MV"/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnShowYoutubeActionPerformed"/>
+                          </Events>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="btnShowMP3">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Nghe mp3"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnShowMP3ActionPerformed"/>
                           </Events>
                         </Component>
                       </SubComponents>
@@ -273,7 +286,7 @@
                     </Container>
                     <Component class="javax.swing.JLabel" name="lbSinger">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Ca s&#x129;: Jack"/>
+                        <Property name="text" type="java.lang.String" value="Ca s&#x129;:"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -297,10 +310,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane2" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel9" alignment="0" min="-2" pref="664" max="-2" attributes="0"/>
-                              <Component id="jLabel10" alignment="0" min="-2" pref="308" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jLabel9" min="-2" pref="664" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="56" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -308,12 +318,11 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                          <Component id="jLabel10" min="-2" pref="28" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel9" min="-2" pref="28" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="235" max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jScrollPane2" pref="280" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -322,11 +331,6 @@
                 <Component class="javax.swing.JLabel" name="jLabel9">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Danh s&#xe1;ch b&#xe0;i h&#xe1;t g&#x1ee3;i &#xfd;"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel10">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Kh&#xf4;ng t&#xec;m th&#x1ea5;y b&#xe0;i h&#xe1;t c&#x1ea7;n t&#xec;m"/>
                   </Properties>
                 </Component>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane2">

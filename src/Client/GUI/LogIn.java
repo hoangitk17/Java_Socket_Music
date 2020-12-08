@@ -28,6 +28,7 @@ public class LogIn extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         client = new Client();
         addWindowListener(new CustomWindowAdapter(this));
+        setVisible(true);
     }
 
     /**
@@ -80,6 +81,7 @@ public class LogIn extends javax.swing.JFrame {
         btnSignIn.setForeground(new java.awt.Color(68, 142, 246));
         btnSignIn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnSignIn.setText("Sign In");
+        btnSignIn.setVerifyInputWhenFocusTarget(false);
         btnSignIn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnSignInMousePressed(evt);

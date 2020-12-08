@@ -205,7 +205,7 @@ public class Home extends javax.swing.JFrame {
         lbAbout = new javax.swing.JLabel();
         lineAbout = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel12 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         plCards = new javax.swing.JPanel();
         btnClose = new javax.swing.JLabel();
@@ -283,7 +283,7 @@ public class Home extends javax.swing.JFrame {
         plHome.add(lineHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, 4, 20));
 
         slidePanel.add(plHome);
-        plHome.setBounds(0, 120, 210, 50);
+        plHome.setBounds(0, 150, 210, 50);
 
         plSong.setBackground(new java.awt.Color(85, 85, 188));
         plSong.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -333,7 +333,7 @@ public class Home extends javax.swing.JFrame {
         plSong.add(lineSong, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, -1, -1));
 
         slidePanel.add(plSong);
-        plSong.setBounds(0, 170, 210, 50);
+        plSong.setBounds(0, 200, 210, 50);
 
         plSinger.setBackground(new java.awt.Color(85, 85, 188));
         plSinger.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -383,7 +383,7 @@ public class Home extends javax.swing.JFrame {
         plSinger.add(lineSinger, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, -1, -1));
 
         slidePanel.add(plSinger);
-        plSinger.setBounds(0, 220, 210, 50);
+        plSinger.setBounds(0, 250, 210, 50);
 
         plAccount.setBackground(new java.awt.Color(85, 85, 188));
         plAccount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -434,7 +434,7 @@ public class Home extends javax.swing.JFrame {
         plAccount.add(lineAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, -1, -1));
 
         slidePanel.add(plAccount);
-        plAccount.setBounds(0, 270, 210, 50);
+        plAccount.setBounds(0, 300, 210, 50);
 
         plAbout.setBackground(new java.awt.Color(85, 85, 188));
         plAbout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -484,15 +484,18 @@ public class Home extends javax.swing.JFrame {
         plAbout.add(lineAbout, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, -1, -1));
 
         slidePanel.add(plAbout);
-        plAbout.setBounds(0, 320, 210, 50);
-        slidePanel.add(jSeparator1);
-        jSeparator1.setBounds(20, 80, 160, 10);
+        plAbout.setBounds(0, 350, 210, 50);
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel12.setText("Sing");
-        slidePanel.add(jLabel12);
-        jLabel12.setBounds(40, 40, 50, 30);
+        jSeparator1.setToolTipText("");
+        jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSeparator1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
+        slidePanel.add(jSeparator1);
+        jSeparator1.setBounds(20, 110, 160, 10);
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/Asset 5@0.5x.png"))); // NOI18N
+        slidePanel.add(jLabel1);
+        jLabel1.setBounds(60, 20, 90, 90);
 
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/cheers-204742_1280.jpg"))); // NOI18N
         slidePanel.add(jLabel13);
@@ -710,7 +713,7 @@ public class Home extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bgPanel;
     private javax.swing.JLabel btnClose;
-    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbAbout;

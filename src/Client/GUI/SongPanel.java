@@ -49,6 +49,8 @@ public class SongPanel extends javax.swing.JPanel {
         parent = f;
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
+        lbLyric.setWrapStyleWord(true);
+        lbLyric.setLineWrap(true);
     }
 
     public SongPanel(Client client) {
@@ -60,9 +62,17 @@ public class SongPanel extends javax.swing.JPanel {
                         javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
                 )
         );
+        lbLyric.setBorder(
+                javax.swing.BorderFactory.createCompoundBorder(
+                        getBorder(),
+                        javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                )
+        );
 
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
+        lbLyric.setWrapStyleWord(true);
+        lbLyric.setLineWrap(true);
         this.client = client;
     }
 
@@ -88,12 +98,12 @@ public class SongPanel extends javax.swing.JPanel {
         lbNameOfSong = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         btnShowYoutube = new javax.swing.JButton();
+        btnShowMP3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         lbLyric = new javax.swing.JTextArea();
         lbSinger = new javax.swing.JLabel();
         plNearlySong = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         ListSong = new javax.swing.JList<Song>();
         plTopSong = new javax.swing.JPanel();
@@ -129,14 +139,21 @@ public class SongPanel extends javax.swing.JPanel {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        lbNameOfSong.setText("Bài hát: Mùa hè xanh");
+        lbNameOfSong.setText("Bài hát:");
 
         jPanel5.setBackground(new java.awt.Color(204, 204, 255));
 
-        btnShowYoutube.setText("View Youtube");
+        btnShowYoutube.setText("Xem MV");
         btnShowYoutube.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnShowYoutubeActionPerformed(evt);
+            }
+        });
+
+        btnShowMP3.setText("Nghe mp3");
+        btnShowMP3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowMP3ActionPerformed(evt);
             }
         });
 
@@ -145,15 +162,19 @@ public class SongPanel extends javax.swing.JPanel {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(88, 88, 88)
+                .addGap(18, 18, 18)
                 .addComponent(btnShowYoutube)
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addGap(33, 33, 33)
+                .addComponent(btnShowMP3)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnShowYoutube)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnShowYoutube)
+                    .addComponent(btnShowMP3))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -165,7 +186,7 @@ public class SongPanel extends javax.swing.JPanel {
         lbLyric.setDoubleBuffered(true);
         jScrollPane1.setViewportView(lbLyric);
 
-        lbSinger.setText("Ca sĩ: Jack");
+        lbSinger.setText("Ca sĩ:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -229,8 +250,6 @@ public class SongPanel extends javax.swing.JPanel {
 
         jLabel9.setText("Danh sách bài hát gợi ý");
 
-        jLabel10.setText("Không tìm thấy bài hát cần tìm");
-
         jScrollPane2.setViewportView(ListSong);
 
         javax.swing.GroupLayout plNearlySongLayout = new javax.swing.GroupLayout(plNearlySong);
@@ -239,20 +258,17 @@ public class SongPanel extends javax.swing.JPanel {
             plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(plNearlySongLayout.createSequentialGroup()
-                .addGroup(plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 56, Short.MAX_VALUE))
         );
         plNearlySongLayout.setVerticalGroup(
             plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(plNearlySongLayout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         plCards.add(plNearlySong, "nearly");
@@ -523,8 +539,13 @@ public class SongPanel extends javax.swing.JPanel {
         if (song == null) {
             new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/HH0zOJVOzxs?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
         } else {
-            new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube() + "?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
+            if(song.isHasKey()) {
+                new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+            } else {
+                new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
+            }
         }
+
         // don't forget to properly close native components
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -533,6 +554,27 @@ public class SongPanel extends javax.swing.JPanel {
             }
         }));
     }//GEN-LAST:event_btnShowYoutubeActionPerformed
+
+    private void btnShowMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowMP3ActionPerformed
+        // TODO add your handling code here:
+        if (!NativeInterface.isOpen()) {
+            NativeInterface.open();
+            new Thread(new Runnable() {
+                public void run() {
+                    NativeInterface.runEventPump();
+                }
+            }).start();
+
+        }
+        new MP3Dialog(parent, true).setVisible(true);
+        // don't forget to properly close native components
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NativeInterface.close();
+            }
+        }));
+    }//GEN-LAST:event_btnShowMP3ActionPerformed
 
     public void showSongOfSinger(Song s) {
         this.song = s;
@@ -581,9 +623,9 @@ public class SongPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<Song> ListSong;
     private javax.swing.JLabel btnSearch;
+    private javax.swing.JButton btnShowMP3;
     private javax.swing.JButton btnShowYoutube;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

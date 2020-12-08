@@ -82,6 +82,7 @@ public class SignUp extends javax.swing.JFrame {
         btnSignUp.setForeground(new java.awt.Color(68, 142, 246));
         btnSignUp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnSignUp.setText("Sign Up");
+        btnSignUp.setVerifyInputWhenFocusTarget(false);
         btnSignUp.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnSignUpMousePressed(evt);
