@@ -45,6 +45,9 @@ public class Handle {
             String nameSong = element.getElementsByTag("a").attr("title");
             String singer = element.getElementsByTag("h4").text();
             String img = element.getElementsByTag("img").attr("data-src");
+            if (img.equals("")) { //nếu bài hát không có ảnh thì sẽ lấy mặc định của NCT
+                img = "https://stc-id.nixcdn.com/v11/images/avatar_default.jpg"; //link ảnh mặc định của NCT
+            }
             Song temp = new Song(addSong, false, nameSong, singer, img);
             Worker.listSongs.add(temp);
             //Worker.listSongs.get(Worker.listSongs.size() - 1).ToString();
@@ -67,26 +70,25 @@ public class Handle {
             System.out.println("Error connection API Shazam!!!");
         }
         JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-        if (json.toString().equals("{}")) {
+        if (json.toString().equals("{}")) { //kiểm tra kết quả của API có rỗng thì thoát hàm
             System.out.println("API Shazam empty!!!");
             return;
         }
 
-        JsonArray jsonArray = json.getAsJsonObject("tracks").getAsJsonArray("hits");//json chứa array song
+        JsonArray jsonArray = json.getAsJsonObject("tracks").getAsJsonArray("hits");//lấy json chứa array song
         for (JsonElement jsonA : jsonArray) {
             JsonObject jb = jsonA.getAsJsonObject().getAsJsonObject("track");
-            JsonObject jbImg = jb.getAsJsonObject("images");
-
-            String img = null;
-            if (jbImg.isJsonObject()) {
-                System.out.println("boo>>" + jbImg.toString());
-                img = jbImg.get("background").getAsString();
+            String img = "https://stc-id.nixcdn.com/v11/images/avatar_default.jpg"; //gắn tạm ảnh mặc định
+            try {
+                img = jb.getAsJsonObject("images").get("background").getAsString();
+            } catch (Exception e) {
+                System.out.println(e);
             }
             Song temp = new Song(jb.get("key").getAsString(), true, jb.get("title").getAsString(), jb.get("subtitle").getAsString(), img);
             array.add(temp);
         }
         //boolean isFirst = true;
-        for (Song s : array) {
+        for (Song s : array) { //lọc ra những bài hát trùng tên với keySearch
             if (checkName(s.getName(), nameSearch)) {
                 listSongs.add(s);
             }
@@ -107,12 +109,13 @@ public class Handle {
         }
         JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
 
-        JsonArray jsonArray = json.getAsJsonArray("sections"); //đoạn json chứa lời và ID youtube
+        JsonArray jsonArray = json.getAsJsonArray("sections"); //lấy json chứa lyrics và ID youtube
         for (JsonElement jsonA : jsonArray) {
             JsonObject jb = jsonA.getAsJsonObject();
             switch (jb.get("type").getAsString()) {
                 case "LYRICS":
-                    song.setLyrics(jb.get("text").toString());
+                    String lyrics = jb.get("text").toString().replace("\"", "").replace(",", "");
+                    song.setLyrics(lyrics);
                     break;
                 case "VIDEO":
                     String urlYoutube = jb.getAsJsonObject("youtubeurl").getAsJsonArray("actions").get(0).getAsJsonObject().get("uri").getAsString();
