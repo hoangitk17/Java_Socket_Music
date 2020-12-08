@@ -8,7 +8,10 @@ package Client.GUI;
 import Server.Song;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Frame;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ public class SongPanel extends javax.swing.JPanel {
     private final String NEARLY_SONG = "nearly";
     private final String SONG_OF_SINGER = "songofsinger";
     private final String TOP_SONG = "topsong";
+    private final String SEARCH_PLACE_HOLDER = "Enter a song name";
     private CardLayout cardLayout;
     Client client;
     Song song = null;
@@ -40,12 +44,7 @@ public class SongPanel extends javax.swing.JPanel {
     public SongPanel(JFrame f) {
         initComponents();
         // padding-left 10 px
-        textInputSearch.setBorder(
-                javax.swing.BorderFactory.createCompoundBorder(
-                        getBorder(),
-                        javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
-                )
-        );
+        setCustomSearch();
         parent = f;
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SONG_OF_SINGER);
@@ -56,12 +55,7 @@ public class SongPanel extends javax.swing.JPanel {
     public SongPanel(Client client) {
         initComponents();
         // padding-left 10 px
-        textInputSearch.setBorder(
-                javax.swing.BorderFactory.createCompoundBorder(
-                        getBorder(),
-                        javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
-                )
-        );
+        setCustomSearch();
         lbLyric.setBorder(
                 javax.swing.BorderFactory.createCompoundBorder(
                         getBorder(),
@@ -74,6 +68,34 @@ public class SongPanel extends javax.swing.JPanel {
         lbLyric.setWrapStyleWord(true);
         lbLyric.setLineWrap(true);
         this.client = client;
+    }
+
+    public void setCustomSearch() {
+        textInputSearch.setText(SEARCH_PLACE_HOLDER);
+        textInputSearch.setForeground(Color.GRAY);
+        textInputSearch.setBorder(
+                javax.swing.BorderFactory.createCompoundBorder(
+                        getBorder(),
+                        javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
+                )
+        );
+        textInputSearch.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textInputSearch.getText().equals(SEARCH_PLACE_HOLDER)) {
+                    textInputSearch.setText("");
+                    textInputSearch.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textInputSearch.getText().isEmpty()) {
+                    textInputSearch.setForeground(Color.GRAY);
+                    textInputSearch.setText(SEARCH_PLACE_HOLDER);
+                }
+            }
+        });
     }
 
     public void setClient(Client client) {
@@ -539,7 +561,7 @@ public class SongPanel extends javax.swing.JPanel {
         if (song == null) {
             new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/HH0zOJVOzxs?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
         } else {
-            if(song.isHasKey()) {
+            if (song.isHasKey()) {
                 new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
             } else {
                 new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
