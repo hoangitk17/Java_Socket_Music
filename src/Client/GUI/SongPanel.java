@@ -588,7 +588,7 @@ public class SongPanel extends javax.swing.JPanel {
             }).start();
 
         }
-        new MP3Dialog(parent, true).setVisible(true);
+        new MP3Dialog(parent, true, song.getMp3()).setVisible(true);
         // don't forget to properly close native components
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

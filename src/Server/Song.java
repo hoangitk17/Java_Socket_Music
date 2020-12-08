@@ -26,11 +26,18 @@ public class Song implements Serializable {
     public Song() {
     }
 
-    public Song(String key, boolean hasKey, String name, String singer) {
+//    public Song(String key, boolean hasKey, String name, String singer) {
+//        this.key = key;
+//        this.hasKey = hasKey;
+//        this.name = name;
+//        this.singer = singer;
+//    }
+    public Song(String key, boolean hasKey, String name, String singer, String Image) {
         this.key = key;
         this.hasKey = hasKey;
         this.name = name;
         this.singer = singer;
+        this.Image = Image;
     }
 
     public Song(String key, boolean hasKey, String name, String singer, String lyrics, String IDYoutube) {
@@ -90,7 +97,23 @@ public class Song implements Serializable {
         this.IDYoutube = IDYoutube;
     }
 
+    public String getMp3() {
+        return mp3;
+    }
+
+    public void setMp3(String mp3) {
+        this.mp3 = mp3;
+    }
+
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String Image) {
+        this.Image = Image;
+    }
+
     public void ToString() {
-        System.out.println(this.key + " - " + this.name + " - " + this.singer + ". Id>>" + this.IDYoutube);
+        System.out.println(this.key + " - " + this.name + " - " + this.singer + ". Image>>" + this.Image +" +  mp3" + this.mp3);
     }
 }

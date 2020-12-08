@@ -56,6 +56,8 @@ public class ClientTest {
                         arr.stream().forEach((arr1) -> {
                             arr1.ToString();
                         });
+//                        Song s = (Song) obInput.readObject();
+//                        s.ToString();
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
                     }

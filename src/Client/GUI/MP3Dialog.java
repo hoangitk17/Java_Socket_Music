@@ -37,7 +37,8 @@ public class MP3Dialog extends javax.swing.JDialog {
     private JFXPanel jfxPanel;  
     private JButton swingButton;  
     private WebEngine webEngine;
-    public MP3Dialog(java.awt.Frame parent, boolean modal) {
+    private String url;
+    public MP3Dialog(java.awt.Frame parent, boolean modal, String url) {
         super(parent, modal);
         initComponents();
         jfxPanel = new JFXPanel();  
@@ -46,6 +47,7 @@ public class MP3Dialog extends javax.swing.JDialog {
         setLayout(new BorderLayout());  
         add(jfxPanel, BorderLayout.CENTER);  
         setLocationRelativeTo(null);
+        this.url = url;
     }
     
     private void createScene() {  
@@ -62,9 +64,7 @@ public class MP3Dialog extends javax.swing.JDialog {
                 Scene scene = new Scene(root,80,20);  
                 stage.setScene(scene);  
                   String htmlText2 = "<audio controls>\n"
-                + "    <source src=\"https://aredir.nixcdn.com/NhacCuaTui1004/TheThai-HuongLy-6728509.mp3\">\n"
-                + "</audio>" + "<br/>"+"<audio controls>\n"
-                + "    <source src=\"https://aredir.nixcdn.com/NhacCuaTui1004/TheThai-HuongLy-6728509.mp3\">\n"
+                + "    <source src=\""+url+"\">\n"
                 + "</audio>";
                 // Set up the embedded browser:
                 browser = new WebView();
@@ -132,7 +132,7 @@ public class MP3Dialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MP3Dialog dialog = new MP3Dialog(new javax.swing.JFrame(), true);
+                MP3Dialog dialog = new MP3Dialog(new javax.swing.JFrame(), true, "google.com");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

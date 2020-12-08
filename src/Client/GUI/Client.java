@@ -190,10 +190,10 @@ class ReceiveMessage implements Runnable {
 
     public void run() {
         try {
-            System.out.println("run receive");
+            System.out.println("run receive>>");
             while (true) {
                 String data = in.readLine();
-                System.out.print("2"); // data is always get data from stream
+                System.out.print("2>>"); // data is always get data from stream
                 if (!data.equals("")) {
                     System.out.println(data);
                     if (data.contains("key")) {
