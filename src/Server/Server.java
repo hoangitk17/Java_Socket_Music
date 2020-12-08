@@ -18,7 +18,6 @@ public class Server {
     public static int numThread = 10;
     private static ServerSocket server = null;
     public static Vector<Worker> workers = new Vector<>();
-    public static ArrayList<Song> listSongs = new ArrayList<>();
     public static ArrayList<String> listUsers = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -29,7 +28,6 @@ public class Server {
             server = new ServerSocket(port);
             System.out.println("Server binding at port " + port);
             handle.readFileLogin();
-            System.out.println("Waiting for client...");
             while (true) {
                 i++;
                 Socket socket = server.accept();

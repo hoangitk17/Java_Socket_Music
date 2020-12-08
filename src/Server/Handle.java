@@ -16,6 +16,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import Server.Server;
+import static Server.Worker.listSongs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +24,7 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.select.Elements;
@@ -37,17 +39,59 @@ public class Handle {
     }
 
     public void GetSongFromNCT(Elements eleSong, String nameSearch) {
-        for (Element element : eleSong) {
+        List<Element> listSongNCT = eleSong.subList(0, 20);
+        for (Element element : listSongNCT) {
             String addSong = element.getElementsByTag("a").attr("href");
             String nameSong = element.getElementsByTag("a").attr("title");
             String singer = element.getElementsByTag("h4").text();
-            String lyrics = GetLyricNCT(addSong);
-            if (lyrics != null) {
-                Song temp = new Song(null, false, nameSong, singer);
-                Server.listSongs.add(temp);
-            }
-            //Server.listSongs.get(Server.listSongs.size() - 1).ToString();
+            String img = element.getElementsByTag("img").attr("data-src");
+            Song temp = new Song(addSong, false, nameSong, singer, img);
+            Worker.listSongs.add(temp);
+            //Worker.listSongs.get(Worker.listSongs.size() - 1).ToString();
         }
+        System.out.println("Get Song NCT end<<");
+    }
+
+    public void GetSongFormApiShazam(String nameSearch) {
+        ArrayList<Song> array = new ArrayList<>();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
+                    .data("term", nameSearch)
+                    .data("offset", "0")
+                    .data("limit", "10")
+                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
+                    .header("x-rapidapi-key", "ce4b7a0cecmsh85ab0eed6ebe521p12543djsneb4fc4e4a4b7").ignoreContentType(true)
+                    .get();
+        } catch (IOException ex) {
+            System.out.println("Error connection API Shazam!!!");
+        }
+        JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+        if (json.toString().equals("{}")) {
+            System.out.println("API Shazam empty!!!");
+            return;
+        }
+
+        JsonArray jsonArray = json.getAsJsonObject("tracks").getAsJsonArray("hits");//json chứa array song
+        for (JsonElement jsonA : jsonArray) {
+            JsonObject jb = jsonA.getAsJsonObject().getAsJsonObject("track");
+            JsonObject jbImg = jb.getAsJsonObject("images");
+
+            String img = null;
+            if (jbImg.isJsonObject()) {
+                System.out.println("boo>>" + jbImg.toString());
+                img = jbImg.get("background").getAsString();
+            }
+            Song temp = new Song(jb.get("key").getAsString(), true, jb.get("title").getAsString(), jb.get("subtitle").getAsString(), img);
+            array.add(temp);
+        }
+        //boolean isFirst = true;
+        for (Song s : array) {
+            if (checkName(s.getName(), nameSearch)) {
+                listSongs.add(s);
+            }
+        }
+        System.out.println("Get API End<<");
     }
 
     public void GetDetailSongApi(String key, Song song) {
@@ -62,7 +106,8 @@ public class Handle {
             System.out.println("Error API Shazam!!!");
         }
         JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-        JsonArray jsonArray = json.getAsJsonArray("sections");
+
+        JsonArray jsonArray = json.getAsJsonArray("sections"); //đoạn json chứa lời và ID youtube
         for (JsonElement jsonA : jsonArray) {
             JsonObject jb = jsonA.getAsJsonObject();
             switch (jb.get("type").getAsString()) {
@@ -70,34 +115,59 @@ public class Handle {
                     song.setLyrics(jb.get("text").toString());
                     break;
                 case "VIDEO":
-                    song.setIDYoutube(jb.getAsJsonObject("youtubeurl").getAsJsonArray("actions").get(0).getAsJsonObject().get("uri").getAsString());
+                    String urlYoutube = jb.getAsJsonObject("youtubeurl").getAsJsonArray("actions").get(0).getAsJsonObject().get("uri").getAsString();
+                    song.setIDYoutube(urlYoutube.substring(17, 28));
                     break;
             }
         }
+        System.out.println("Get detail API End<<");
     }
 
-    public String GetLyricNCT(String addSong) {
+    public void GetDetailSongNCT(String addSong, Song song) {
+        Document docDetailSong = null;
         try {
-            Document docLyric = Jsoup.connect(addSong).get();
-            if (docLyric != null) {
-                Element eleLyrics = docLyric.getElementById("divLyric");
-                String lyrics = eleLyrics.html().replace("<br>", "\n");
-                System.out.println("Get lyrics succes.");
-                return lyrics;
-            }
+            docDetailSong = Jsoup.connect(addSong).get();
         } catch (IOException ex) {
             Logger.getLogger(Handle.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Can't find the lyrics.");
-        return null;
+        if (docDetailSong != null) {
+            Element eleLyrics = docDetailSong.getElementById("divLyric");
+            song.setLyrics(GetLyricNCT(eleLyrics));
+            int startkey = docDetailSong.body().html().indexOf("key1=") + 5;
+            int startKeySong = docDetailSong.body().html().indexOf("key: '") + 6;
+            if (startkey != 4 && startKeySong != 4) {
+                String key = docDetailSong.body().html().substring(startkey, startkey + 32);
+                String keySong = docDetailSong.body().html().substring(startKeySong, startKeySong + 12);
+                song.setMp3(GetUrlMP3(key, keySong));
+            }
+        }
+        song.setIDYoutube(GetIdYoutubeNCT(song.getName() + " " + song.getSinger()));
+        System.out.println("Get detail NCT End<<");
     }
 
-//    public String deAccent(String StrToLower) {
-//        String nfdNormalizedString = Normalizer.normalize(StrToLower, Normalizer.Form.NFD);
-//        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-//        String result = pattern.matcher(nfdNormalizedString).replaceAll("").replace("đ", "d");
-//        return result.replaceAll("\\s\\s+", " ").trim();
-//    }
+    public String GetLyricNCT(Element eleLyrics) {
+        String lyrics = eleLyrics.html().replace("<br>", "\n");
+        System.out.println("Get lyrics succes.");
+        return lyrics;
+    }
+
+    public String GetUrlMP3(String key, String keySong) {
+        try {
+            Document docUrl = Jsoup.connect("https://www.nhaccuatui.com/flash/xml")
+                    .data("key1", key)
+                    .data("html5", "true")
+                    .data("listKey", keySong)
+                    .get();
+            String Location = docUrl.getElementsByTag("location").first().html();
+            String urlFile = Location.substring(Location.indexOf("https"), Location.length() - 3);
+            System.out.println(urlFile);
+            return urlFile;
+        } catch (IOException ex) {
+            System.out.println("API get link file connection error.");
+            return null;
+        }
+    }
+
     public String GetIdYoutubeNCT(String nameMusic) {
         try {
             Document doc = Jsoup.connect("https://www.youtube.com/results")

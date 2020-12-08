@@ -36,6 +36,7 @@ public class Worker implements Runnable {
     BufferedReader in;
     BufferedWriter out;
     ObjectOutputStream obOut;
+    public static ArrayList<Song> listSongs = new ArrayList<>();
 
     public Worker(Socket s, String name) throws IOException {
         this.socket = s;
@@ -63,13 +64,14 @@ public class Worker implements Runnable {
         System.out.println("Server nhận key: " + RSA[tt] + " from " + socket.toString() + " #Client " + myName);
         try {
             keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
-            System.out.println("key nhan dc tu client:" + keyAES);
-            String mhaes = MaHoaAES.maHoaAES("test mahoa", keyAES[tt].getBytes());
-            System.out.println("mahoa" + mhaes);
-            System.out.println("giai ma" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
+            System.out.println("Key nhận được từ client: " + keyAES);
+            String mhaes = MaHoaAES.maHoaAES("test mã hóa>>", keyAES[tt].getBytes());
+            System.out.println("mã hóa>>" + mhaes);
+            System.out.println("giải mã>>" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
         } catch (Exception ex) {
-            System.err.println("Key loi ");
+            System.err.println("Key loi!!");
         }
+        System.out.println("\nWaiting for client...");
 
         while (true) {
             try {
@@ -83,10 +85,10 @@ public class Worker implements Runnable {
                 try {
                     input = MaHoaAES.giaiMaAES(input, keyAES[tt].getBytes());
                 } catch (Exception ex) {
-                    System.out.println("Loi giai ma " + " from " + socket.toString() + " #Client " + myName);;
+                    System.out.println("Error decode" + " from " + socket.toString() + " #Client " + myName);;
                 }
 
-                System.out.println("Server received: " + input + " from " + " #Client " + myName);
+                System.out.println("\nServer received: " + input + " from " + " #Client " + myName);
             }
 
             if (input.equals("bye")) {
@@ -120,8 +122,8 @@ public class Worker implements Runnable {
                                     out.write("key:music:1");
                                     out.newLine();
                                     out.flush();
-                                    obOut.writeObject((ArrayList<Song>) Server.listSongs);
-                                    for (Song s : Server.listSongs) {
+                                    obOut.writeObject((ArrayList<Song>) listSongs);
+                                    for (Song s : listSongs) {
                                         s.ToString();
                                     }
                                     obOut.flush();
@@ -130,24 +132,25 @@ public class Worker implements Runnable {
                             break;
                         case "musicE":
                             int index = Integer.parseInt(value);
-                            Song s = Server.listSongs.get(index);
+                            Song s = listSongs.get(index);
                             if (s.isHasKey()) {
-                                new Handle().GetDetailSongApi(s.getKey(), Server.listSongs.get(index));
+                                handle.GetDetailSongApi(s.getKey(), listSongs.get(index));
                             } else {
-                                Server.listSongs.get(index).setIDYoutube(new Handle().GetIdYoutubeNCT(s.getName() + " " + s.getSinger()));
+                                handle.GetDetailSongNCT(s.getKey(), s);
                             }
                             out.write("key:musicE:1");
                             out.newLine();
                             out.flush();
-                            obOut.writeObject(Server.listSongs.get(index));
-                            Server.listSongs.get(index).ToString();
+                            obOut.writeObject((Song) listSongs.get(index));
+                            listSongs.get(index).ToString();
+                            obOut.reset();
                             obOut.flush();
                             break;
                     }
                 } catch (IOException ex) {
                     System.out.println("Error write object.");
                 }
-                input = "";
+
             }
         }
 
@@ -164,9 +167,8 @@ public class Worker implements Runnable {
 
     public int FindMusic(String keySearch) {
         Handle handle = new Handle();
-        Server.listSongs.clear();
-        GetSongFormApiShazam shazam = new GetSongFormApiShazam(keySearch);
-        shazam.start();
+        listSongs.clear();
+        handle.GetSongFormApiShazam(keySearch);
 
         try {
             Document docSearch = Jsoup.connect("https://www.nhaccuatui.com/tim-kiem/bai-hat")
@@ -176,28 +178,29 @@ public class Worker implements Runnable {
                     .data("s", "default")
                     .get();
             Element frameSearch = docSearch.getElementsByClass("sn_search_returns_frame").first();
-            Elements eleSong = frameSearch.getElementsByClass("sn_search_single_song");
-            handle.GetSongFromNCT(eleSong, keySearch);
+            if (frameSearch.hasText()) {
+                Elements eleSong = frameSearch.getElementsByClass("sn_search_single_song");
+                handle.GetSongFromNCT(eleSong, keySearch);
+            } else {
+                System.out.println("Không tìm thấy bài hát nào!!!");
+            }
         } catch (IOException ex) {
             System.out.println("API get list song connection error.");
             return 0;
         }
-        while (shazam.isAlive()) { //chờ thread ApiShamzam
-        }
 
         ArrayList<Song> sTemp = new ArrayList<>();
-        for (Song s : Server.listSongs) { //xóa phần tử trùng
+        for (Song s : listSongs) { //xóa phần tử trùng
             if (!sTemp.contains(s) && handle.checkName(s.getName(), keySearch)) {
                 sTemp.add(s);
             }
         }
-        Server.listSongs = sTemp.isEmpty() ? Server.listSongs : sTemp;
+        listSongs = sTemp.isEmpty() ? listSongs : sTemp;
         System.out.println("find song end<<");
         return 1;
     }
 
     public void checkLogin(String message) {
-        //Handle handle = new Handle();
         StringTokenizer str = new StringTokenizer(message, " ");
         String user = str.nextToken();
         String password = str.nextToken();

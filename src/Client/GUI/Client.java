@@ -47,11 +47,9 @@ class SendMessage implements Runnable {
             while (true) {
                 System.out.print("");// flag is always update
                 if (flag) {
-                    System.out.print("Message send" + message);
-                  
-                    
-                    //-------------------MaHoa----------
+                    System.out.println("Message send>>" + message);
 
+                    //-------------------MaHoa----------
                     try {
                         message = MaHoaAES.maHoaAES(message, chuoi.getBytes());
                     } catch (Exception ex) {
@@ -150,7 +148,7 @@ class ReceiveMessage implements Runnable {
                 Client.listsSongs = (ArrayList<Song>) (resultArray);
                 System.out.println("\nSize>>" + Client.listsSongs.size());
                 Client.songFlag = "nearly";
-            }  else {
+            } else {
                 Client.songFlag = "nosong";
                 // xu ly fail
                 String infoError = stringToken.nextToken();
@@ -180,10 +178,10 @@ class ReceiveMessage implements Runnable {
 
     public void run() {
         try {
-            System.out.println("run receive");
+            System.out.println("run receive>>");
             while (true) {
                 String data = in.readLine();
-                System.out.print("2"); // data is always get data from stream
+                System.out.print("2>>"); // data is always get data from stream
                 if (!data.equals("")) {
                     System.out.println(data);
                     if (data.length() >= 3 && data.substring(0, 3).toLowerCase().equals("key")) {
