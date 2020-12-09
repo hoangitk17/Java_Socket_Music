@@ -482,6 +482,7 @@ public class SongPanel extends javax.swing.JPanel {
             client.send.message = "key:music:" + keyword;
             client.send.flag = true;
             String message;
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_LOGIN);
             while (true) {
                 message = new String(Client.songFlag);
                 if (!message.equals("")) {
@@ -521,6 +522,7 @@ public class SongPanel extends javax.swing.JPanel {
             client.send.message = "key:musicE:" + index;
             client.send.flag = true;
             String message;
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_LOGIN);
             while (true) {
                 message = new String(Client.songFlag);
                 if (!message.equals("")) {
@@ -549,53 +551,70 @@ public class SongPanel extends javax.swing.JPanel {
     }
     private void btnShowYoutubeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowYoutubeActionPerformed
 //https://sourceforge.net/p/djproject/discussion/671154/thread/e813001e/
-        if (!NativeInterface.isOpen()) {
-            NativeInterface.open();
-            new Thread(new Runnable() {
-                public void run() {
-                    NativeInterface.runEventPump();
-                }
-            }).start();
+        try {
+            if (!NativeInterface.isOpen()) {
+                NativeInterface.open();
+                new Thread(new Runnable() {
+                    public void run() {
+                        NativeInterface.runEventPump();
+                    }
+                }).start();
 
-        }
-        if (song == null) {
-            new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/HH0zOJVOzxs?rel=0&amp;autoplay=1;fs=0;autohide=0;hd=0").setVisible(true);
-        } else {
-            if (song.isHasKey()) {
-                new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+            }
+            if (song == null) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
             } else {
-                new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
+                if (song.getIDYoutube() != null) {
+                    if (song.isHasKey()) {
+                        new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+                    } else {
+                        new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bài hát không có video");
+                }
             }
-        }
 
-        // don't forget to properly close native components
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NativeInterface.close();
-            }
-        }));
+            // don't forget to properly close native components
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    NativeInterface.close();
+                }
+            }));
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_btnShowYoutubeActionPerformed
 
     private void btnShowMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowMP3ActionPerformed
         // TODO add your handling code here:
-        if (!NativeInterface.isOpen()) {
-            NativeInterface.open();
-            new Thread(new Runnable() {
-                public void run() {
-                    NativeInterface.runEventPump();
+        try {
+            if (!NativeInterface.isOpen()) {
+                NativeInterface.open();
+                new Thread(new Runnable() {
+                    public void run() {
+                        NativeInterface.runEventPump();
+                    }
+                }).start();
+
+            }
+            if (song == null) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
+            } else {
+                if(song.getMp3() != null) {
+                    new MP3Dialog(parent, true, song.getMp3()).setVisible(true);
                 }
-            }).start();
+            }        
+            // don't forget to properly close native components
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    NativeInterface.close();
+                }
+            }));
+        } catch (Exception e) {
 
         }
-        new MP3Dialog(parent, true, song.getMp3()).setVisible(true);
-        // don't forget to properly close native components
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                NativeInterface.close();
-            }
-        }));
     }//GEN-LAST:event_btnShowMP3ActionPerformed
 
     public void showSongOfSinger(Song s) {

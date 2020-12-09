@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import java.util.concurrent.Future;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -160,8 +161,14 @@ public class Worker implements Runnable {
             out.close();
             obOut.close();
             socket.close();
+            Server.workers.remove(this);
+            Future future = Server.executor.submit(this);
+            future.cancel(true);
         } catch (IOException ex) {
             System.out.println("Error closing connection.");
+            Server.workers.remove(this);
+            Future future = Server.executor.submit(this);
+            future.cancel(true);
         }
         System.out.println("Closed socket for Client " + myName);
     }

@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author Nguyen Van Hoang
@@ -221,47 +222,36 @@ public class LogIn extends javax.swing.JFrame {
             }
             client.send.message = "key:login:" + userName + " " + password;
             client.send.flag = true;
-//            System.out.println("Trước dialog");
-//            LoadingDialog load = new LoadingDialog(this, true);
-//            System.out.println("Qua dialog");
+            LoadingDialog load = new LoadingDialog(this, true, LoadingDialog.FLAG_LOGIN);
             String message;
-            int i = 0;
-            while (true) {
-                System.out.print("");
-                message = new String(Client.userFlag);
-                if (!message.equals("")) {
-                    Client.userFlag = "";
-                    if (message.equals("success")) {
-                        Home home = new Home(client);
-                        home.setVisible(true);
-                        home.pack();
-                        home.setLocationRelativeTo(null);
-//                        load.Close();
-                        this.dispose();
-                        System.out.println("login ok");
-                        break;
-
-                    }
-                    if (message.equals("fail")) {
-                        System.out.println("\nlogin fail - to fail");
-
-                        JOptionPane.showMessageDialog(this, "User or Pass Wrong");
-                        break;
-                    }
-
+            message = new String(Client.userFlag);
+            if (!message.equals("")) {
+                Client.userFlag = "";
+                if (message.equals("success")) {
+                    Home home = new Home(client);
+                    home.setVisible(true);
+                    home.pack();
+                    home.setLocationRelativeTo(null);
+                    this.dispose();
+                    System.out.println("login ok");
                 }
-                i++;
+                if (message.equals("fail")) {
+                    System.out.println("\nlogin fail - to fail");
+                    JOptionPane.showMessageDialog(this, "User or Pass Wrong");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Connection error. Try Again");
             }
-            System.out.println("end login");
-        } catch (Exception e) {
+                System.out.println("end login");
+            }catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
     }//GEN-LAST:event_btnSignInMousePressed
 
     /**
-     * @param args the command line arguments
-     */
+         * @param args the command line arguments
+         */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -289,7 +279,7 @@ public class LogIn extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {       
+            public void run() {
                 new LogIn().setVisible(true);
             }
         });

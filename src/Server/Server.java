@@ -19,11 +19,11 @@ public class Server {
     private static ServerSocket server = null;
     public static Vector<Worker> workers = new Vector<>();
     public static ArrayList<String> listUsers = new ArrayList<>();
-
+    public static ExecutorService executor = null;
     public static void main(String[] args) throws IOException {
         int i = 0;
         Handle handle = new Handle();
-        ExecutorService executor = Executors.newFixedThreadPool(numThread);
+       executor = Executors.newFixedThreadPool(numThread);
         try {
             server = new ServerSocket(port);
             System.out.println("Server binding at port " + port);

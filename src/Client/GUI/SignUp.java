@@ -7,7 +7,10 @@ package Client.GUI;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -21,15 +24,18 @@ public class SignUp extends javax.swing.JFrame {
      * Creates new form LogIN
      */
     public Client client;
+
     public SignUp() {
         initComponents();
         this.setLocationRelativeTo(null);
+        addWindowListener(new CustomWindowAdapter(this));
     }
-    
+
     public SignUp(Client client) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.client = client;
+        addWindowListener(new CustomWindowAdapter(this));
     }
 
     /**
@@ -194,6 +200,28 @@ public class SignUp extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtConfirmPasswordActionPerformed
 
+    class CustomWindowAdapter extends WindowAdapter {
+
+        JFrame window = null;
+
+        CustomWindowAdapter(JFrame window) {
+            this.window = window;
+        }
+
+        // implement windowClosing method
+        public void windowClosing(WindowEvent e) {
+            try {
+                // exit the application when window's close button is clicked
+                client.send.message = "bye";
+                client.send.flag = true;
+                JOptionPane.showMessageDialog(this.window, "Close window");
+                System.exit(0);
+            }catch(HeadlessException ex) {
+                System.exit(0);
+            }
+        }
+    }
+
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
         LogIn logInForm = new LogIn();
@@ -221,7 +249,7 @@ public class SignUp extends javax.swing.JFrame {
         }
         if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
-            return isValid; 
+            return isValid;
         }
         if (user.contains(" ")) {
             strBuilder.append("Username không được chứa khoảng trắng");
@@ -233,7 +261,7 @@ public class SignUp extends javax.swing.JFrame {
         }
         if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
-            return isValid; 
+            return isValid;
         }
         if (!pass.equals(passConfirm)) {
             strBuilder.append("\nConfirm Password không khớp với Password");
@@ -241,11 +269,11 @@ public class SignUp extends javax.swing.JFrame {
         }
         if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
-            return isValid; 
+            return isValid;
         }
         return isValid;
     }
-    
+
     private void btnSignUpMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignUpMousePressed
         // TODO add your handling code here:
         try {
@@ -253,7 +281,7 @@ public class SignUp extends javax.swing.JFrame {
             String userName = txtUserName.getText();
             String password = txtPassword.getText();
             String passwordConfirm = txtConfirmPassword.getText();
-            if(!isValidData(userName, password, passwordConfirm)) {
+            if (!isValidData(userName, password, passwordConfirm)) {
                 return;
             }
             Client.message = "";
@@ -265,14 +293,14 @@ public class SignUp extends javax.swing.JFrame {
                 message = new String(Client.userFlag);
                 if (!message.equals("")) {
                     Client.userFlag = "";
-                    if (message.equals("success")) {                
-                        JOptionPane.showMessageDialog(this, "Sign up Success");  
+                    if (message.equals("success")) {
+                        JOptionPane.showMessageDialog(this, "Sign up Success");
                         break;
 
                     }
                     if (message.equals("fail")) {
                         System.out.println("login fail");
-                        JOptionPane.showMessageDialog(this, "Sign up Fail");  
+                        JOptionPane.showMessageDialog(this, "Sign up Fail");
                         break;
                     }
 

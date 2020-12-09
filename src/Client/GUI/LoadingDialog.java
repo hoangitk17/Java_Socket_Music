@@ -6,6 +6,15 @@
 package Client.GUI;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 /**
  *
@@ -16,25 +25,58 @@ public class LoadingDialog extends javax.swing.JDialog {
     /**
      * Creates new form LoadingDialog
      */
-    public LoadingDialog(java.awt.Frame parent, boolean modal) {
+    JDialog itSefl = this;
+    public static final String FLAG_SONG = "SONG";
+    public static final String FLAG_SINGER = "SINGER";
+    public static final String FLAG_LOGIN = "LOGIN";
+    private String flag;
+
+    public LoadingDialog(java.awt.Frame parent, boolean modal, String flag) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
         this.setBounds(parent.getBounds());
         this.setBackground(new Color(0, 0, 0, (float) 0.3));
         System.out.println("trước wait data");
+        this.flag = flag;
+        MyWorker worker = new MyWorker();
+        // Get notification back from the worker...
+        worker.addPropertyChangeListener(new PropertyChangeListener() {
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                WaitData();
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+
+                MyWorker worker = (MyWorker) evt.getSource();
+                // Progress has been updated
+                if (evt.getPropertyName().equalsIgnoreCase("progress")) {
+
+                    // The state of the worker has changed...
+                } else if (evt.getPropertyName().equalsIgnoreCase("state")) {
+
+                    if (worker.getState().equals(SwingWorker.StateValue.DONE)) {
+
+                        itSefl.dispose();
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        worker.execute();
+        Timer timer = new Timer(10000, new ActionListener() { // 10 sec
+            public void actionPerformed(ActionEvent e) {
+                itSefl.setVisible(false);
+                itSefl.dispose();
             }
         });
+        timer.start();
+        this.validate();
         this.setVisible(true);
-    
-        
-        
-    }
 
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,7 +94,7 @@ public class LoadingDialog extends javax.swing.JDialog {
 
         lbLoading.setBackground(new java.awt.Color(204, 204, 204));
         lbLoading.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbLoading.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/loading.gif"))); // NOI18N
+        lbLoading.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/loading_100px.gif"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -62,31 +104,64 @@ public class LoadingDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(132, 132, 132)
-                .addComponent(lbLoading, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(152, Short.MAX_VALUE))
+            .addComponent(lbLoading, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    public void WaitData() {
-        int i = 0;
-        while (true) {
-            System.out.println(i);
-            String message = new String(Client.message);
-            if (!message.equals("")) {
-                break;
 
+    public void WaitDataLogin() {
+        try {
+            while (true) {
+                System.out.print("");
+                String message = new String(Client.userFlag);
+                if (!message.equals("")) {
+                    break;
+
+                }
             }
-            i++;
+        } catch (Exception e) {
+
         }
-//        Close();
     }
 
-    public void Close() {
-        this.dispose();
+    public void WaitDataSearchSong() {
+        try {
+            while (true) {
+                System.out.print("");
+                String message = new String(Client.songFlag);
+                if (!message.equals("")) {
+                    break;
+
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    protected class MyWorker extends SwingWorker<Object, Object> {
+
+        @Override
+        protected Object doInBackground() throws Exception {
+
+            switch (flag) {
+                case FLAG_LOGIN:
+                    WaitDataLogin();
+                    break;
+                case FLAG_SONG:
+                    WaitDataSearchSong();
+                    break;
+
+                default:
+                    System.out.println("Default");
+            }
+            setProgress(99);
+
+            return null;
+
+        }
+
     }
 
     /**
@@ -119,7 +194,7 @@ public class LoadingDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                LoadingDialog dialog = new LoadingDialog(new javax.swing.JFrame(), true);
+                LoadingDialog dialog = new LoadingDialog(new javax.swing.JFrame(), true, "");
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

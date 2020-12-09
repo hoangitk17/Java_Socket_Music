@@ -10,9 +10,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -20,7 +23,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 /**
@@ -63,6 +68,8 @@ public class MP3Dialog extends javax.swing.JDialog {
                 Group root = new Group();  
                 Scene scene = new Scene(root,80,20);  
                 stage.setScene(scene);  
+                stage.centerOnScreen();
+                
                   String htmlText2 = "<audio controls>\n"
                 + "    <source src=\""+url+"\">\n"
                 + "</audio>";
@@ -72,7 +79,13 @@ public class MP3Dialog extends javax.swing.JDialog {
                 
                 ObservableList<Node> children = root.getChildren();
                 children.add(browser);                     
-                 
+                 stage.setOnCloseRequest(new EventHandler<javafx.stage.WindowEvent>() {
+                    @Override
+                    public void handle(javafx.stage.WindowEvent t) {
+                        browser.getEngine().load(null);
+                    }
+                }
+                );
                 jfxPanel.setScene(scene);  
             }  
         });  

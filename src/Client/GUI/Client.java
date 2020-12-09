@@ -75,8 +75,16 @@ class SendMessage implements Runnable {
             out.close();
             socket.close();
             //shutdown 2 threads send and receive at Client
-            Client.executor.shutdown();
+            Client.executor.shutdownNow();
         } catch (IOException e) {
+            try {
+                out.close();
+                socket.close();
+                //shutdown 2 threads send and receive at Client
+                Client.executor.shutdownNow();
+            } catch (IOException ex) {
+                Logger.getLogger(SendMessage.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -93,7 +101,7 @@ class ReceiveMessage implements Runnable {
         this.in = i;
         this.obInput = obInput;
     }
-
+    
     public void HandleLogin(String res) {
         try {
             StringTokenizer stringToken = new StringTokenizer(res, ":");
@@ -146,13 +154,14 @@ class ReceiveMessage implements Runnable {
             String status = stringToken.nextToken();
             if (status.equals("1")) {
                 // xu ly success
+                System.out.println("Song key 1");
                 Object resultArray = obInput.readObject();
                 Client.listsSongs = (ArrayList<Song>) (resultArray);
                 System.out.println("\nSize>>" + Client.listsSongs.size());
                 Client.songFlag = "nearly";
             } else if (status.equals("2")) {
                 // xu ly success
-                System.out.println("Server response 2");
+                System.out.println("Song key 2");
                 Client.song = (Song) (obInput.readObject());
                 Client.songFlag = "exactly";
                 Client.song.ToString();
@@ -193,8 +202,8 @@ class ReceiveMessage implements Runnable {
             System.out.println("run receive>>");
             while (true) {
                 String data = in.readLine();
-                System.out.print("2>>"); // data is always get data from stream
-                if (!data.equals("")) {
+                System.out.print(""); // data is always get data from stream
+                if (data != null && !data.equals("")) {
                     System.out.println(data);
                     if (data.contains("key")) {
                         StringTokenizer stringToken = new StringTokenizer(data, ":");
@@ -208,7 +217,7 @@ class ReceiveMessage implements Runnable {
                                 break;
                             case "signup":
                                 System.out.println("Xử lý sign up");
-                                HandleLogin(data);
+                                HandleSignUp(data);
                                 // xu ly sign up
                                 break;
                             case "music":
@@ -246,9 +255,9 @@ public class Client {
     public static String songFlag = "";
     private static boolean hasData = false;
     public static String message = "";
-    private static BufferedWriter out;
-    private static BufferedReader in;
-    private static ObjectInputStream obInput;
+    private BufferedWriter out;
+    private BufferedReader in;
+    private ObjectInputStream obInput;
     public static ExecutorService executor;
     public SendMessage send;
     public ReceiveMessage recv;
