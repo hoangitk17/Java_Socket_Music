@@ -9,18 +9,19 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import Server.Server;
 import static Server.Worker.listSongs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -193,11 +194,25 @@ public class Handle {
                 Server.listUsers.add(text);
             }
             br.close();
-            System.out.println("Read file Login succes.>>");
+            System.out.println("Read file Login>> succes.");
         } catch (FileNotFoundException ex) {
-            System.out.println("Read file Login fails.>>");
+            System.out.println("Read file Login>> fails.");
         } catch (IOException ex) {
-            System.out.println("Read file Login fails.>>");
+            System.out.println("Read file Login>> fails.");
+        }
+    }
+
+    public void writeFileLogin() {
+        try {
+            FileOutputStream fo = new FileOutputStream("user.txt");
+            PrintWriter pw = new PrintWriter(fo);
+            for (String user : Server.listUsers) {
+                pw.println(user);
+            }
+            pw.close();
+            System.out.println("Write file Login>> succes.");
+        } catch (IOException ex) {
+            System.out.println("Write file Login>> fails.");
         }
     }
 

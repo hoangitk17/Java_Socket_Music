@@ -181,10 +181,9 @@ class ReceiveMessage implements Runnable {
             System.out.println("run receive>>");
             while (true) {
                 String data = in.readLine();
-                System.out.print("2>>"); // data is always get data from stream
+                System.out.print("-------------------data: " + data); // data is always get data from stream
                 if (!data.equals("")) {
-                    System.out.println(data);
-                    if (data.length() >= 3 && data.substring(0, 3).toLowerCase().equals("key")) {
+                    if (data.length() >= 3 && data.substring(0, 4).toLowerCase().contains("key")) {
                         StringTokenizer stringToken = new StringTokenizer(data, ":");
                         String key = stringToken.nextToken();
                         String keyWord = stringToken.nextToken();
@@ -211,6 +210,11 @@ class ReceiveMessage implements Runnable {
                                 System.out.println("Default");
                         }
 
+                    } else {
+                        StringTokenizer stringToken = new StringTokenizer(data, ":");
+                        String key = stringToken.nextToken();
+                        String keyWord = stringToken.nextToken();
+                        System.out.println(key + ">>" + keyWord);
                     }
                     System.out.println("\nClient receive data: " + data);
                     data = "";

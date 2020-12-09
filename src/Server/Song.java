@@ -116,4 +116,8 @@ public class Song implements Serializable {
     public void ToString() {
         System.out.println(this.key + " - " + this.name + " - " + this.singer + ". Image>>" + this.Image);
     }
+
+    public void ToStringExactly() {
+        System.out.println(this.name + " - " + this.singer + ". IDYou>>" + this.IDYoutube + ". Mp3>>" + this.mp3);
+    }
 }
