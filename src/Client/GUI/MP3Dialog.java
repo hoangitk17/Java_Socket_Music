@@ -52,9 +52,26 @@ public class MP3Dialog extends javax.swing.JDialog {
         setLayout(new BorderLayout());  
         add(jfxPanel, BorderLayout.CENTER);  
         setLocationRelativeTo(null);
+        addWindowListener(new CustomWindowAdapter(this));
+        
         this.url = url;
     }
-    
+    class CustomWindowAdapter extends WindowAdapter {
+
+        JDialog window = null;
+
+        CustomWindowAdapter(JDialog window) {
+            this.window = window;
+        }
+
+        // implement windowClosing method
+        public void windowClosing(WindowEvent e) {
+            // exit the application when window's close button is clicked
+            PlatformImpl.isImplicitExit();
+            window.dispose();
+
+        }
+    }
     private void createScene() {  
         PlatformImpl.startup(new Runnable() {  
             @Override
