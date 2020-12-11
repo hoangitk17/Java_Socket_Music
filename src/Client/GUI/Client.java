@@ -162,8 +162,7 @@ class ReceiveMessage implements Runnable {
             } else if (status.equals("2")) {
                 // xu ly success
                 System.out.println("Song key 2");
-                Client.song = (Song) (obInput.readObject());
-                Client.songFlag = "exactly";
+                Client.song = (Song) (obInput.readObject());              
                 Client.song.ToString();
             } else {
                 Client.songFlag = "nosong";
@@ -232,8 +231,13 @@ class ReceiveMessage implements Runnable {
                                 System.out.println("Default");
                         }
 
+                    } else {
+//                        StringTokenizer stringToken = new StringTokenizer(data, ":");
+//                        String key = stringToken.nextToken();
+//                        String keyWord = stringToken.nextToken();
+//                        System.out.println(key + ">>" + keyWord);
                     }
-                    System.out.println("\nClient receive data: " + data);
+//                    System.out.println("\nClient receive data: " + data);
                     data = "";
                 }
             }

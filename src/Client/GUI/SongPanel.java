@@ -482,7 +482,8 @@ public class SongPanel extends javax.swing.JPanel {
             client.send.message = "key:music:" + keyword;
             client.send.flag = true;
             String message;
-            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_LOGIN);
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_SONG);
+            System.out.println("finish loading");
             while (true) {
                 message = new String(Client.songFlag);
                 if (!message.equals("")) {
@@ -522,7 +523,7 @@ public class SongPanel extends javax.swing.JPanel {
             client.send.message = "key:musicE:" + index;
             client.send.flag = true;
             String message;
-            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_LOGIN);
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_SONG);
             while (true) {
                 message = new String(Client.songFlag);
                 if (!message.equals("")) {
@@ -618,6 +619,7 @@ public class SongPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnShowMP3ActionPerformed
 
     public void showSongOfSinger(Song s) {
+        System.out.println("Show song of singer");
         this.song = s;
         cardLayout.show(plCards, SONG_OF_SINGER);
         lbNameOfSong.setText("Bài hát : " + song.getName());
@@ -627,6 +629,7 @@ public class SongPanel extends javax.swing.JPanel {
     }
 
     public void showSongNearCorrect(ArrayList<Song> listsSongs) {
+        System.out.println("Show song near correct");
         DefaultListModel<Song> listModel = new DefaultListModel<>();
         for (Song song : listsSongs) {
             listModel.addElement(song);

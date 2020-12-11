@@ -111,6 +111,9 @@ public class Worker implements Runnable {
                         case "signup":
                             checkSignUp(value);
                             break;
+                        case "password":
+                            setPassword(value);
+                            break;
                         case "music":
                             int result = FindMusic(value);
                             switch (result) {
@@ -129,10 +132,12 @@ public class Worker implements Runnable {
                                         s.ToString();
                                     }
                                     obOut.flush();
+                                    
+
                             }
+                            System.out.println("Send Music>> succes.");
                             break;
                         case "musicE":
-                            System.out.println("Music exact");
                             int index = Integer.parseInt(value);
                             Song s = listSongs.get(index);
                             if (s.isHasKey()) {
@@ -144,17 +149,21 @@ public class Worker implements Runnable {
                             out.newLine();
                             out.flush();
                             obOut.reset();
-                            obOut.writeObject(listSongs.get(index));
+                            obOut.writeObject((Song) listSongs.get(index));
+                            listSongs.get(index).ToStringExactly();
+                            
                             obOut.flush();
-                            s.ToString();
+                            System.out.println("Send Music Exactly>> succes.");
                             break;
                     }
                 } catch (IOException ex) {
                     System.out.println("Error write object.");
                 }
-
+            } else {
+                System.out.println("server nhận chuỗi rỗng!!!");
             }
         }
+        System.out.println("Server is waiting for request.....");
 
         try {
             in.close();
@@ -253,13 +262,13 @@ public class Worker implements Runnable {
             StringTokenizer st = new StringTokenizer(string, " ");
             String u = st.nextToken();
             String pass = st.nextToken();
-            if (user.equals(u)) {
+            if (user.equals(u)) { //kiểm tra tài khoản đã tồn tại
                 result = "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
                 System.out.println("FAIL");
                 break;
             }
         }
-        if (result == null) {
+        if (result == null) { //nếu chưa có tài khoản nào thì write vào file
             try {
                 BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
                 bf.write("\n" + user + " " + password);
@@ -282,4 +291,39 @@ public class Worker implements Runnable {
         }
     }
 
+    public void setPassword(String msg) {
+        Handle handle = new Handle();
+        StringTokenizer value = new StringTokenizer(msg, " ");
+        String userName = value.nextToken();
+        String passNew = value.nextToken();
+        passNew = handle.md5(passNew);
+        String result = null;
+
+        for (int i = 0; i < Server.listUsers.size(); i++) {
+            StringTokenizer valueStr = new StringTokenizer(Server.listUsers.get(i), " ");
+            String user = valueStr.nextToken();
+            String pass = valueStr.nextToken();
+            if (userName.equals(user)) {
+                if (!passNew.equals(pass)) {//nếu giống pass cũ thì bỏ qua ghi file
+                    Server.listUsers.set(i, userName + " " + passNew);
+                    handle.writeFileLogin();
+                }
+                result = "key:password:1";
+                System.out.println("Set password>> succes.");
+                break;
+            }
+        }
+        if (result == null) {
+            result = "key:password:0:User " + userName + " không tồn tại.";
+            System.out.println("Set password>> fails!!!");
+        }
+
+        try {
+            out.write(result);
+            out.newLine();
+            out.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
