@@ -103,7 +103,15 @@ public class Worker implements Runnable {
                 try {
                     switch (keyWord) {
                         case "singer":
-//
+                            Singer singer = new Singer(value);
+                            System.out.println(singer.getName());
+                            out.write("key:singer:1");
+                            out.newLine();
+                            out.flush();
+                            obOut.reset();
+                            obOut.writeObject((Singer) singer);
+                            obOut.flush();
+                            System.out.println("Send siger success");                           
                             break;
                         case "login":
                             checkLogin(value);
@@ -158,6 +166,7 @@ public class Worker implements Runnable {
                     }
                 } catch (IOException ex) {
                     System.out.println("Error write object.");
+                    ex.printStackTrace();
                 }
             } else {
                 System.out.println("server nhận chuỗi rỗng!!!");

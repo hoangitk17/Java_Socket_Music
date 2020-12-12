@@ -140,6 +140,21 @@ public class LoadingDialog extends javax.swing.JDialog {
         }
     }
 
+    public void WaitDataSearchSinger() {
+        try {
+            while (true) {
+                System.out.print("");
+                String message = new String(Client.singerFlag);
+                if (!message.equals("")) {
+                    break;
+
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
     protected class MyWorker extends SwingWorker<Object, Object> {
 
         @Override
@@ -151,6 +166,9 @@ public class LoadingDialog extends javax.swing.JDialog {
                     break;
                 case FLAG_SONG:
                     WaitDataSearchSong();
+                    break;
+                case FLAG_SINGER:
+                    WaitDataSearchSinger();
                     break;
 
                 default:

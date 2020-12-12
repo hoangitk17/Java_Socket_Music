@@ -247,6 +247,7 @@ public class LogIn extends javax.swing.JFrame {
                 System.out.println("end login");
             }catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
     }//GEN-LAST:event_btnSignInMousePressed

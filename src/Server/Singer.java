@@ -6,6 +6,7 @@
 package Server;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.StringTokenizer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,8 +15,9 @@ import org.jsoup.nodes.Document;
  *
  * @author Thuan Lam
  */
-public class Singer {
+public class Singer implements Serializable{
 
+    private static final long serialVersionUID = -634324234706018L;
     private String name;
     private String dateBirth;
     private String listSong;

@@ -33,7 +33,7 @@ public class Home extends javax.swing.JFrame {
 
     AboutPanel cardAbout = new AboutPanel();
     AccountPanel cardAccount;
-    SingerPanel cardSinger = new SingerPanel();
+    SingerPanel cardSinger;
     SongPanel cardSong = new SongPanel(this);
     HomePanel cardHome = new HomePanel();
     CardLayout cardLayout;
@@ -154,6 +154,8 @@ public class Home extends javax.swing.JFrame {
         hashPinkIcon.put(SINGER, pinkSingerIcon);
         hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
 
+        cardAccount = new AccountPanel(this, this.client);
+        cardSinger = new SingerPanel(this, this.client);
         // add cards panel to cardlayout
         cardLayout = (CardLayout) plCards.getLayout();
         plCards.add(cardAbout, ABOUT);
@@ -171,7 +173,7 @@ public class Home extends javax.swing.JFrame {
             panel.setBackground(tranparencyColor);
         }
         cardSong.setClient(client);
-        cardAccount = new AccountPanel(this, this.client);
+        
     }
 
     /**

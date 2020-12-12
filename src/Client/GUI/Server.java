@@ -15,6 +15,11 @@ public class Server {
     public static Vector<Worker> workers = new Vector<>();
 
     public static void main(String[] args) throws IOException {
-        System.out.println(Singer.inforSinger("Wowy"));
+        Singer s = new Singer("Wowy");
+        System.out.println(s.toString());
+        System.out.println("--------");
+        System.out.println(s.getName());
+        System.out.println(s.getSuNghiep());
+        System.out.println(s.getTieuSu());
     }
 }

@@ -1,5 +1,6 @@
 package Client.GUI;
 
+import Server.Singer;
 import Server.Song;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -164,6 +165,7 @@ class ReceiveMessage implements Runnable {
                 System.out.println("Song key 2");
                 Client.song = (Song) (obInput.readObject());              
                 Client.song.ToString();
+                Client.songFlag = "exactly";
             } else {
                 Client.songFlag = "nosong";
                 // xu ly fail
@@ -186,6 +188,10 @@ class ReceiveMessage implements Runnable {
             String status = stringToken.nextToken();
             if (status.equals("1")) {
                 // xu ly success
+                System.out.println("Singer key 1");
+                Client.singer = (Singer) (obInput.readObject());     
+                System.out.println(Client.singer.getName());
+                Client.singerFlag = "exactly";
             } else {
                 // xu ly fail
                 String infoError = stringToken.nextToken();
@@ -225,6 +231,7 @@ class ReceiveMessage implements Runnable {
                                 break;
                             case "singer":
                                 // xu ly singer
+                                HandleSearchSinger(data);
                                 break;
                             default:
 
@@ -254,9 +261,11 @@ public class Client {
     private static Socket socket;
     public static ArrayList<Song> listsSongs;
     public static Song song;
+    public static Singer singer;
     public static String clientName = "";
     public static String userFlag = "";
     public static String songFlag = "";
+    public static String singerFlag = "";
     private static boolean hasData = false;
     public static String message = "";
     private BufferedWriter out;
