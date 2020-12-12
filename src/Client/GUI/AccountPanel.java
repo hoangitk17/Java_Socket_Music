@@ -6,6 +6,8 @@
 package Client.GUI;
 
 import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -18,14 +20,17 @@ public class AccountPanel extends javax.swing.JPanel {
      * Creates new form AccountPanel
      */
     ArrayList<JTextField> listTextField = new ArrayList<>();
-
-    public AccountPanel() {
+    Client client;
+    JFrame parent;
+    public AccountPanel(JFrame parent,Client client) {
         initComponents();
         listTextField.add(tfUserName);
         listTextField.add(tfOldPass);
         listTextField.add(tfNewPass);
         listTextField.add(tfRetypeNewPass);
         setPaddingForTextField();
+        this.client = client;
+        this.parent = parent;
     }
 
     public void setPaddingForTextField() {
@@ -135,6 +140,11 @@ public class AccountPanel extends javax.swing.JPanel {
 
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/button_save.png"))); // NOI18N
         btnSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnSaveMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -228,6 +238,77 @@ public class AccountPanel extends javax.swing.JPanel {
     private void tfOldPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfOldPassActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfOldPassActionPerformed
+    public boolean isValidData(String userName, String oldPass, String newPass, String retypeNewPass) {
+        boolean isValid = true;
+        StringBuilder strBuilder = new StringBuilder();
+        if (userName.equals("")) {
+            isValid = false;
+        }
+        if (oldPass.equals("")) {
+            isValid = false;
+        }
+        if (newPass.equals("")) {
+            isValid = false;
+        }
+        if (retypeNewPass.equals("")) {
+            isValid = false;
+        }
+        if (!isValid) {
+            strBuilder.append("\n Các trường phải nhập đủ không được bỏ trống");
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        if (newPass.contains(" ")) {
+            strBuilder.append("Password không được chứa khoảng trắng");
+            isValid = false;
+        }
+         if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        if (newPass.equals(retypeNewPass)) {
+            strBuilder.append("\nPassword mới và Retype New Password không trùng khớp");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        return isValid;
+    }
+    private void btnSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMousePressed
+        // TODO add your handling code here:
+         try {
+            System.out.println("start login");
+            String userName = tfUserName.getText();
+            String oldPass = tfOldPass.getText();
+            String newPass = tfNewPass.getText();
+            String retypeNewPass = tfRetypeNewPass.getText();
+            if (!isValidData(userName, oldPass, newPass, retypeNewPass)) {
+                return;
+            }
+            client.send.message = "key:password:" + userName + " " + newPass;
+            client.send.flag = true;
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_LOGIN);
+            String message;
+            message = new String(Client.userFlag);
+            if (!message.equals("")) {
+                Client.userFlag = "";
+                if (message.equals("success")) {
+
+                }
+                if (message.equals("fail")) {
+                    System.out.println("\nlogin fail - to fail");
+                    JOptionPane.showMessageDialog(this, "User or Pass Wrong");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Connection error. Try Again");
+            }
+                System.out.println("end login");
+            }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_btnSaveMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

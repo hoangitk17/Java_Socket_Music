@@ -32,7 +32,7 @@ public class Home extends javax.swing.JFrame {
     ArrayList<JLabel> menuItemIcons = new ArrayList<>();
 
     AboutPanel cardAbout = new AboutPanel();
-    AccountPanel cardAccount = new AccountPanel();
+    AccountPanel cardAccount;
     SingerPanel cardSinger = new SingerPanel();
     SongPanel cardSong = new SongPanel(this);
     HomePanel cardHome = new HomePanel();
@@ -171,6 +171,7 @@ public class Home extends javax.swing.JFrame {
             panel.setBackground(tranparencyColor);
         }
         cardSong.setClient(client);
+        cardAccount = new AccountPanel(this, this.client);
     }
 
     /**
