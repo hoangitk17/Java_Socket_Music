@@ -82,6 +82,7 @@ public class LogIn extends javax.swing.JFrame {
         btnSignIn.setForeground(new java.awt.Color(68, 142, 246));
         btnSignIn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnSignIn.setText("Sign In");
+        btnSignIn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSignIn.setVerifyInputWhenFocusTarget(false);
         btnSignIn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -135,12 +136,13 @@ public class LogIn extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 233, 129));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("New Account");
+        jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel3MouseClicked(evt);
             }
         });
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 560, 210, 30));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 560, 110, 30));
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_user_24px.png"))); // NOI18N
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 30, 30));

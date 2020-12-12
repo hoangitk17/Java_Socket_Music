@@ -62,6 +62,7 @@ public class AccountPanel extends javax.swing.JPanel {
         tfRetypeNewPass = new javax.swing.JPasswordField();
         jSeparator4 = new javax.swing.JSeparator();
         tfOldPass = new javax.swing.JPasswordField();
+        btnSave = new javax.swing.JLabel();
 
         setName("cardAccount"); // NOI18N
         setPreferredSize(new java.awt.Dimension(754, 561));
@@ -132,12 +133,15 @@ public class AccountPanel extends javax.swing.JPanel {
             }
         });
 
+        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/button_save.png"))); // NOI18N
+        btnSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(278, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(tfRetypeNewPass, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,6 +158,10 @@ public class AccountPanel extends javax.swing.JPanel {
                     .addComponent(jSeparator4, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                     .addComponent(tfOldPass, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE))
                 .addGap(209, 209, 209))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(286, 286, 286)
+                .addComponent(btnSave)
+                .addContainerGap(320, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,7 +190,9 @@ public class AccountPanel extends javax.swing.JPanel {
                 .addComponent(tfRetypeNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addComponent(btnSave)
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -225,6 +235,7 @@ public class AccountPanel extends javax.swing.JPanel {
     private javax.swing.JLabel Username1;
     private javax.swing.JLabel Username3;
     private javax.swing.JLabel Username4;
+    private javax.swing.JLabel btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
