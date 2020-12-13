@@ -39,6 +39,7 @@ public class AccountPanel extends javax.swing.JPanel {
     }
 
     public void setPaddingForTextField() {
+        // set padding 10 for text field
         for (JTextField tf : listTextField) {
             tf.setBorder(
                     javax.swing.BorderFactory.createCompoundBorder(
@@ -318,7 +319,7 @@ public class AccountPanel extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(this, "Update Success");
                 }
                 if (message.equals("fail")) {
-                    System.out.println("\nlogin fail - to fail");
+                    System.out.println("\nsave pass  fail - to fail");
                     JOptionPane.showMessageDialog(this, "User or Pass Wrong");
                 }
             } else {
