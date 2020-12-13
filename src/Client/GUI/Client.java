@@ -102,7 +102,7 @@ class ReceiveMessage implements Runnable {
         this.in = i;
         this.obInput = obInput;
     }
-    
+
     public void HandleLogin(String res) {
         try {
             StringTokenizer stringToken = new StringTokenizer(res, ":");
@@ -126,6 +126,27 @@ class ReceiveMessage implements Runnable {
     }
 
     public void HandleSignUp(String res) {
+        try {
+            StringTokenizer stringToken = new StringTokenizer(res, ":");
+            String key = stringToken.nextToken();
+            String keyWord = stringToken.nextToken();
+            String status = stringToken.nextToken();
+            if (status.equals("1")) {
+                // xu ly success
+                System.out.println("Success");
+                Client.userFlag = "success";
+            } else if (status.equals("0")) {
+                // xu ly fail
+                System.out.println("Fail");
+                Client.message = stringToken.nextToken();
+                Client.userFlag = "fail";
+            }
+        } catch (Exception e) {
+            System.out.println("Exception at Handle Sign Up with message is " + e.getMessage());
+        }
+    }
+
+    public void HandleUpdatePassword(String res) {
         try {
             StringTokenizer stringToken = new StringTokenizer(res, ":");
             String key = stringToken.nextToken();
@@ -163,7 +184,7 @@ class ReceiveMessage implements Runnable {
             } else if (status.equals("2")) {
                 // xu ly success
                 System.out.println("Song key 2");
-                Client.song = (Song) (obInput.readObject());              
+                Client.song = (Song) (obInput.readObject());
                 Client.song.ToString();
                 Client.songFlag = "exactly";
             } else {
@@ -172,11 +193,11 @@ class ReceiveMessage implements Runnable {
                 String infoError = stringToken.nextToken();
             }
         } catch (Exception e) {
-            System.out.println("Exception at Handle Search Song with message is " );
+            System.out.println("Exception at Handle Search Song with message is ");
             System.out.println(e);
-            e.printStackTrace(); 
+            e.printStackTrace();
         } finally {
-           
+
         }
     }
 
@@ -189,7 +210,7 @@ class ReceiveMessage implements Runnable {
             if (status.equals("1")) {
                 // xu ly success
                 System.out.println("Singer key 1");
-                Client.singer = (Singer) (obInput.readObject());     
+                Client.singer = (Singer) (obInput.readObject());
                 System.out.println(Client.singer.getName());
                 Client.singerFlag = "exactly";
             } else {
@@ -223,6 +244,11 @@ class ReceiveMessage implements Runnable {
                             case "signup":
                                 System.out.println("Xử lý sign up");
                                 HandleSignUp(data);
+                                // xu ly sign up
+                                break;
+                            case "password":
+                                System.out.println("Xử lý passowrd");
+                                HandleUpdatePassword(data);
                                 // xu ly sign up
                                 break;
                             case "music":

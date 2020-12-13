@@ -6,6 +6,7 @@
 package Client.GUI;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -22,7 +23,9 @@ public class AccountPanel extends javax.swing.JPanel {
     ArrayList<JTextField> listTextField = new ArrayList<>();
     Client client;
     JFrame parent;
-    public AccountPanel(JFrame parent,Client client) {
+    Account account;
+
+    public AccountPanel(JFrame parent, Client client, Account account) {
         initComponents();
         listTextField.add(tfUserName);
         listTextField.add(tfOldPass);
@@ -31,6 +34,8 @@ public class AccountPanel extends javax.swing.JPanel {
         setPaddingForTextField();
         this.client = client;
         this.parent = parent;
+        this.account = account;
+        tfUserName.setText(account.getUserName());
     }
 
     public void setPaddingForTextField() {
@@ -92,7 +97,6 @@ public class AccountPanel extends javax.swing.JPanel {
         tfUserName.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         tfUserName.setText("Text");
         tfUserName.setBorder(null);
-        tfUserName.setOpaque(false);
         tfUserName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfUserNameActionPerformed(evt);
@@ -254,20 +258,36 @@ public class AccountPanel extends javax.swing.JPanel {
             isValid = false;
         }
         if (!isValid) {
-            strBuilder.append("\n Các trường phải nhập đủ không được bỏ trống");
+            strBuilder.append("\nCác trường phải nhập đủ không được bỏ trống");
             JOptionPane.showMessageDialog(this, strBuilder.toString());
             return isValid;
         }
         if (newPass.contains(" ")) {
-            strBuilder.append("Password không được chứa khoảng trắng");
+            strBuilder.append("Mật khẩu mới không được chứa khoảng trắng");
             isValid = false;
         }
-         if (!isValid) {
+        if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
             return isValid;
         }
-        if (newPass.equals(retypeNewPass)) {
-            strBuilder.append("\nPassword mới và Retype New Password không trùng khớp");
+        if(!Pattern.matches("[a-zA-Z0-9]{0,}", newPass)){
+            strBuilder.append("\nPassword không chứa kí tự đặc biệt");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        } 
+        if (!newPass.equals(retypeNewPass)) {
+            strBuilder.append("\nMật khẩu mới và nhập lại mật khẩu không trùng khớp");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        if (!oldPass.equals(this.account.getPassword())) {
+            strBuilder.append("\nMật khẩu cũ không đúng");
             isValid = false;
         }
         if (!isValid) {
@@ -278,7 +298,7 @@ public class AccountPanel extends javax.swing.JPanel {
     }
     private void btnSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMousePressed
         // TODO add your handling code here:
-         try {
+        try {
             System.out.println("start login");
             String userName = tfUserName.getText();
             String oldPass = tfOldPass.getText();
@@ -295,7 +315,7 @@ public class AccountPanel extends javax.swing.JPanel {
             if (!message.equals("")) {
                 Client.userFlag = "";
                 if (message.equals("success")) {
-
+                    JOptionPane.showMessageDialog(this, "Update Success");
                 }
                 if (message.equals("fail")) {
                     System.out.println("\nlogin fail - to fail");
@@ -304,8 +324,8 @@ public class AccountPanel extends javax.swing.JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Connection error. Try Again");
             }
-                System.out.println("end login");
-            }catch (Exception e) {
+            System.out.println("end login");
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_btnSaveMousePressed

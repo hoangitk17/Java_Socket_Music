@@ -11,6 +11,7 @@ import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -265,6 +266,22 @@ public class SignUp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
             return isValid;
         }
+        if(!Pattern.matches("[a-zA-Z0-9]{5,20}", user)){
+            strBuilder.append("\nUsername tối thiểu là 6 kí tự và không chứa kí tự đặc biệt");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        }
+        if(!Pattern.matches("[a-zA-Z0-9]{0,}", pass)){
+            strBuilder.append("\nPassword không chứa kí tự đặc biệt");
+            isValid = false;
+        }
+        if (!isValid) {
+            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            return isValid;
+        } 
         if (!pass.equals(passConfirm)) {
             strBuilder.append("\nConfirm Password không khớp với Password");
             isValid = false;
@@ -272,7 +289,7 @@ public class SignUp extends javax.swing.JFrame {
         if (!isValid) {
             JOptionPane.showMessageDialog(this, strBuilder.toString());
             return isValid;
-        }
+        }       
         return isValid;
     }
 
@@ -290,6 +307,7 @@ public class SignUp extends javax.swing.JFrame {
             System.out.println(Client.message);
             client.send.message = "key:signup:" + userName + " " + password;
             client.send.flag = true;
+             LoadingDialog load = new LoadingDialog(this, true, LoadingDialog.FLAG_LOGIN);
             String message;
             while (true) {
                 message = new String(Client.userFlag);
@@ -302,7 +320,9 @@ public class SignUp extends javax.swing.JFrame {
                     }
                     if (message.equals("fail")) {
                         System.out.println("login fail");
-                        JOptionPane.showMessageDialog(this, "Sign up Fail");
+                        message = Client.message;
+                        Client.message = "";
+                        JOptionPane.showMessageDialog(this, message);
                         break;
                     }
 

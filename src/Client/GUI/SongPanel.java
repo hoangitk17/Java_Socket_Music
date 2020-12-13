@@ -161,8 +161,10 @@ public class SongPanel extends javax.swing.JPanel {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
+        lbSinger.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         lbSinger.setText("Tên ca sĩ:");
 
+        lbNameOfSong.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         lbNameOfSong.setText("Tên bài hát:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -193,6 +195,7 @@ public class SongPanel extends javax.swing.JPanel {
 
         jPanel5.setBackground(new java.awt.Color(204, 204, 255));
 
+        btnShowYoutube.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         btnShowYoutube.setText("Xem MV");
         btnShowYoutube.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -200,6 +203,7 @@ public class SongPanel extends javax.swing.JPanel {
             }
         });
 
+        btnShowMP3.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         btnShowMP3.setText("Nghe mp3");
         btnShowMP3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -230,6 +234,7 @@ public class SongPanel extends javax.swing.JPanel {
 
         lbLyric.setEditable(false);
         lbLyric.setColumns(20);
+        lbLyric.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         lbLyric.setRows(5);
         lbLyric.setBorder(null);
         lbLyric.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -253,8 +258,8 @@ public class SongPanel extends javax.swing.JPanel {
             .addGroup(plSongOfSingerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, plSongOfSingerLayout.createSequentialGroup()
                     .addContainerGap(37, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(64, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 626, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(37, Short.MAX_VALUE)))
         );
         plSongOfSingerLayout.setVerticalGroup(
             plSongOfSingerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,8 +281,10 @@ public class SongPanel extends javax.swing.JPanel {
 
         plNearlySong.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel9.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         jLabel9.setText("Danh sách bài hát gợi ý");
 
+        ListSong.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         jScrollPane2.setViewportView(ListSong);
 
         javax.swing.GroupLayout plNearlySongLayout = new javax.swing.GroupLayout(plNearlySong);
@@ -287,7 +294,7 @@ public class SongPanel extends javax.swing.JPanel {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(plNearlySongLayout.createSequentialGroup()
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 56, Short.MAX_VALUE))
+                .addGap(0, 36, Short.MAX_VALUE))
         );
         plNearlySongLayout.setVerticalGroup(
             plNearlySongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -398,7 +405,7 @@ public class SongPanel extends javax.swing.JPanel {
             }
         });
 
-        textInputSearch.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        textInputSearch.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         textInputSearch.setBorder(null);
         textInputSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

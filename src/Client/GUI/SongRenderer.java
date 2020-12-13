@@ -21,6 +21,7 @@ public class SongRenderer extends JLabel implements ListCellRenderer<Song>{
     public SongRenderer() {
         setOpaque(true);
         setMinimumSize(new Dimension(500,50));
+        setFont(new java.awt.Font("Roboto Mono", 0, 14));
         setBorder(
                 javax.swing.BorderFactory.createCompoundBorder(
                         getBorder(),

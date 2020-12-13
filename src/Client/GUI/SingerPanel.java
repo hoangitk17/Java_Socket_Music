@@ -168,7 +168,7 @@ public class SingerPanel extends javax.swing.JPanel {
             }
         });
 
-        textInputSearch.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        textInputSearch.setFont(new java.awt.Font("Roboto Mono", 0, 14)); // NOI18N
         textInputSearch.setBorder(null);
         textInputSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -248,7 +248,7 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(391, Short.MAX_VALUE))
+                .addContainerGap(401, Short.MAX_VALUE))
         );
 
         plCards.add(plNotFound, "notfound");
@@ -256,7 +256,7 @@ public class SingerPanel extends javax.swing.JPanel {
         plSearch.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("jLabel3");
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/search_singer.png"))); // NOI18N
 
         javax.swing.GroupLayout plSearchLayout = new javax.swing.GroupLayout(plSearch);
         plSearch.setLayout(plSearchLayout);
@@ -266,12 +266,13 @@ public class SingerPanel extends javax.swing.JPanel {
         );
         plSearchLayout.setVerticalGroup(
             plSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 695, Short.MAX_VALUE)
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
         );
 
         plCards.add(plSearch, "first");
 
         jLabel12.setBackground(new java.awt.Color(0, 255, 255));
+        jLabel12.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("Imge");
         jLabel12.setOpaque(true);
@@ -289,17 +290,21 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addGap(0, 11, Short.MAX_VALUE))
         );
 
+        jLabel17.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel17.setText("Album");
 
         txtAlbum.setEditable(false);
         txtAlbum.setColumns(20);
+        txtAlbum.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtAlbum.setRows(5);
         jScrollPane3.setViewportView(txtAlbum);
 
+        jLabel20.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel20.setText("Bài hát");
 
         txtSong.setEditable(false);
         txtSong.setColumns(20);
+        txtSong.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtSong.setRows(5);
         jScrollPane4.setViewportView(txtSong);
 
@@ -311,8 +316,8 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -331,28 +336,35 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         txtTieuSu.setEditable(false);
         txtTieuSu.setColumns(20);
+        txtTieuSu.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtTieuSu.setRows(5);
         jScrollPane1.setViewportView(txtTieuSu);
 
+        txtName.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         txtName.setText("Trần Văn Jack");
 
+        txtBirthDate.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         txtBirthDate.setText("25-10-1999");
 
+        jLabel16.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel16.setText("Nghệ sĩ");
 
+        jLabel18.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel18.setText("Thông tin sự nghiệp");
 
         txtThongTinSuNghiep.setEditable(false);
         txtThongTinSuNghiep.setColumns(20);
+        txtThongTinSuNghiep.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtThongTinSuNghiep.setRows(5);
         jScrollPane2.setViewportView(txtThongTinSuNghiep);
 
+        jLabel19.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel19.setText("Tiểu sử");
 
         javax.swing.GroupLayout plInfoArtistLayout = new javax.swing.GroupLayout(plInfoArtist);
@@ -364,7 +376,7 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addGroup(plInfoArtistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtBirthDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                     .addGroup(plInfoArtistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
@@ -412,7 +424,7 @@ public class SingerPanel extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(13, 13, 13)
                 .addComponent(plCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))

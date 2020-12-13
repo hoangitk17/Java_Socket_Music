@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -185,6 +186,7 @@ public class LogIn extends javax.swing.JFrame {
 
     public boolean isValidData(String user, String pass) {
         boolean isValid = true;
+        String regex = "[A-Za-z0-9]{0,}";
         StringBuilder strBuilder = new StringBuilder();
         if (user.equals("")) {
             strBuilder.append("Username không được để trống");
@@ -199,15 +201,23 @@ public class LogIn extends javax.swing.JFrame {
             return isValid;
         }
         if (user.contains(" ")) {
-            strBuilder.append("Username không được chứa khoảng trắng");
             isValid = false;
+            System.out.println("1");
         }
         if (pass.contains(" ")) {
-            strBuilder.append("\nPassword không được chứa khoảng trắng");
+            isValid = false;
+            System.out.println("2");
+        }
+        if(!user.matches(regex)){
+            System.out.println("3");
+            isValid = false;
+        }
+        if(!pass.matches(regex)){
+            System.out.println("4");
             isValid = false;
         }
         if (!isValid) {
-            JOptionPane.showMessageDialog(this, strBuilder.toString());
+            JOptionPane.showMessageDialog(this, "Username or Password wrong");
             return isValid;
         }
         return isValid;
@@ -230,7 +240,8 @@ public class LogIn extends javax.swing.JFrame {
             if (!message.equals("")) {
                 Client.userFlag = "";
                 if (message.equals("success")) {
-                    Home home = new Home(client);
+                    Account account = new Account(userName, password);
+                    Home home = new Home(client, account);
                     home.setVisible(true);
                     home.pack();
                     home.setLocationRelativeTo(null);

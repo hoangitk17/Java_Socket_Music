@@ -57,6 +57,7 @@ public class Home extends javax.swing.JFrame {
     ImageIcon pinkAboutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_about_20px_1.png"));
     HashMap<String, ImageIcon> hashWhiteIcon = new HashMap<String, ImageIcon>();
     HashMap<String, ImageIcon> hashPinkIcon = new HashMap<String, ImageIcon>();
+    Account account;
 
     public Home() {
         initComponents();
@@ -115,10 +116,11 @@ public class Home extends javax.swing.JFrame {
 
     }
 
-    public Home(Client client) {
+    public Home(Client client, Account account) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.client = client;
+        this.account = account;
         menuItems.add(plAbout);
         menuItems.add(plHome);
         menuItems.add(plSinger);
@@ -154,7 +156,7 @@ public class Home extends javax.swing.JFrame {
         hashPinkIcon.put(SINGER, pinkSingerIcon);
         hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
 
-        cardAccount = new AccountPanel(this, this.client);
+        cardAccount = new AccountPanel(this, this.client, this.account);
         cardSinger = new SingerPanel(this, this.client);
         // add cards panel to cardlayout
         cardLayout = (CardLayout) plCards.getLayout();
