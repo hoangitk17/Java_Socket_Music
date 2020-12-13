@@ -5,6 +5,11 @@
  */
 package Server;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -105,13 +110,20 @@ public class Worker implements Runnable {
                         case "singer":
                             Singer singer = new Singer(value);
                             System.out.println(singer.getName());
-                            out.write("key:singer:1");
-                            out.newLine();
-                            out.flush();
-                            obOut.reset();
-                            obOut.writeObject((Singer) singer);
-                            obOut.flush();
-                            System.out.println("Send siger success");                           
+                            if (singer.getName().equals("")) {
+                                String result = FindSingerByShazam(value);
+                                out.write(MaHoaAES.maHoaAES(result, keyAES[tt].getBytes()));
+                                out.newLine();
+                                out.flush();
+                            } else {
+                                out.write("key:singer:1");
+                                out.newLine();
+                                out.flush();
+                                obOut.reset();
+                                obOut.writeObject((Singer) singer);
+                                obOut.flush();
+                                System.out.println("Send siger success");
+                            }
                             break;
                         case "login":
                             checkLogin(value);
@@ -140,7 +152,6 @@ public class Worker implements Runnable {
                                         s.ToString();
                                     }
                                     obOut.flush();
-                                    
 
                             }
                             System.out.println("Send Music>> succes.");
@@ -159,7 +170,7 @@ public class Worker implements Runnable {
                             obOut.reset();
                             obOut.writeObject((Song) listSongs.get(index));
                             listSongs.get(index).ToStringExactly();
-                            
+
                             obOut.flush();
                             System.out.println("Send Music Exactly>> succes.");
                             break;
@@ -167,6 +178,8 @@ public class Worker implements Runnable {
                 } catch (IOException ex) {
                     System.out.println("Error write object.");
                     ex.printStackTrace();
+                } catch (Exception ex) {
+                    Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 System.out.println("server nhận chuỗi rỗng!!!");
@@ -333,6 +346,38 @@ public class Worker implements Runnable {
             out.flush();
         } catch (IOException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public String FindSingerByShazam(String key) {
+        Document doc = null;
+        Gson gson = new Gson();
+        try {
+            doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
+                    .data("term", key)
+                    .data("offset", "0")
+                    .data("limit", "10")
+                    .data("locale", "vi-VN")
+                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
+                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
+                    .get();
+        } catch (IOException ex) {
+            System.out.println("Error API Shazam!!!");
+        }
+        if (doc.body().text().equals("{}")) {
+            System.out.println("Không tìm thấy ca sĩ nào!!!");
+            return "key:singer:0:Không tìm thấy ca sĩ nào!!!";
+        } else {
+            ArrayList<String> arrayList = new ArrayList<>();
+            JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+            JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
+            for (JsonElement jsonE : jsonArray) {
+                String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
+                arrayList.add(nameSinger);
+            }
+            String data = gson.toJson(arrayList);
+            System.out.println("ca sĩ gần đúng>>" + data);
+            return "key:singer:2:" + data;
         }
     }
 }

@@ -27,20 +27,22 @@ class SendMessage implements Runnable {
     public boolean flag = false;
     // message is data when send
     public String message = "";
+    String cmhAES = "";
 
-    public SendMessage(Socket s, BufferedWriter o) {
+    public SendMessage(Socket s, BufferedWriter o, String mhAES) {
         this.socket = s;
         this.out = o;
+        this.cmhAES = mhAES;
     }
 
     public void run() {
         try {
             System.out.println("Run Send");
             //-------------Ma Hoa------
-            String chuoi = Client.randomchuoi();
+            //chuoiMHAES = Client.randomchuoi();
             String mahoa = "";
             try {
-                mahoa = MaHoaRSA.maHoaRSA(chuoi);
+                mahoa = MaHoaRSA.maHoaRSA(cmhAES);
             } catch (Exception ex) {
             }
             System.out.println("Client gửi ma hoa: " + mahoa + '\n');
@@ -54,7 +56,7 @@ class SendMessage implements Runnable {
 
                     //-------------------MaHoa----------
                     try {
-                        message = MaHoaAES.maHoaAES(message, chuoi.getBytes());
+                        message = MaHoaAES.maHoaAES(message, cmhAES.getBytes());
                     } catch (Exception ex) {
 
                     }
@@ -96,11 +98,13 @@ class ReceiveMessage implements Runnable {
     private BufferedReader in;
     private Socket socket;
     private static ObjectInputStream obInput;
+    private String cmhAES = "";
 
-    public ReceiveMessage(Socket s, BufferedReader i, ObjectInputStream obInput) {
+    public ReceiveMessage(Socket s, BufferedReader i, ObjectInputStream obInput, String cmhAES) {
         this.socket = s;
         this.in = i;
         this.obInput = obInput;
+        this.cmhAES = cmhAES;
     }
 
     public void HandleLogin(String res) {
@@ -228,6 +232,7 @@ class ReceiveMessage implements Runnable {
             System.out.println("run receive>>");
             while (true) {
                 String data = in.readLine();
+                data = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
                 System.out.print(""); // data is always get data from stream
                 if (data != null && !data.equals("")) {
                     System.out.println(data);
@@ -276,12 +281,15 @@ class ReceiveMessage implements Runnable {
             }
         } catch (IOException e) {
             System.out.println("Error at ReceiMessage " + e.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
 
 public class Client {
 
+    private String chuoiMHAES = randomchuoi().toString();
     public final String NAME = "#default";
     private static String host = "localhost";
     private static int port = 1234;
@@ -302,6 +310,7 @@ public class Client {
     public SendMessage send;
     public ReceiveMessage recv;
     public int isConnectRefuse = 0;
+
     public Client() {
         try {
             socket = new Socket(host, port);
@@ -309,14 +318,14 @@ public class Client {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             obInput = new ObjectInputStream(socket.getInputStream());
             executor = Executors.newFixedThreadPool(2);
-            send = new SendMessage(socket, out);
-            recv = new ReceiveMessage(socket, in, obInput);
+            send = new SendMessage(socket, out, chuoiMHAES);
+            recv = new ReceiveMessage(socket, in, obInput, chuoiMHAES);
             executor.execute(send);
             executor.execute(recv);
         } catch (Exception e) {
-            if(e.getMessage().equals("Connection refused: connect")) {
+            if (e.getMessage().equals("Connection refused: connect")) {
                 isConnectRefuse = 1;
-                System.out.println("Connect Refused"); 
+                System.out.println("Connect Refused");
             }
             System.out.println(e.getMessage());
         }

@@ -65,7 +65,7 @@ public class Handle {
                     .data("offset", "0")
                     .data("limit", "10")
                     .header("x-rapidapi-host", "shazam.p.rapidapi.com")
-                    .header("x-rapidapi-key", "ce4b7a0cecmsh85ab0eed6ebe521p12543djsneb4fc4e4a4b7").ignoreContentType(true)
+                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
                     .get();
         } catch (IOException ex) {
             System.out.println("Error connection API Shazam!!!");
@@ -103,7 +103,7 @@ public class Handle {
             doc = Jsoup.connect("https://shazam.p.rapidapi.com/songs/get-details")
                     .data("key", key)
                     .header("x-rapidapi-host", "shazam.p.rapidapi.com")
-                    .header("x-rapidapi-key", "ce4b7a0cecmsh85ab0eed6ebe521p12543djsneb4fc4e4a4b7").ignoreContentType(true)
+                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
                     .get();
         } catch (IOException ex) {
             System.out.println("Error API Shazam!!!");
