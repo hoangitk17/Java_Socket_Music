@@ -112,7 +112,8 @@ public class Worker implements Runnable {
                             System.out.println(singer.getName());
                             if (singer.getName().equals("")) {
                                 String result = FindSingerByShazam(value);
-                                out.write(MaHoaAES.maHoaAES(result, keyAES[tt].getBytes()));
+                                out.write(result);
+//                                out.write(MaHoaAES.maHoaAES(result, keyAES[tt].getBytes()));
                                 out.newLine();
                                 out.flush();
                             } else {

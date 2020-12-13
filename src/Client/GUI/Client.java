@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mahoa.MaHoaAES;
 import mahoa.MaHoaRSA;
+import sun.security.pkcs11.wrapper.Functions;
+import com.google.gson.Gson;
 
 class SendMessage implements Runnable {
 
@@ -217,6 +220,12 @@ class ReceiveMessage implements Runnable {
                 Client.singer = (Singer) (obInput.readObject());
                 System.out.println(Client.singer.getName());
                 Client.singerFlag = "exactly";
+            } else if (status.equals("2")) {
+               // xu ly success
+                System.out.println("Singer key 2");
+                Gson gson = new Gson();
+                Client.listsSinger = gson.fromJson(stringToken.nextToken(), ArrayList.class);
+                Client.singerFlag = "nearly";
             } else {
                 // xu ly fail
                 String infoError = stringToken.nextToken();
@@ -232,7 +241,7 @@ class ReceiveMessage implements Runnable {
             System.out.println("run receive>>");
             while (true) {
                 String data = in.readLine();
-                data = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
+//                data = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
                 System.out.print(""); // data is always get data from stream
                 if (data != null && !data.equals("")) {
                     System.out.println(data);
@@ -295,6 +304,7 @@ public class Client {
     private static int port = 1234;
     private static Socket socket;
     public static ArrayList<Song> listsSongs;
+    public static ArrayList<String> listsSinger;
     public static Song song;
     public static Singer singer;
     public static String clientName = "";
