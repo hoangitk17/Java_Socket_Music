@@ -213,21 +213,23 @@ public class SignUp extends javax.swing.JFrame {
 
         // implement windowClosing method
         public void windowClosing(WindowEvent e) {
-            try {
+           try {
                 // exit the application when window's close button is clicked
+            if (client.isConnectRefuse == 0) {
                 client.send.message = "bye";
                 client.send.flag = true;
-                JOptionPane.showMessageDialog(this.window, "Close window");
-                System.exit(0);
-            }catch(HeadlessException ex) {
-                System.exit(0);
             }
+            JOptionPane.showMessageDialog(this.window, "Close window");
+            System.exit(0);
+           } catch(Exception ex) {
+               System.exit(0);
+           }
         }
     }
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
-        LogIn logInForm = new LogIn();
+        LogIn logInForm = new LogIn(client);
         logInForm.setVisible(true);
         logInForm.pack();
         logInForm.setLocationRelativeTo(null);
@@ -296,7 +298,12 @@ public class SignUp extends javax.swing.JFrame {
     private void btnSignUpMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignUpMousePressed
         // TODO add your handling code here:
         try {
-            System.out.println("start login");
+            if(client.isConnectRefuse == 1) {
+                JOptionPane.showMessageDialog(this, "Connection Error");
+                client = new Client();
+                return;
+            }
+            System.out.println("start sign up");
             String userName = txtUserName.getText();
             String password = txtPassword.getText();
             String passwordConfirm = txtConfirmPassword.getText();

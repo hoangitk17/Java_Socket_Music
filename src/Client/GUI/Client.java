@@ -275,6 +275,7 @@ class ReceiveMessage implements Runnable {
                 }
             }
         } catch (IOException e) {
+            System.out.println("Error at ReceiMessage " + e.getMessage());
         }
     }
 }
@@ -300,7 +301,7 @@ public class Client {
     public static ExecutorService executor;
     public SendMessage send;
     public ReceiveMessage recv;
-
+    public int isConnectRefuse = 0;
     public Client() {
         try {
             socket = new Socket(host, port);
@@ -313,6 +314,10 @@ public class Client {
             executor.execute(send);
             executor.execute(recv);
         } catch (Exception e) {
+            if(e.getMessage().equals("Connection refused: connect")) {
+                isConnectRefuse = 1;
+                System.out.println("Connect Refused"); 
+            }
             System.out.println(e.getMessage());
         }
     }

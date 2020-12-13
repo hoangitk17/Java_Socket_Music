@@ -32,6 +32,14 @@ public class LogIn extends javax.swing.JFrame {
         addWindowListener(new CustomWindowAdapter(this));
         setVisible(true);
     }
+    
+    public LogIn(Client client) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.client = client;
+        addWindowListener(new CustomWindowAdapter(this));
+        setVisible(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -208,11 +216,11 @@ public class LogIn extends javax.swing.JFrame {
             isValid = false;
             System.out.println("2");
         }
-        if(!user.matches(regex)){
+        if (!user.matches(regex)) {
             System.out.println("3");
             isValid = false;
         }
-        if(!pass.matches(regex)){
+        if (!pass.matches(regex)) {
             System.out.println("4");
             isValid = false;
         }
@@ -226,6 +234,11 @@ public class LogIn extends javax.swing.JFrame {
     private void btnSignInMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignInMousePressed
         // TODO add your handling code here:
         try {
+            if(client.isConnectRefuse == 1) {
+                JOptionPane.showMessageDialog(this, "Server refused connection");
+                client = new Client();
+                return;
+            }
             System.out.println("start login");
             String userName = textUserName.getText();
             String password = textPassword.getText();
@@ -255,8 +268,8 @@ public class LogIn extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(this, "Connection error. Try Again");
             }
-                System.out.println("end login");
-            }catch (Exception e) {
+            System.out.println("end login");
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
@@ -264,8 +277,8 @@ public class LogIn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSignInMousePressed
 
     /**
-         * @param args the command line arguments
-         */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -309,11 +322,17 @@ public class LogIn extends javax.swing.JFrame {
 
         // implement windowClosing method
         public void windowClosing(WindowEvent e) {
-            // exit the application when window's close button is clicked
-            client.send.message = "bye";
-            client.send.flag = true;
+           try {
+                // exit the application when window's close button is clicked
+            if (client.isConnectRefuse == 0) {
+                client.send.message = "bye";
+                client.send.flag = true;
+            }
             JOptionPane.showMessageDialog(this.window, "Close window");
             System.exit(0);
+           } catch(Exception ex) {
+               System.exit(0);
+           }
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
