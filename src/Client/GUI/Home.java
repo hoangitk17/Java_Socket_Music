@@ -42,6 +42,7 @@ public class Home extends javax.swing.JFrame {
     private final String HOME = "home";
     private final String SONG = "song";
     private final String SINGER = "singer";
+    private final String SIGN_OUT = "signout";
     private String activedItem = "";
     Color tranparencyColor = new Color(0, 0, 0, 0);
     Color hoverColor = new Color(247, 78, 105);
@@ -55,6 +56,8 @@ public class Home extends javax.swing.JFrame {
     ImageIcon pinkAccountIcon = new ImageIcon(getClass().getResource("/Icon/icons8_user_20px_1.png"));
     ImageIcon whiteAboutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_about_20px.png"));
     ImageIcon pinkAboutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_about_20px_1.png"));
+    ImageIcon whiteSignOutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_sign_out_20px_1.png"));
+    ImageIcon pinkSignOutIcon = new ImageIcon(getClass().getResource("/Icon/icons8_sign_out_20px.png"));
     HashMap<String, ImageIcon> hashWhiteIcon = new HashMap<String, ImageIcon>();
     HashMap<String, ImageIcon> hashPinkIcon = new HashMap<String, ImageIcon>();
     Account account;
@@ -62,58 +65,9 @@ public class Home extends javax.swing.JFrame {
     public Home() {
         initComponents();
         this.setLocationRelativeTo(null);
-        menuItems.add(plAbout);
-        menuItems.add(plHome);
-        menuItems.add(plSinger);
-        menuItems.add(plSong);
-        menuItems.add(plAccount);
-
-        menuItemLines.add(lineAbout);
-        menuItemLines.add(lineHome);
-        menuItemLines.add(lineSinger);
-        menuItemLines.add(lineSong);
-        menuItemLines.add(lineAccount);
-
-        menuItemLabels.add(lbHome);
-        menuItemLabels.add(lbAbout);
-        menuItemLabels.add(lbAccount);
-        menuItemLabels.add(lbSinger);
-        menuItemLabels.add(lbSong);
-
-        menuItemIcons.add(lbHomeIcon);
-        menuItemIcons.add(lbAboutIcon);
-        menuItemIcons.add(lbAccountIcon);
-        menuItemIcons.add(lbSingerIcon);
-        menuItemIcons.add(lbSongIcon);
-
-        hashWhiteIcon.put(HOME, whiteHomeIcon);
-        hashWhiteIcon.put(ABOUT, whiteAboutIcon);
-        hashWhiteIcon.put(SONG, whiteSongIcon);
-        hashWhiteIcon.put(SINGER, whiteSingerIcon);
-        hashWhiteIcon.put(ACCOUNT, whiteAccountIcon);
-        hashPinkIcon.put(HOME, pinkHomeIcon);
-        hashPinkIcon.put(ABOUT, pinkAboutIcon);
-        hashPinkIcon.put(SONG, pinkSongIcon);
-        hashPinkIcon.put(SINGER, pinkSingerIcon);
-        hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
-
-        // add cards panel to cardlayout
-        cardLayout = (CardLayout) plCards.getLayout();
-        plCards.add(cardAbout, ABOUT);
-        plCards.add(cardAccount, ACCOUNT);
-        plCards.add(cardSinger, SINGER);
-        plCards.add(cardSong, SONG);
-        plCards.add(cardHome, HOME);
-
-        // set bgcolor for item
-        for (JPanel panel : menuItems) {
-            panel.setBackground(tranparencyColor);
-
-        }
-        for (JPanel panel : menuItemLines) {
-            panel.setBackground(tranparencyColor);
-        }
-
+        cardAccount = new AccountPanel(this, this.client, this.account);
+        cardSinger = new SingerPanel(this, this.client);
+        initCompCommon();
     }
 
     public Home(Client client, Account account) {
@@ -121,43 +75,55 @@ public class Home extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.client = client;
         this.account = account;
+        cardAccount = new AccountPanel(this, this.client, this.account);
+        cardSinger = new SingerPanel(this, this.client);
+        initCompCommon();    
+        cardSong.setClient(client);
+        
+    }
+    
+    public void initCompCommon() {
         menuItems.add(plAbout);
         menuItems.add(plHome);
         menuItems.add(plSinger);
         menuItems.add(plSong);
         menuItems.add(plAccount);
+        menuItems.add(plSignOut);
 
         menuItemLines.add(lineAbout);
         menuItemLines.add(lineHome);
         menuItemLines.add(lineSinger);
         menuItemLines.add(lineSong);
         menuItemLines.add(lineAccount);
+        menuItemLines.add(lineSignOut);
 
         menuItemLabels.add(lbHome);
         menuItemLabels.add(lbAbout);
         menuItemLabels.add(lbAccount);
         menuItemLabels.add(lbSinger);
         menuItemLabels.add(lbSong);
+        menuItemLabels.add(lbSignOut);
 
         menuItemIcons.add(lbHomeIcon);
         menuItemIcons.add(lbAboutIcon);
         menuItemIcons.add(lbAccountIcon);
         menuItemIcons.add(lbSingerIcon);
         menuItemIcons.add(lbSongIcon);
+        menuItemIcons.add(lbSignOutIcon);
 
         hashWhiteIcon.put(HOME, whiteHomeIcon);
         hashWhiteIcon.put(ABOUT, whiteAboutIcon);
         hashWhiteIcon.put(SONG, whiteSongIcon);
         hashWhiteIcon.put(SINGER, whiteSingerIcon);
         hashWhiteIcon.put(ACCOUNT, whiteAccountIcon);
+        hashWhiteIcon.put(SIGN_OUT, whiteSignOutIcon);
         hashPinkIcon.put(HOME, pinkHomeIcon);
         hashPinkIcon.put(ABOUT, pinkAboutIcon);
         hashPinkIcon.put(SONG, pinkSongIcon);
         hashPinkIcon.put(SINGER, pinkSingerIcon);
         hashPinkIcon.put(ACCOUNT, pinkAccountIcon);
+        hashPinkIcon.put(SIGN_OUT, pinkSignOutIcon);
 
-        cardAccount = new AccountPanel(this, this.client, this.account);
-        cardSinger = new SingerPanel(this, this.client);
         // add cards panel to cardlayout
         cardLayout = (CardLayout) plCards.getLayout();
         plCards.add(cardAbout, ABOUT);
@@ -174,8 +140,7 @@ public class Home extends javax.swing.JFrame {
         for (JPanel panel : menuItemLines) {
             panel.setBackground(tranparencyColor);
         }
-        cardSong.setClient(client);
-        
+
     }
 
     /**
@@ -209,6 +174,10 @@ public class Home extends javax.swing.JFrame {
         lbAboutIcon = new javax.swing.JLabel();
         lbAbout = new javax.swing.JLabel();
         lineAbout = new javax.swing.JPanel();
+        plSignOut = new javax.swing.JPanel();
+        lbSignOut = new javax.swing.JLabel();
+        lbSignOutIcon = new javax.swing.JLabel();
+        lineSignOut = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -491,6 +460,56 @@ public class Home extends javax.swing.JFrame {
         slidePanel.add(plAbout);
         plAbout.setBounds(0, 350, 210, 50);
 
+        plSignOut.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        plSignOut.setName("signout"); // NOI18N
+        plSignOut.setOpaque(false);
+        plSignOut.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                changeLineColor(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                resetColorLine(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                chooseMenuItem(evt);
+            }
+        });
+        plSignOut.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lbSignOut.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
+        lbSignOut.setForeground(new java.awt.Color(255, 255, 255));
+        lbSignOut.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbSignOut.setText("Sign Out");
+        lbSignOut.setDoubleBuffered(true);
+        lbSignOut.setName("signout"); // NOI18N
+        plSignOut.add(lbSignOut, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 1, 160, 50));
+
+        lbSignOutIcon.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbSignOutIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_sign_out_20px_1.png"))); // NOI18N
+        lbSignOutIcon.setName("signout"); // NOI18N
+        plSignOut.add(lbSignOutIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 0, -1, 50));
+
+        lineSignOut.setBackground(new java.awt.Color(247, 78, 105));
+        lineSignOut.setName("signout"); // NOI18N
+        lineSignOut.setOpaque(false);
+        lineSignOut.setPreferredSize(new java.awt.Dimension(4, 20));
+
+        javax.swing.GroupLayout lineSignOutLayout = new javax.swing.GroupLayout(lineSignOut);
+        lineSignOut.setLayout(lineSignOutLayout);
+        lineSignOutLayout.setHorizontalGroup(
+            lineSignOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 4, Short.MAX_VALUE)
+        );
+        lineSignOutLayout.setVerticalGroup(
+            lineSignOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 20, Short.MAX_VALUE)
+        );
+
+        plSignOut.add(lineSignOut, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 15, -1, -1));
+
+        slidePanel.add(plSignOut);
+        plSignOut.setBounds(0, 400, 210, 50);
+
         jSeparator1.setToolTipText("");
         jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSeparator1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -651,6 +670,13 @@ public class Home extends javax.swing.JFrame {
         String nameComp = evt.getComponent().getName();
         switchCard(nameComp);
     }//GEN-LAST:event_chooseMenuItem
+    
+    public void SignOut(){
+        client.send.message = "bye";
+        client.send.flag = true;
+        this.dispose();
+        new LogIn();
+    }
     private void switchCard(String cardName) {
         // TODO add your handling code here:
         activedItem = cardName;
@@ -676,10 +702,15 @@ public class Home extends javax.swing.JFrame {
                 cardLayout.show(plCards, HOME);
                 break;
             }
+            case SIGN_OUT: {
+                SignOut();
+                System.out.println("sign out");
+                break;
+            }
         }
 
     }
-
+    
     /**
      * @param args the command line arguments
      */
@@ -727,6 +758,8 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel lbAccountIcon;
     private javax.swing.JLabel lbHome;
     private javax.swing.JLabel lbHomeIcon;
+    private javax.swing.JLabel lbSignOut;
+    private javax.swing.JLabel lbSignOutIcon;
     private javax.swing.JLabel lbSinger;
     private javax.swing.JLabel lbSingerIcon;
     private javax.swing.JLabel lbSong;
@@ -734,12 +767,14 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel lineAbout;
     private javax.swing.JPanel lineAccount;
     private javax.swing.JPanel lineHome;
+    private javax.swing.JPanel lineSignOut;
     private javax.swing.JPanel lineSinger;
     private javax.swing.JPanel lineSong;
     private javax.swing.JPanel plAbout;
     private javax.swing.JPanel plAccount;
     private javax.swing.JPanel plCards;
     private javax.swing.JPanel plHome;
+    private javax.swing.JPanel plSignOut;
     private javax.swing.JPanel plSinger;
     private javax.swing.JPanel plSong;
     private javax.swing.JPanel slidePanel;
