@@ -502,11 +502,11 @@ public class SongPanel extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
             } else {
                 if (song.getIDYoutube() != null) {
-                    if (song.isHasKey()) {
-                        new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
-                    } else {
-                        new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
-                    }
+//                    if (song.isHasKey()) {
+//                    new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+//                    } else {
+                    new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
+//                    }
                 } else {
                     JOptionPane.showMessageDialog(this, "Bài hát không có video");
                 }
@@ -540,6 +540,8 @@ public class SongPanel extends javax.swing.JPanel {
             } else {
                 if (song.getMp3() != null) {
                     new MP3Dialog(parent, true, song.getMp3()).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không có file mp3.");
                 }
             }
             // don't forget to properly close native components
