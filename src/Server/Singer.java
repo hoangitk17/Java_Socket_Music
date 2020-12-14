@@ -8,6 +8,7 @@ package Server;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -377,37 +378,57 @@ public class Singer implements Serializable {
         if (index_delete_first > 0) {
             dateBirth = chuoins.substring(index_delete_first + 6, index_delete_second);
         }
-        dateBirth = dateBirth.replaceAll("ngày", "");
+        int start = dateBirth.indexOf("ngày") + 1;
+        int end = dateBirth.indexOf("năm", start);
+        dateBirth = dateBirth.substring(start, end + 8);
+        dateBirth = dateBirth.replaceAll("gày", "");
         return dateBirth;
     }
 
-    public Singer(String nameSinger) throws IOException {
-        String add = "https://vi.wikipedia.org/w/index.php";
-        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
-                .data("search", nameSinger)
-                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
-                .data("go", "Xem")
-                .data("ns0", "1").ignoreContentType(true)
-                .get();
-        String st = docHTML.toString();
-
-        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
-        if (start != -1) {
-            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
-            int end = st.indexOf("\">", start);
-            System.out.println("a " + start + "b " + end);
-            String search = st.substring(start, end);
-            System.out.println("name search>>" + search);
-            String ttcs = callAPI(search);
-            this.dateBirth = dateBirth(ttcs);
-            this.tieuSu = tieuSu(ttcs);
-            this.name = nameSinger(ttcs);
-            this.listMV = listMV(ttcs);
-            this.listSong = listSong(ttcs);
-            this.suNghiep = sunghiep(ttcs);
+    public Singer(String search) throws IOException {
+        Pattern pattern = Pattern.compile("([a-z]|[A-Z])+");
+        String nameSinger = "";
+        //String add = "https://vi.wikipedia.org/w/index.php";
+//        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
+//                .data("search", nameSinger)
+//                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
+//                .data("go", "Xem")
+//                .data("ns0", "1").ignoreContentType(true)
+//                .get();
+//        String st = docHTML.toString();
+//
+//        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
+//        if (start != -1) {
+//            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
+//            int end = st.indexOf("\">", start);
+//            System.out.println("a " + start + "b " + end);
+//            String search = st.substring(start, end);
+//            System.out.println("name search>>" + search);
+        search = search.replaceAll("\\s\\s+", " ").trim();
+        if (search.indexOf(" ") == -1) {
+            nameSinger = search.substring(0, 1).toUpperCase() + search.substring(1);
         } else {
-            this.name = "";
+            String[] arr = search.split(" ");
+            //dùng vòng lặp duyệt các từ và thay thế từ đầu tiên!
+            for (String x : arr) {
+                nameSinger += (x.substring(0, 1).toUpperCase() + x.substring(1)) + " ";
+            }
         }
+        nameSinger = nameSinger.trim().replace(" ", "_");
+        if (pattern.matcher(nameSinger).matches()) {
+            nameSinger += "_(ca_sĩ_Việt_Nam)";
+        }
+        System.out.println(nameSinger);
+        String ttcs = callAPI(nameSinger);
+        this.dateBirth = dateBirth(ttcs);
+        this.tieuSu = tieuSu(ttcs);
+        this.name = nameSinger(ttcs);
+        this.listMV = listMV(ttcs);
+        this.listSong = listSong(ttcs);
+        this.suNghiep = sunghiep(ttcs);
+//        } else {
+//            this.name = "";
+//        }
     }
 
     public Singer(String name, String dateBirth, String listMV, String listSong, String tieuSu, String suNghiep) {

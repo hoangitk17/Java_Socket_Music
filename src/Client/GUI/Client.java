@@ -2,7 +2,6 @@ package Client.GUI;
 
 import Server.Singer;
 import Server.Song;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mahoa.MaHoaAES;
 import mahoa.MaHoaRSA;
+import com.google.gson.Gson;
 
 class SendMessage implements Runnable {
 
@@ -99,13 +99,11 @@ class ReceiveMessage implements Runnable {
 
     private BufferedReader in;
     private Socket socket;
-    private static ObjectInputStream obInput;
     private String cmhAES = "";
 
-    public ReceiveMessage(Socket s, BufferedReader i, ObjectInputStream obInput, String cmhAES) {
+    public ReceiveMessage(Socket s, BufferedReader i, String cmhAES) {
         this.socket = s;
         this.in = i;
-        this.obInput = obInput;
         this.cmhAES = cmhAES;
     }
 
@@ -184,17 +182,20 @@ class ReceiveMessage implements Runnable {
             if (status.equals("1")) {
                 // xu ly success
                 System.out.println("Song key 1");
-                Object resultArray = obInput.readObject();
-                Client.listsSongs = gson.fromJson(stringToken.nextToken(), new TypeToken<ArrayList<Song>>() {
-                }.getType());;
+                String data = res.substring("key:music:1:".length());
+                System.err.println("json ArrSong>>" + data);
+                Client.listsSongs = gson.fromJson(data, new TypeToken<ArrayList<Song>>() {
+                }.getType());
                 System.out.println("\nSize>>" + Client.listsSongs.size());
                 Client.songFlag = "nearly";
             } else if (status.equals("2")) {
                 // xu ly success
                 System.out.println("Song key 2");
-                Client.song = gson.fromJson(stringToken.nextToken(), new TypeToken<Song>() {
+                String data = res.substring("key:music:2:".length());
+                System.err.println("json Song>>" + data);
+                Client.song = gson.fromJson(data, new TypeToken<Song>() {
                 }.getType());
-                Client.song.ToString();
+                Client.song.ToStringExactly();
                 Client.songFlag = "exactly";
             } else {
                 Client.songFlag = "nosong";
@@ -220,14 +221,18 @@ class ReceiveMessage implements Runnable {
             if (status.equals("1")) {
                 // xu ly success
                 System.out.println("Singer key 1");
-                Client.singer = gson.fromJson(stringToken.nextToken(), new TypeToken<Singer>() {
+                String data = res.substring("key:singer:1:".length());
+                System.err.println("json Singer>>" + data);
+                Client.singer = gson.fromJson(data, new TypeToken<Singer>() {
                 }.getType());
                 System.out.println(Client.singer.getName());
                 Client.singerFlag = "exactly";
             } else if (status.equals("2")) {
                 //xử lý gần đúng
                 System.out.println("Singer key 2");
-                ArrayList<String> listNameSinger = gson.fromJson(stringToken.nextToken(), new TypeToken<ArrayList<String>>() {
+                String data = res.substring("key:singer:2:".length());
+                System.err.println("json ArrSinger>>" + data);
+                ArrayList<String> listNameSinger = gson.fromJson(data, new TypeToken<ArrayList<String>>() {
                 }.getType());
                 System.out.println(listNameSinger);
                 Client.singerFlag = "nearly";
@@ -241,7 +246,6 @@ class ReceiveMessage implements Runnable {
     }
 
     public void run() {
-
         System.out.println("run receive>>");
         while (true) {
             String data = null;
@@ -310,6 +314,7 @@ public class Client {
     private static int port = 1234;
     private static Socket socket;
     public static ArrayList<Song> listsSongs;
+    public static ArrayList<String> listsSinger;
     public static Song song;
     public static Singer singer;
     public static String clientName = "";
@@ -334,7 +339,7 @@ public class Client {
             obInput = new ObjectInputStream(socket.getInputStream());
             executor = Executors.newFixedThreadPool(2);
             send = new SendMessage(socket, out, chuoiMHAES);
-            recv = new ReceiveMessage(socket, in, obInput, chuoiMHAES);
+            recv = new ReceiveMessage(socket, in, chuoiMHAES);
             executor.execute(send);
             executor.execute(recv);
         } catch (Exception e) {

@@ -111,7 +111,7 @@ public class Worker implements Runnable {
                         case "singer":
                             Singer singer = new Singer(value);
                             System.out.println(singer.getName());
-                            if (singer.getName() == "") {
+                            if ("".equals(singer.getName())) {
                                 msgSend = FindSingerByShazam(value);
                             } else {
                                 String data = gson.toJson(singer); // chuyển đôi đối tượng singer thành json
@@ -210,7 +210,6 @@ public class Worker implements Runnable {
     public int FindMusic(String keySearch) {
         Handle handle = new Handle();
         listSongs.clear();
-        handle.GetSongFormApiShazam(keySearch);
 
         try {
             Document docSearch = Jsoup.connect("https://www.nhaccuatui.com/tim-kiem/bai-hat")
@@ -230,6 +229,7 @@ public class Worker implements Runnable {
             System.out.println("API get list song connection error.");
             return 0;
         }
+        handle.GetSongFormApiShazam(keySearch);
 
         ArrayList<Song> sTemp = new ArrayList<>();
         for (Song s : listSongs) { //xóa phần tử trùng
