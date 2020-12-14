@@ -308,8 +308,7 @@ class ReceiveMessage implements Runnable {
 
 public class Client {
 
-    byte[] keyValue = new byte[]{'5', '2', '3', '4', '5', '6', '7', '8', 'h', '1', '2', '3', '4', '5', '6', '8'};
-    private String chuoiMHAES = "52345678h1234568";
+    private String chuoiMHAES = randomchuoi();
     public final String NAME = "#default";
     private static String host = "localhost";
     private static int port = 1234;
