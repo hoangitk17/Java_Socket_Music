@@ -391,18 +391,23 @@ public class Singer implements Serializable {
                 .get();
         String st = docHTML.toString();
 
-        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/") + "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
-        int end = st.indexOf("\">", start);
-        System.out.println("a " + start + "b " + end);
-        String search = st.substring(start, end);
-        System.out.println("name search>>" + search);
-        String ttcs = callAPI(search);
-        this.dateBirth = dateBirth(ttcs);
-        this.tieuSu = tieuSu(ttcs);
-        this.name = nameSinger(ttcs);
-        this.listMV = listMV(ttcs);
-        this.listSong = listSong(ttcs);
-        this.suNghiep = sunghiep(ttcs);
+        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
+        if (start != -1) {
+            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
+            int end = st.indexOf("\">", start);
+            System.out.println("a " + start + "b " + end);
+            String search = st.substring(start, end);
+            System.out.println("name search>>" + search);
+            String ttcs = callAPI(search);
+            this.dateBirth = dateBirth(ttcs);
+            this.tieuSu = tieuSu(ttcs);
+            this.name = nameSinger(ttcs);
+            this.listMV = listMV(ttcs);
+            this.listSong = listSong(ttcs);
+            this.suNghiep = sunghiep(ttcs);
+        } else {
+            this.name = "";
+        }
     }
 
     public Singer(String name, String dateBirth, String listMV, String listSong, String tieuSu, String suNghiep) {

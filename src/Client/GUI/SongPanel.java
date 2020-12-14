@@ -9,7 +9,6 @@ import Server.Song;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -19,8 +18,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import oracle.jrockit.jfr.openmbean.JFRStatsType;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -541,10 +538,10 @@ public class SongPanel extends javax.swing.JPanel {
             if (song == null) {
                 JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
             } else {
-                if(song.getMp3() != null) {
+                if (song.getMp3() != null) {
                     new MP3Dialog(parent, true, song.getMp3()).setVisible(true);
                 }
-            }        
+            }
             // don't forget to properly close native components
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
                 @Override
@@ -601,7 +598,6 @@ public class SongPanel extends javax.swing.JPanel {
     public void showNotFound() {
         cardLayout.show(plCards, TOP_SONG);
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<Song> ListSong;

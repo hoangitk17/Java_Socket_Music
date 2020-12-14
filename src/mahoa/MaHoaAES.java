@@ -39,13 +39,22 @@ public class MaHoaAES {
 
 //        Song s = new Song("abc", true, "abc", "abc", "abc");
 //        Gson gson = new Gson();
-//        String j = "[\"One Direction\",\"Dan + Shay\",\"an Trn\",\"Dan Gibson";
-//        String i = "1uUs+PwL3o3Mtd7b7l4eHDOOYG3LhVbSK/0nxb0Dej1aAaSNaIwu6qQ6iiYJr3pKH/yUGt4J0AFGmVxaoKk/QQ==";
-//        String maHoa = MaHoaAES.maHoaAES(j, keyValue);
-//
-//        String giaiMa = MaHoaAES.giaiMaAES(i, keyValue);
-//        //System.out.println("Chuỗi nhập vào : " + chuoiBanDau);
-//        //System.out.println("Mã hoá : " + maHoa);
-//        System.out.println("Giải mã : " + maHoa.replace(oldChar, newChar));
+        String j = " https://kodlogs.c om/36063  /input-length-must -be-mu ltip e-of-16-when-dec ryptin g-with- padded-cipher gdg gfdg dfg dsg d gfd g re re trẻ t  d gfdfg dfg";
+        String i = "0XtiN4eokDp/pJluQdLRIv3yy3s36//EKGw1rz1iSd06tRXMfiMV4h2lIPR5IE12rKnFgnGjMi0S" + "KndZAjrQD6kKpynsY76sj1YTZfFvg8i72niAuVhQ5qv8xxVtfhDi";
+        String maHoa = MaHoaAES.maHoaAES(j, keyValue);
+
+        //String giaiMa = MaHoaAES.giaiMaAES(i, keyValue);
+        //System.out.println("Chuỗi nhập vào : " + chuoiBanDau);
+        //System.out.println("Mã hoá : " + maHoa);
+//        String result = "";
+//        if (maHoa.length() > 76) {
+//            int index = 0;
+//            while (index + 76 < maHoa.length() - 1) {
+//                result += maHoa.index += 76;
+//            }
+//        }
+//        System.out.println("|" + result + "|");
+//        System.out.println("Giải mã : " + maHoa + "|");
+//        System.out.println("LcNIwaG7yeIVlUCCDXz/xQWG5f2xQEpAyPGWOONvmPzt6JiZdECOuKA9NL00VoTE5lsh02hWoo1a".length());
     }
 }

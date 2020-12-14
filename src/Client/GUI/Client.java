@@ -43,7 +43,6 @@ class SendMessage implements Runnable {
             //-------------Ma Hoa------
             //chuoiMHAES = Client.randomchuoi();
             String mahoa = "";
-            System.out.println("cmh>>" + cmhAES);
             try {
                 mahoa = MaHoaRSA.maHoaRSA(cmhAES);
             } catch (Exception ex) {
@@ -55,7 +54,7 @@ class SendMessage implements Runnable {
             while (true) {
                 System.out.print("");// flag is always update
                 if (flag) {
-                    System.out.print("Message send" + message);
+                    System.out.println("Message send>>" + message);
 
                     //-------------------MaHoa----------
                     try {
@@ -64,7 +63,7 @@ class SendMessage implements Runnable {
 
                     }
                     //----------------------------------
-                    out.write(message + "\n");
+                    out.write(message);
                     out.newLine();
                     out.flush();
                     flag = false;
@@ -231,6 +230,7 @@ class ReceiveMessage implements Runnable {
                 ArrayList<String> listNameSinger = gson.fromJson(stringToken.nextToken(), new TypeToken<ArrayList<String>>() {
                 }.getType());
                 System.out.println(listNameSinger);
+                Client.singerFlag = "nearly";
             } else {
                 // xu ly fail
                 String infoError = stringToken.nextToken();
@@ -245,23 +245,16 @@ class ReceiveMessage implements Runnable {
         System.out.println("run receive>>");
         while (true) {
             String data = null;
-            System.out.println("\ncmhR>>" + cmhAES);
             try {
-                data = in.readLine();
-                String giaimaString = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
-                System.out.println("du lieu nhan" + data);
-
-                System.out.println("chuoi giai ma" + giaimaString);
-                data = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
-                System.out.println(data);
+                String input = in.readLine();
+                data = MaHoaAES.giaiMaAES(input, cmhAES.getBytes());
             } catch (IOException ex) {
                 Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
                 Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.print("ReceiveMessage>>" + data); // data is always get data from stream
+            System.out.println("ReceiveMessage>>" + data); // data is always get data from stream
             if (data != null && !data.equals("")) {
-                System.out.println(data);
                 if (data.contains("key")) {
                     StringTokenizer stringToken = new StringTokenizer(data, ":");
                     String key = stringToken.nextToken();

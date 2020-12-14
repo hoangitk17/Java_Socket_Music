@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.concurrent.Future;
 
@@ -110,7 +111,7 @@ public class Worker implements Runnable {
                         case "singer":
                             Singer singer = new Singer(value);
                             System.out.println(singer.getName());
-                            if (singer.getName().equals("")) {
+                            if (singer.getName() == "") {
                                 msgSend = FindSingerByShazam(value);
                             } else {
                                 String data = gson.toJson(singer); // chuyển đôi đối tượng singer thành json
@@ -164,12 +165,16 @@ public class Worker implements Runnable {
                             break;
                     }
                     System.out.println("msg>>" + msgSend);
-
-                    String ne = MaHoaAES.maHoaAES(msgSend, keyAES[tt].getBytes());
-                    System.out.println("choimh =------" + ne.replace("\n", "*") + "chuoi ma hoa --------");
-                    String giaima = MaHoaAES.giaiMaAES(ne, keyAES[tt].getBytes());
-                    System.out.println("giai ma ==-----" + giaima + "-----giai ma ====");
-                    out.write(ne);
+                    String decode = MaHoaAES.maHoaAES(msgSend, keyAES[tt].getBytes());
+                    //xử lý lỗi xuống dòng
+                    Scanner scanner = new Scanner(decode);
+                    String reMaHoa = "";
+                    while (scanner.hasNextLine()) {
+                        reMaHoa += scanner.nextLine();
+                    }
+                    scanner.close();
+                    System.out.println("chuỗi mã hóa>>" + reMaHoa);
+                    out.write(reMaHoa);
                     out.newLine();
                     out.flush();
                     System.out.println("send msg client succes.");
