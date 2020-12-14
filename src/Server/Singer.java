@@ -8,7 +8,6 @@ package Server;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -160,12 +159,18 @@ public class Singer implements Serializable {
 
             while (true) {
                 index_delete_sn = chuoi[i].indexOf("span id=\"Sự");
-                index_delete_sne = chuoi[i].indexOf("span id=\"Sản");
-                if (chuoi[i].indexOf("span id=\"Sự") == -1) {
+                //System.out.println("dau " + index_delete_sn);
+                if (index_delete_sn < 0) {
+                    index_delete_sn = chuoi[i].indexOf("span id=\"Cuộc");
+                    //System.out.println("dau " + index_delete_sn);
+                }
+                index_delete_sne = chuoi[i].indexOf("span id=\"Đĩa", index_delete_sn + 10);
+                //System.out.println("cuoi" + index_delete_sne);
+                if (index_delete_sn == -1) {
                     break;
-                } else {
+                } else if (index_delete_sn > 0) {
                     result = chuoi[i].substring(index_delete_sn, index_delete_sne);
-                    System.out.println(result);
+                    //System.out.println(result);
                 }
                 break;
             }
@@ -208,6 +213,74 @@ public class Singer implements Serializable {
                 catchuoi = result.substring(index_delete_first, index_delete_second + 1);
             }
             result = result.replace(catchuoi, "");
+        }
+        return result;
+    }
+
+    public static String inforSinger(String nameSinger) {
+        String kq = nameSinger;
+        String subString = "";
+        int index_delete_first = 0;
+        int index_delete_second = 0;
+        int index_delete_tt = 0;
+        String[] output;
+        String result = "";
+        String[] chuoi = kq.split(">");
+        for (int i = 0; i < chuoi.length; i++) {
+            if (chuoi[i].contains("&lt;/p&gt;&lt;p&gt;")) {
+                output = chuoi[i].split("&lt;/p&gt;&lt;p&gt;");
+                for (int j = 0; j < output.length; j++) {
+                    index_delete_tt = output[j].indexOf("span id=\"Sự");
+                    System.out.println(index_delete_tt);
+                    if (index_delete_tt > 0) {
+                        output[j] = output[j].substring(0, index_delete_tt);
+                    }
+                    output[j] = output[j].replaceAll("/li&gt;", " ");
+                    output[j] = output[j].replaceAll("li&gt;", " ");
+                    output[j] = output[j].replaceAll("/i&gt;", "");
+                    output[j] = output[j].replaceAll("i&gt;", "");
+                    output[j] = output[j].replaceAll("/p&gt;", "");
+                    output[j] = output[j].replaceAll("p&gt;", "");
+                    output[j] = output[j].replaceAll("&lt;", "");
+                    output[j] = output[j].replaceAll("/b&gt;", "");
+                    output[j] = output[j].replaceAll("b&gt;", "");
+                    output[j] = output[j].replaceAll("/span&gt;", "");
+                    output[j] = output[j].replaceAll("&gt;", "");
+                    output[j] = output[j].replaceAll("/span", "");
+                    output[j] = output[j].replaceAll("span", "");
+                    output[j] = output[j].replaceAll("/li", " ");
+                    output[j] = output[j].replaceAll("/h2", "");
+                    output[j] = output[j].replaceAll("h2", "");
+                    output[j] = output[j].replaceAll("/h3", "");
+                    output[j] = output[j].replaceAll("h3", "");
+                    output[j] = output[j].replaceAll("/h4", "");
+                    output[j] = output[j].replaceAll("h4", "");
+                    output[j] = output[j].replaceAll("/ul", "");
+                    output[j] = output[j].replaceAll("ul", "");
+                    output[j] = output[j].replaceAll("</extract", "");
+                    output[j] = output[j].replaceAll("&amp;", "");
+                    output[j] = output[j].replace("&nbsp;", " ");
+
+                    while (true) {
+                        index_delete_first = output[j].indexOf("id=");
+                        index_delete_second = output[j].indexOf('"', index_delete_first + 4);
+                        if (output[j].indexOf("id=") == -1) {
+                            break;
+                        } else if (index_delete_first > 0 && index_delete_second > 0) {
+
+                            subString = output[j].substring(index_delete_first, index_delete_second + 1);
+                        }
+                        output[j] = output[j].replace(subString, "");
+                    }
+
+                    result += output[j];
+                    if (index_delete_tt > 0) {
+                        break;
+                    }
+                    //System.out.println(output[j]);
+                }
+                break;
+            }
         }
         return result;
     }
@@ -379,14 +452,18 @@ public class Singer implements Serializable {
             dateBirth = chuoins.substring(index_delete_first + 6, index_delete_second);
         }
         int start = dateBirth.indexOf("ngày") + 1;
-        int end = dateBirth.indexOf("năm", start);
-        dateBirth = dateBirth.substring(start, end + 8);
-        dateBirth = dateBirth.replaceAll("gày", "");
-        return dateBirth;
+        if (start > 0) {
+            int end = dateBirth.indexOf("năm", start);
+            dateBirth = dateBirth.substring(start, end + 8);
+            dateBirth = dateBirth.replaceAll("gày", "");
+            return dateBirth;
+        } else {
+            return "rỗng";
+        }
     }
 
     public Singer(String search) throws IOException {
-        Pattern pattern = Pattern.compile("([a-z]|[A-Z])+");
+        // Pattern pattern = Pattern.compile("([a-z]|[A-Z])+");
         String nameSinger = "";
         //String add = "https://vi.wikipedia.org/w/index.php";
 //        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
@@ -415,13 +492,19 @@ public class Singer implements Serializable {
             }
         }
         nameSinger = nameSinger.trim().replace(" ", "_");
-        if (pattern.matcher(nameSinger).matches()) {
+
+        String ttcs = callAPI(nameSinger);
+
+        if (!ttcs.contains("<extract xml:space=\"preserve\">&")) {
             nameSinger += "_(ca_sĩ_Việt_Nam)";
+            ttcs = callAPI(nameSinger);
         }
         System.out.println(nameSinger);
-        String ttcs = callAPI(nameSinger);
         this.dateBirth = dateBirth(ttcs);
         this.tieuSu = tieuSu(ttcs);
+        if (this.tieuSu.equals("")) {
+            this.tieuSu = inforSinger(ttcs);
+        }
         this.name = nameSinger(ttcs);
         this.listMV = listMV(ttcs);
         this.listSong = listSong(ttcs);

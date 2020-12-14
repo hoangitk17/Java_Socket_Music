@@ -6,7 +6,6 @@
 package Client.GUI;
 
 import Server.Singer;
-import Server.Song;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -36,10 +36,12 @@ public class SingerPanel extends javax.swing.JPanel {
     Client client;
     JFrame parent;
     Singer singer;
+
     public SingerPanel() {
         initComponents();
         initCompCommon();
     }
+
     public SingerPanel(JFrame parent, Client client) {
         initComponents();
         // padding-left 10 px
@@ -47,7 +49,7 @@ public class SingerPanel extends javax.swing.JPanel {
         this.client = client;
         this.parent = parent;
     }
-    
+
     public void initCompCommon() {
         // padding-left 10 px
         textInputSearch.setBorder(
@@ -56,7 +58,7 @@ public class SingerPanel extends javax.swing.JPanel {
                         javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0)
                 )
         );
-        
+
         //set placeholder
         textInputSearch.setText(SEARCH_PLACE_HOLDER);
         textInputSearch.setForeground(Color.GRAY);
@@ -85,11 +87,11 @@ public class SingerPanel extends javax.swing.JPanel {
         });
         // set scroll speed
         scroll.getVerticalScrollBar().setUnitIncrement(16);
-        
+
         //init cardlayout
         cardLayout = (CardLayout) plCards.getLayout();
         cardLayout.show(plCards, SEARCH);
-        
+
         //wrap text of JTextarea
         txtAlbum.setWrapStyleWord(true);
         txtAlbum.setLineWrap(true);
@@ -100,6 +102,7 @@ public class SingerPanel extends javax.swing.JPanel {
         txtTieuSu.setWrapStyleWord(true);
         txtTieuSu.setLineWrap(true);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -438,7 +441,7 @@ public class SingerPanel extends javax.swing.JPanel {
     private void textInputSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textInputSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textInputSearchActionPerformed
-    
+
     public void showSingerExactly(Singer singer) {
         System.out.println("Show singer");
         this.singer = singer;
@@ -450,14 +453,14 @@ public class SingerPanel extends javax.swing.JPanel {
         txtSong.setText(singer.getListSong());
         txtAlbum.setText(singer.getListMV());
     }
-    
+
     public void showSingerNearCorrect(ArrayList<String> list) {
         System.out.println("Show song near correct");
         lbNoFoundSinger.setText("Không tìm thấy tên ca sĩ " + textInputSearch.getText());
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String singerName: list) {
+
+        for (String singerName : list) {
             listModel.addElement(singerName);
-            
         }
         listsSinger.setModel(listModel);
         listsSinger.setCellRenderer(new SingerRenderer());
@@ -466,10 +469,8 @@ public class SingerPanel extends javax.swing.JPanel {
             public void mouseClicked(MouseEvent evt) {
                 JList list = (JList) evt.getSource();
                 if (evt.getClickCount() == 2) {
-
                     // Double-click detected
                     int index = list.locationToIndex(evt.getPoint());
-//                    final Song element = ListSong.getModel().getElementAt(index);
                     System.out.println("2" + index);
                 } else if (evt.getClickCount() == 3) {
 
@@ -479,10 +480,9 @@ public class SingerPanel extends javax.swing.JPanel {
                 }
             }
         });
-        cardLayout.show(plCards, NOT_FOUND);
-
+        cardLayout.show(plCards, NOT_FOUND);;
     }
-    
+
     private void btnSearchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMousePressed
         // TODO add your handling code here:
         try {
@@ -508,7 +508,8 @@ public class SingerPanel extends javax.swing.JPanel {
                         }
                         break;
                         case "nosong": {
-                           
+                            JOptionPane.showMessageDialog(this, "Không tìm thấy ca sĩ nào.");
+                            System.out.println("No singer");
                         }
                         break;
                     }
@@ -523,7 +524,6 @@ public class SingerPanel extends javax.swing.JPanel {
             System.out.println(e.toString());
         }
     }//GEN-LAST:event_btnSearchMousePressed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnSearch;

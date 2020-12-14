@@ -232,13 +232,14 @@ class ReceiveMessage implements Runnable {
                 System.out.println("Singer key 2");
                 String data = res.substring("key:singer:2:".length());
                 System.err.println("json ArrSinger>>" + data);
-                ArrayList<String> listNameSinger = gson.fromJson(data, new TypeToken<ArrayList<String>>() {
+                Client.listsSinger = gson.fromJson(data, new TypeToken<ArrayList<String>>() {
                 }.getType());
-                System.out.println(listNameSinger);
+                System.out.println("size listSinger>>" + Client.listsSinger.size());
                 Client.singerFlag = "nearly";
             } else {
                 // xu ly fail
                 String infoError = stringToken.nextToken();
+                Client.singerFlag = "nosinger";
             }
         } catch (Exception e) {
             System.out.println("Exception at Handle Search Singer with message is " + e.getMessage());
