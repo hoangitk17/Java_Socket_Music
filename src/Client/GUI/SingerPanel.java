@@ -36,7 +36,7 @@ public class SingerPanel extends javax.swing.JPanel {
     Client client;
     JFrame parent;
     Singer singer;
-
+    String keyWord = "";
     public SingerPanel() {
         initComponents();
         initCompCommon();
@@ -456,7 +456,7 @@ public class SingerPanel extends javax.swing.JPanel {
 
     public void showSingerNearCorrect(ArrayList<String> list) {
         System.out.println("Show song near correct");
-        lbNoFoundSinger.setText("Không tìm thấy tên ca sĩ " + textInputSearch.getText());
+        lbNoFoundSinger.setText("Không tìm thấy tên ca sĩ " + keyWord);
         DefaultListModel<String> listModel = new DefaultListModel<>();
 
         for (String singerName : list) {
@@ -471,16 +471,54 @@ public class SingerPanel extends javax.swing.JPanel {
                 if (evt.getClickCount() == 2) {
                     // Double-click detected
                     int index = list.locationToIndex(evt.getPoint());
-                    System.out.println("2" + index);
-                } else if (evt.getClickCount() == 3) {
-
-                    // Triple-click detected
-                    int index = list.locationToIndex(evt.getPoint());
-                    System.out.println("3" + index);
-                }
+                    System.out.println("Click " + listsSinger.getSelectedValue());
+                   if(listsSinger.getSelectedValue() != null) {
+                       SearchSingerWithNameExactly(listsSinger.getSelectedValue());
+                   }
+                } 
             }
         });
         cardLayout.show(plCards, NOT_FOUND);;
+    }
+    
+    public void SearchSingerWithNameExactly(String name) {
+        try {
+            System.out.println("Click-exactly");
+            keyWord = name;
+            client.send.message = "key:singer:" + name;
+            client.send.flag = true;
+            String message;
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_SONG);
+            while (true) {
+                message = new String(Client.singerFlag);
+                if (!message.equals("")) {
+                    switch (message) {
+                        case "exactly": {
+                            showSingerExactly(Client.singer);
+                            System.out.println("Exactly");
+                        }
+                        break;
+                        case "nearly": {
+                            showSingerNearCorrect(Client.listsSinger);
+                            System.out.println("Nearly");
+                        }
+                        break;
+                        case "nosong": {
+                            JOptionPane.showMessageDialog(this, "Không tìm thấy ca sĩ nào.");
+                            System.out.println("No singer");
+                        }
+                        break;
+                    }
+                    Client.singer = null;
+                    Client.singerFlag = "";
+                    Client.listsSinger = null;
+                    break;
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     private void btnSearchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMousePressed
@@ -488,6 +526,7 @@ public class SingerPanel extends javax.swing.JPanel {
         try {
             System.out.println("click");
             String keyword = textInputSearch.getText();
+            keyWord = keyword;
             client.send.message = "key:singer:" + keyword;
             client.send.flag = true;
             String message;
