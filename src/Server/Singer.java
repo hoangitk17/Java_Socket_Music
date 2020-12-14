@@ -166,7 +166,7 @@ public class Singer implements Serializable {
                 }
                 index_delete_sne = chuoi[i].indexOf("span id=\"", index_delete_sn + 300);
                 //System.out.println("cuoi" + index_delete_sne);
-                if (index_delete_sn == -1) {
+                if (index_delete_sn < 0) {
                     break;
                 } else if (index_delete_sn > 0) {
                     result = chuoi[i].substring(index_delete_sn, index_delete_sne);
@@ -296,10 +296,12 @@ public class Singer implements Serializable {
             if (chuoi[i].contains("&lt;/p&gt;&lt;p&gt;")) {
                 output = chuoi[i].split("&lt;/p&gt;&lt;p&gt;");
                 result = output[0];
+                result = result.replaceAll("/p&gt;", "");
                 result = result.replaceAll("p&gt;", "");
                 result = result.replaceAll("&lt;", "");
                 result = result.replaceAll("/b&gt;", "");
                 result = result.replaceAll("b&gt;", "");
+                result = result.replaceAll("&gt;", "");
 
             }
         }
@@ -307,6 +309,7 @@ public class Singer implements Serializable {
         if (index_delete_name > 0) {
             name = result.substring(0, index_delete_name);
         }
+        name = name.replaceAll("p class=\"mw-empty-elt\"", "");
         return name;
     }
 
@@ -495,6 +498,8 @@ public class Singer implements Serializable {
             temp = temp.trim().replace(" ", "_");
             if (nameSinger.contains("_(%C4%91%E1%BB%8Bnh_h%C6%B0%E1%BB%9Bng)")) {
                 nameSinger = temp + "_(ca_sĩ_Việt_Nam)";
+            } else if (nameSinger.contains("_(ca_s%C4%A9)")) {
+                nameSinger = temp + "_(ca_sĩ)";
             } else {
                 nameSinger = temp;
             }
