@@ -56,6 +56,7 @@ public class Worker implements Runnable {
     public void run() {
         System.out.println("Client " + myName + " " + socket.toString() + " accepted");
         Handle handle = new Handle();
+        Gson gson = new Gson();
         String input = "";
 
         String[] RSA = new String[20];
@@ -63,7 +64,6 @@ public class Worker implements Runnable {
         int tt = Integer.parseInt(myName);
         try {
             RSA[tt] = in.readLine();
-
         } catch (IOException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,13 +71,12 @@ public class Worker implements Runnable {
         try {
             keyAES[tt] = MaHoaRSA.giaiMaRSA(RSA[tt]);
             System.out.println("Key nhận được từ client: " + keyAES);
-            String mhaes = MaHoaAES.maHoaAES("test mã hóa>>", keyAES[tt].getBytes());
-            System.out.println("mã hóa>>" + mhaes);
-            System.out.println("giải mã>>" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
+//            String mhaes = MaHoaAES.maHoaAES("test mã hóa>>", keyAES[tt].getBytes());
+//            System.out.println("mã hóa>>" + mhaes);
+//            System.out.println("giải mã>>" + MaHoaAES.giaiMaAES(mhaes, keyAES[tt].getBytes()));
         } catch (Exception ex) {
             System.err.println("Key loi!!");
         }
-        System.out.println("\nWaiting for client...");
 
         while (true) {
             try {
@@ -94,7 +93,7 @@ public class Worker implements Runnable {
                     System.out.println("Error decode" + " from " + socket.toString() + " #Client " + myName);;
                 }
 
-                System.out.println("\nServer received: " + input + " from " + " #Client " + myName);
+                System.out.println("\nServer received: \"" + input + "\" from " + " #Client " + myName);
             }
 
             if (input.equals("bye")) {
@@ -106,75 +105,74 @@ public class Worker implements Runnable {
                 String keyWord = stringToken.nextToken();
                 String value = stringToken.nextToken();
                 try {
+                    String msgSend = "";
                     switch (keyWord) {
                         case "singer":
                             Singer singer = new Singer(value);
                             System.out.println(singer.getName());
                             if (singer.getName().equals("")) {
-                                String result = FindSingerByShazam(value);
-                                out.write(MaHoaAES.maHoaAES(result, keyAES[tt].getBytes()));
-                                out.newLine();
-                                out.flush();
+                                msgSend = FindSingerByShazam(value);
                             } else {
-                                out.write("key:singer:1");
-                                out.newLine();
-                                out.flush();
-                                obOut.reset();
-                                obOut.writeObject((Singer) singer);
-                                obOut.flush();
-                                System.out.println("Send siger success");
+                                String data = gson.toJson(singer); // chuyển đôi đối tượng singer thành json
+                                msgSend = "key:singer:1:" + data;
+//                                obOut.reset();
+//                                obOut.writeObject((Singer) singer);                             obOut.flush();
                             }
                             break;
                         case "login":
-                            checkLogin(value);
+                            msgSend = checkLogin(value);
                             break;
                         case "signup":
-                            checkSignUp(value);
+                            msgSend = checkSignUp(value);
                             break;
                         case "password":
-                            setPassword(value);
+                            msgSend = setPassword(value);
                             break;
                         case "music":
                             int result = FindMusic(value);
                             switch (result) {
                                 case 0:
-                                    out.write("key:music:0:Error Server");
-                                    out.newLine();
-                                    out.flush();
+                                    msgSend = "key:music:0:Error Server";
                                     break;
                                 case 1:
-                                    out.write("key:music:1");
-                                    out.newLine();
-                                    out.flush();
-                                    obOut.reset();
-                                    obOut.writeObject((ArrayList<Song>) listSongs);
+                                    String data = gson.toJson(listSongs);
+                                    msgSend = "key:music:1:" + data;
+//                                    obOut.reset();
+//                                    obOut.writeObject((ArrayList<Song>) listSongs);
                                     for (Song s : listSongs) {
                                         s.ToString();
                                     }
-                                    obOut.flush();
-
                             }
-                            System.out.println("Send Music>> succes.");
                             break;
                         case "musicE":
                             int index = Integer.parseInt(value);
                             Song s = listSongs.get(index);
-                            if (s.isHasKey()) {
-                                handle.GetDetailSongApi(s.getKey(), listSongs.get(index));
-                            } else {
-                                handle.GetDetailSongNCT(s.getKey(), s);
+                            if (s.getIDYoutube() == null) { // kiểm tra bài hát đã từng chạy
+                                if (s.isHasKey()) {
+                                    handle.GetDetailSongApi(s.getKey(), s);
+                                } else {
+                                    handle.GetDetailSongNCT(s.getKey(), s);
+                                }
+                                listSongs.set(index, s);
                             }
-                            out.write("key:music:2");
-                            out.newLine();
-                            out.flush();
-                            obOut.reset();
-                            obOut.writeObject((Song) listSongs.get(index));
-                            listSongs.get(index).ToStringExactly();
+                            String data = gson.toJson(s);
+                            msgSend = "key:music:2:" + data;
 
-                            obOut.flush();
-                            System.out.println("Send Music Exactly>> succes.");
+//                            obOut.reset();
+//                            obOut.writeObject((Song) listSongs.get(index));obOut.flush();
+                            listSongs.get(index).ToStringExactly();
                             break;
                     }
+                    System.out.println("msg>>" + msgSend);
+
+                    String ne = MaHoaAES.maHoaAES(msgSend, keyAES[tt].getBytes());
+                    System.out.println("choimh =------" + ne.replace("\n", "*") + "chuoi ma hoa --------");
+                    String giaima = MaHoaAES.giaiMaAES(ne, keyAES[tt].getBytes());
+                    System.out.println("giai ma ==-----" + giaima + "-----giai ma ====");
+                    out.write(ne);
+                    out.newLine();
+                    out.flush();
+                    System.out.println("send msg client succes.");
                 } catch (IOException ex) {
                     System.out.println("Error write object.");
                     ex.printStackTrace();
@@ -239,87 +237,61 @@ public class Worker implements Runnable {
         return 1;
     }
 
-    public void checkLogin(String message) {
+    public String checkLogin(String message) {
         StringTokenizer str = new StringTokenizer(message, " ");
         String user = str.nextToken();
         String password = str.nextToken();
         password = new Handle().md5(password); //băm md5
-        System.out.println("Check check Login.");
+        System.out.println("Check Login.");
 
-        String result = null;
         for (String string : Server.listUsers) {
             StringTokenizer st = new StringTokenizer(string, " ");
             String u = st.nextToken();
             String pass = st.nextToken();
             if (user.equals(u) && password.equals(pass)) {
-                result = "key:login:1";
-                System.out.println("OK");
-                break;
+                System.out.println("Login OK");
+                return "key:login:1";
             }
         }
-        if (result == null) {
-            result = "key:login:0:Tài khoản hoặc mật khẩu không đúng." + '\n';
-            System.out.println("FAIL");
-        }
-
-        try {
-            out.write(result);
-            out.newLine();
-            out.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        System.out.println("Login FAIL");
+        return "key:login:0:Tài khoản hoặc mật khẩu không đúng.";
     }
 
-    public void checkSignUp(String message) {
+    public String checkSignUp(String message) {
         StringTokenizer str = new StringTokenizer(message, " ");
         String user = str.nextToken();
         String password = str.nextToken();
         password = new Handle().md5(password);
         System.out.println("Check sign up");
 
-        String result = null;
         for (String string : Server.listUsers) {
             StringTokenizer st = new StringTokenizer(string, " ");
             String u = st.nextToken();
             String pass = st.nextToken();
             if (user.equals(u)) { //kiểm tra tài khoản đã tồn tại
-                result = "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
                 System.out.println("FAIL");
-                break;
+                return "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
             }
         }
-        if (result == null) { //nếu chưa có tài khoản nào thì write vào file
-            try {
-                BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
-                bf.write("\n" + user + " " + password);
-                bf.flush();
-                Server.listUsers.add(user + " " + password);
-                System.out.println("OKE");
-                bf.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            result = "key:signup:1";
-        }
-
-        try {
-            out.write(result);
-            out.newLine();
-            out.flush();
+        try {   //write vào file
+            BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
+            bf.write("\n" + user + " " + password);
+            bf.flush();
+            Server.listUsers.add(user + " " + password);
+            System.out.println("OKE");
+            bf.close();
         } catch (IOException ex) {
-            Logger.getLogger(Client.GUI.Worker.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return "key:signup:1";
     }
 
-    public void setPassword(String msg) {
+    public String setPassword(String msg) {
         Handle handle = new Handle();
         StringTokenizer value = new StringTokenizer(msg, " ");
         String userName = value.nextToken();
         String passNew = value.nextToken();
         passNew = handle.md5(passNew);
-        String result = null;
 
         for (int i = 0; i < Server.listUsers.size(); i++) {
             StringTokenizer valueStr = new StringTokenizer(Server.listUsers.get(i), " ");
@@ -330,23 +302,12 @@ public class Worker implements Runnable {
                     Server.listUsers.set(i, userName + " " + passNew);
                     handle.writeFileLogin();
                 }
-                result = "key:password:1";
                 System.out.println("Set password>> succes.");
-                break;
+                return "key:password:1";
             }
         }
-        if (result == null) {
-            result = "key:password:0:User " + userName + " không tồn tại.";
-            System.out.println("Set password>> fails!!!");
-        }
-
-        try {
-            out.write(result);
-            out.newLine();
-            out.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        System.out.println("Set password>> fails!!!");
+        return "key:password:0:User " + userName + " không tồn tại.";
     }
 
     public String FindSingerByShazam(String key) {

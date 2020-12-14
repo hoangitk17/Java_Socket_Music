@@ -27,21 +27,25 @@ public class MaHoaAES {
         // generate key
         Key key = new SecretKeySpec(mahoa, algorithm);
         Cipher chiper = Cipher.getInstance(algorithm);
-        chiper.init(Cipher.DECRYPT_MODE, key);
+
         byte[] decordedValue = new BASE64Decoder().decodeBuffer(encryptedText);
+        chiper.init(Cipher.DECRYPT_MODE, key);
         byte[] decValue = chiper.doFinal(decordedValue);
         String decryptedValue = new String(decValue);
         return decryptedValue;
     }
 
-//    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
+
+//        Song s = new Song("abc", true, "abc", "abc", "abc");
+//        Gson gson = new Gson();
+//        String j = "[\"One Direction\",\"Dan + Shay\",\"an Trn\",\"Dan Gibson";
+//        String i = "1uUs+PwL3o3Mtd7b7l4eHDOOYG3LhVbSK/0nxb0Dej1aAaSNaIwu6qQ6iiYJr3pKH/yUGt4J0AFGmVxaoKk/QQ==";
+//        String maHoa = MaHoaAES.maHoaAES(j, keyValue);
 //
-//        String chuoiBanDau = "tasda ashdhasd";
-//        String maHoa = MaHoaAES.maHoaAES(chuoiBanDau, keyValue);
-//        String giaiMa = MaHoaAES.giaiMaAES(maHoa, keyValue);
-//
-//        System.out.println("Chuỗi nhập vào : " + chuoiBanDau);
-//        System.out.println("Mã hoá : " + maHoa);
-//        System.out.println("Giải mã : " + giaiMa);
-//    }
+//        String giaiMa = MaHoaAES.giaiMaAES(i, keyValue);
+//        //System.out.println("Chuỗi nhập vào : " + chuoiBanDau);
+//        //System.out.println("Mã hoá : " + maHoa);
+//        System.out.println("Giải mã : " + maHoa.replace(oldChar, newChar));
+    }
 }

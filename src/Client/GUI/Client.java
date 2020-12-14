@@ -2,6 +2,8 @@ package Client.GUI;
 
 import Server.Singer;
 import Server.Song;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -41,6 +43,7 @@ class SendMessage implements Runnable {
             //-------------Ma Hoa------
             //chuoiMHAES = Client.randomchuoi();
             String mahoa = "";
+            System.out.println("cmh>>" + cmhAES);
             try {
                 mahoa = MaHoaRSA.maHoaRSA(cmhAES);
             } catch (Exception ex) {
@@ -172,6 +175,7 @@ class ReceiveMessage implements Runnable {
     }
 
     public void HandleSearchSong(String res) {
+        Gson gson = new Gson();
         try {
             System.out.println("Handle search song");
             StringTokenizer stringToken = new StringTokenizer(res, ":");
@@ -182,13 +186,15 @@ class ReceiveMessage implements Runnable {
                 // xu ly success
                 System.out.println("Song key 1");
                 Object resultArray = obInput.readObject();
-                Client.listsSongs = (ArrayList<Song>) (resultArray);
+                Client.listsSongs = gson.fromJson(stringToken.nextToken(), new TypeToken<ArrayList<Song>>() {
+                }.getType());;
                 System.out.println("\nSize>>" + Client.listsSongs.size());
                 Client.songFlag = "nearly";
             } else if (status.equals("2")) {
                 // xu ly success
                 System.out.println("Song key 2");
-                Client.song = (Song) (obInput.readObject());
+                Client.song = gson.fromJson(stringToken.nextToken(), new TypeToken<Song>() {
+                }.getType());
                 Client.song.ToString();
                 Client.songFlag = "exactly";
             } else {
@@ -206,6 +212,7 @@ class ReceiveMessage implements Runnable {
     }
 
     public void HandleSearchSinger(String res) {
+        Gson gson = new Gson();
         try {
             StringTokenizer stringToken = new StringTokenizer(res, ":");
             String key = stringToken.nextToken();
@@ -214,13 +221,19 @@ class ReceiveMessage implements Runnable {
             if (status.equals("1")) {
                 // xu ly success
                 System.out.println("Singer key 1");
-                Client.singer = (Singer) (obInput.readObject());
+                Client.singer = gson.fromJson(stringToken.nextToken(), new TypeToken<Singer>() {
+                }.getType());
                 System.out.println(Client.singer.getName());
                 Client.singerFlag = "exactly";
+            } else if (status.equals("2")) {
+                //xử lý gần đúng
+                System.out.println("Singer key 2");
+                ArrayList<String> listNameSinger = gson.fromJson(stringToken.nextToken(), new TypeToken<ArrayList<String>>() {
+                }.getType());
+                System.out.println(listNameSinger);
             } else {
                 // xu ly fail
                 String infoError = stringToken.nextToken();
-
             }
         } catch (Exception e) {
             System.out.println("Exception at Handle Search Singer with message is " + e.getMessage());
@@ -228,68 +241,77 @@ class ReceiveMessage implements Runnable {
     }
 
     public void run() {
-        try {
-            System.out.println("run receive>>");
-            while (true) {
-                String data = in.readLine();
+
+        System.out.println("run receive>>");
+        while (true) {
+            String data = null;
+            System.out.println("\ncmhR>>" + cmhAES);
+            try {
+                data = in.readLine();
+                String giaimaString = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
+                System.out.println("du lieu nhan" + data);
+
+                System.out.println("chuoi giai ma" + giaimaString);
                 data = MaHoaAES.giaiMaAES(data, cmhAES.getBytes());
-                System.out.print(""); // data is always get data from stream
-                if (data != null && !data.equals("")) {
-                    System.out.println(data);
-                    if (data.contains("key")) {
-                        StringTokenizer stringToken = new StringTokenizer(data, ":");
-                        String key = stringToken.nextToken();
-                        String keyWord = stringToken.nextToken();
-                        switch (keyWord) {
-                            case "login":
-                                System.out.println("xu ly login");
-                                HandleLogin(data);
-                                // xu ly login
-                                break;
-                            case "signup":
-                                System.out.println("Xử lý sign up");
-                                HandleSignUp(data);
-                                // xu ly sign up
-                                break;
-                            case "password":
-                                System.out.println("Xử lý passowrd");
-                                HandleUpdatePassword(data);
-                                // xu ly sign up
-                                break;
-                            case "music":
-                                // xu ly music
-                                HandleSearchSong(data);
-                                break;
-                            case "singer":
-                                // xu ly singer
-                                HandleSearchSinger(data);
-                                break;
-                            default:
+                System.out.println(data);
+            } catch (IOException ex) {
+                Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.print("ReceiveMessage>>" + data); // data is always get data from stream
+            if (data != null && !data.equals("")) {
+                System.out.println(data);
+                if (data.contains("key")) {
+                    StringTokenizer stringToken = new StringTokenizer(data, ":");
+                    String key = stringToken.nextToken();
+                    String keyWord = stringToken.nextToken();
+                    switch (keyWord) {
+                        case "login":
+                            System.out.println("xu ly login");
+                            HandleLogin(data);
+                            // xu ly login
+                            break;
+                        case "signup":
+                            System.out.println("Xử lý sign up");
+                            HandleSignUp(data);
+                            // xu ly sign up
+                            break;
+                        case "password":
+                            System.out.println("Xử lý passowrd");
+                            HandleUpdatePassword(data);
+                            // xu ly sign up
+                            break;
+                        case "music":
+                            // xu ly music
+                            HandleSearchSong(data);
+                            break;
+                        case "singer":
+                            // xu ly singer
+                            HandleSearchSinger(data);
+                            break;
+                        default:
 
-                                System.out.println("Default");
-                        }
+                            System.out.println("Default");
+                    }
 
-                    } else {
+                } else {
 //                        StringTokenizer stringToken = new StringTokenizer(data, ":");
 //                        String key = stringToken.nextToken();
 //                        String keyWord = stringToken.nextToken();
 //                        System.out.println(key + ">>" + keyWord);
-                    }
-//                    System.out.println("\nClient receive data: " + data);
-                    data = "";
                 }
+//                    System.out.println("\nClient receive data: " + data);
+                data = "";
             }
-        } catch (IOException e) {
-            System.out.println("Error at ReceiMessage " + e.getMessage());
-        } catch (Exception ex) {
-            Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
 
 public class Client {
 
-    private String chuoiMHAES = randomchuoi().toString();
+    byte[] keyValue = new byte[]{'5', '2', '3', '4', '5', '6', '7', '8', 'h', '1', '2', '3', '4', '5', '6', '8'};
+    private String chuoiMHAES = "52345678h1234568";
     public final String NAME = "#default";
     private static String host = "localhost";
     private static int port = 1234;
