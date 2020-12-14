@@ -164,7 +164,7 @@ public class Singer implements Serializable {
                     index_delete_sn = chuoi[i].indexOf("span id=\"Cuộc");
                     //System.out.println("dau " + index_delete_sn);
                 }
-                index_delete_sne = chuoi[i].indexOf("span id=\"Đĩa", index_delete_sn + 10);
+                index_delete_sne = chuoi[i].indexOf("span id=\"", index_delete_sn + 300);
                 //System.out.println("cuoi" + index_delete_sne);
                 if (index_delete_sn == -1) {
                     break;
@@ -463,43 +463,45 @@ public class Singer implements Serializable {
     }
 
     public Singer(String search) throws IOException {
-        // Pattern pattern = Pattern.compile("([a-z]|[A-Z])+");
+        //Pattern pattern = Pattern.compile("<extract xml:space=\"preserve\">" );
         String nameSinger = "";
-        //String add = "https://vi.wikipedia.org/w/index.php";
-//        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
-//                .data("search", nameSinger)
-//                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
-//                .data("go", "Xem")
-//                .data("ns0", "1").ignoreContentType(true)
-//                .get();
-//        String st = docHTML.toString();
-//
-//        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
-//        if (start != -1) {
-//            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
-//            int end = st.indexOf("\">", start);
-//            System.out.println("a " + start + "b " + end);
-//            String search = st.substring(start, end);
-//            System.out.println("name search>>" + search);
-        search = search.replaceAll("\\s\\s+", " ").trim();
-        if (search.indexOf(" ") == -1) {
-            nameSinger = search.substring(0, 1).toUpperCase() + search.substring(1);
-        } else {
-            String[] arr = search.split(" ");
-            //dùng vòng lặp duyệt các từ và thay thế từ đầu tiên!
-            for (String x : arr) {
-                nameSinger += (x.substring(0, 1).toUpperCase() + x.substring(1)) + " ";
+        String add = "https://vi.wikipedia.org/w/index.php";
+        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
+                .data("search", search)
+                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
+                .data("go", "Xem")
+                .data("ns0", "1").ignoreContentType(true)
+                .get();
+        String st = docHTML.toString();
+
+        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
+        if (start != -1) {
+            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
+            int end = st.indexOf("\">", start);
+            nameSinger = st.substring(start, end);
+            System.out.println("name search>>" + nameSinger);
+        }
+        if (nameSinger.contains("%")) {
+            String temp = "";
+            search = search.replaceAll("\\s\\s+", " ").trim();
+            if (search.indexOf(" ") == -1) {
+                temp = search.substring(0, 1).toUpperCase() + search.substring(1);
+            } else {
+                String[] arr = search.split(" ");
+                for (String x : arr) {
+                    temp += (x.substring(0, 1).toUpperCase() + x.substring(1)) + " ";
+                }
+            }
+            temp = temp.trim().replace(" ", "_");
+            if (nameSinger.contains("_(%C4%91%E1%BB%8Bnh_h%C6%B0%E1%BB%9Bng)")) {
+                nameSinger = temp + "_(ca_sĩ_Việt_Nam)";
+            } else {
+                nameSinger = temp;
             }
         }
-        nameSinger = nameSinger.trim().replace(" ", "_");
+        System.out.println(nameSinger);
 
         String ttcs = callAPI(nameSinger);
-
-        if (!ttcs.contains("<extract xml:space=\"preserve\">&")) {
-            nameSinger += "_(ca_sĩ_Việt_Nam)";
-            ttcs = callAPI(nameSinger);
-        }
-        System.out.println(nameSinger);
         this.dateBirth = dateBirth(ttcs);
         this.tieuSu = tieuSu(ttcs);
         if (this.tieuSu.equals("")) {
@@ -509,9 +511,6 @@ public class Singer implements Serializable {
         this.listMV = listMV(ttcs);
         this.listSong = listSong(ttcs);
         this.suNghiep = sunghiep(ttcs);
-//        } else {
-//            this.name = "";
-//        }
     }
 
     public Singer(String name, String dateBirth, String listMV, String listSong, String tieuSu, String suNghiep) {
