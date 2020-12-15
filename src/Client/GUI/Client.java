@@ -247,60 +247,67 @@ class ReceiveMessage implements Runnable {
     }
 
     public void run() {
-        System.out.println("run receive>>");
-        while (true) {
-            String data = null;
-            try {
+        try {
+            System.out.println("run receive>>");
+            while (true) {
+                String data = null;
+
                 String input = in.readLine();
-                data = MaHoaAES.giaiMaAES(input, cmhAES.getBytes());
-            } catch (IOException ex) {
-                Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (Exception ex) {
-                Logger.getLogger(ReceiveMessage.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            System.out.println("ReceiveMessage>>" + data); // data is always get data from stream
-            if (data != null && !data.equals("")) {
-                if (data.contains("key")) {
-                    StringTokenizer stringToken = new StringTokenizer(data, ":");
-                    String key = stringToken.nextToken();
-                    String keyWord = stringToken.nextToken();
-                    switch (keyWord) {
-                        case "login":
-                            System.out.println("xu ly login");
-                            HandleLogin(data);
-                            // xu ly login
-                            break;
-                        case "signup":
-                            System.out.println("Xử lý sign up");
-                            HandleSignUp(data);
-                            // xu ly sign up
-                            break;
-                        case "password":
-                            System.out.println("Xử lý passowrd");
-                            HandleUpdatePassword(data);
-                            // xu ly sign up
-                            break;
-                        case "music":
-                            // xu ly music
-                            HandleSearchSong(data);
-                            break;
-                        case "singer":
-                            // xu ly singer
-                            HandleSearchSinger(data);
-                            break;
-                        default:
+                if (input != null) {
+                    data = MaHoaAES.giaiMaAES(input, cmhAES.getBytes());
+                }
 
-                            System.out.println("Default");
-                    }
+                if (data != null) {
+                    System.out.println("ReceiveMessage>>" + data); // data is always get data from stream
+                }
+                if (data != null && !data.equals("")) {
+                    if (data.contains("key")) {
+                        StringTokenizer stringToken = new StringTokenizer(data, ":");
+                        String key = stringToken.nextToken();
+                        String keyWord = stringToken.nextToken();
+                        switch (keyWord) {
+                            case "login":
+                                System.out.println("xu ly login");
+                                HandleLogin(data);
+                                // xu ly login
+                                break;
+                            case "signup":
+                                System.out.println("Xử lý sign up");
+                                HandleSignUp(data);
+                                // xu ly sign up
+                                break;
+                            case "password":
+                                System.out.println("Xử lý passowrd");
+                                HandleUpdatePassword(data);
+                                // xu ly sign up
+                                break;
+                            case "music":
+                                // xu ly music
+                                HandleSearchSong(data);
+                                break;
+                            case "singer":
+                                // xu ly singer
+                                HandleSearchSinger(data);
+                                break;
+                            default:
 
-                } else {
+                                System.out.println("Default");
+                        }
+
+                    } else {
 //                        StringTokenizer stringToken = new StringTokenizer(data, ":");
 //                        String key = stringToken.nextToken();
 //                        String keyWord = stringToken.nextToken();
 //                        System.out.println(key + ">>" + keyWord);
-                }
+                    }
 //                    System.out.println("\nClient receive data: " + data);
-                data = "";
+                    data = "";
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            if(ex.getMessage().equals("Connection reset")) {
+                
             }
         }
     }
@@ -344,11 +351,19 @@ public class Client {
             executor.execute(send);
             executor.execute(recv);
         } catch (Exception e) {
-            if (e.getMessage().equals("Connection refused: connect")) {
-                isConnectRefuse = 1;
-                System.out.println("Connect Refused");
+            try {
+                if (e.getMessage().equals("Connection refused: connect")) {
+                    isConnectRefuse = 1;
+                    System.out.println("Connect Refused");
+                }
+                System.out.println(e.getMessage());
+                out.close();
+                socket.close();
+                //shutdown 2 threads send and receive at Client
+                Client.executor.shutdownNow();
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println(e.getMessage());
         }
     }
 
