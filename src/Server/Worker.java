@@ -338,10 +338,14 @@ public class Worker implements Runnable {
         } else {
             ArrayList<String> arrayList = new ArrayList<>();
             JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-            JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
-            for (JsonElement jsonE : jsonArray) {
-                String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
-                arrayList.add(nameSinger);
+            try {
+                JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
+                for (JsonElement jsonE : jsonArray) {
+                    String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
+                    arrayList.add(nameSinger);
+                }
+            } catch (Exception e) {
+                System.out.println("Lỗi!!! API không có thẻ  'artist'.");
             }
             return arrayList;
         }
@@ -383,7 +387,7 @@ public class Worker implements Runnable {
                     System.out.println(">>" + st);
                 }
             }
-            if (keySearch.equals(arr.get(0))) {
+            if (arr.isEmpty() || keySearch.equals(arr.get(0))) {
                 return "key:singer:0:Lỗi tìm kiếm!!!";
             }
             String data = gson.toJson(arr);

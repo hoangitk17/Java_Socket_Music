@@ -566,7 +566,7 @@ public class SingerPanel extends javax.swing.JPanel {
                             System.out.println("Nearly");
                         }
                         break;
-                        case "nosong": {
+                        case "nosinger": {
                             JOptionPane.showMessageDialog(this, "Không tìm thấy ca sĩ nào.");
                             System.out.println("No singer");
                         }

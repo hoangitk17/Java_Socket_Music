@@ -38,7 +38,7 @@ public class Handle {
     }
 
     public void GetSongFromNCT(Elements eleSong, String nameSearch) {
-        List<Element> listSongNCT = eleSong.subList(0, 20);
+        List<Element> listSongNCT = eleSong.size() > 20 ? eleSong.subList(0, 20) : eleSong;
         for (Element element : listSongNCT) {
             String addSong = element.getElementsByTag("a").attr("href");
             String nameSong = element.getElementsByTag("a").attr("title");
