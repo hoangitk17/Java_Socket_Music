@@ -307,7 +307,7 @@ class ReceiveMessage implements Runnable {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             if(ex.getMessage().equals("Connection reset")) {
-                
+                Client.isConnectionReset = 1;
             }
         }
     }
@@ -337,6 +337,7 @@ public class Client {
     public SendMessage send;
     public ReceiveMessage recv;
     public int isConnectRefuse = 0;
+    public static int isConnectionReset = 0;
 
     public Client() {
         try {
@@ -356,10 +357,16 @@ public class Client {
                     System.out.println("Connect Refused");
                 }
                 System.out.println(e.getMessage());
-                out.close();
-                socket.close();
+                if(out != null) {
+                    out.close();
+                }
+                if(socket != null) {
+                    socket.close();
+                }
                 //shutdown 2 threads send and receive at Client
-                Client.executor.shutdownNow();
+                if(Client.executor != null) {
+                    Client.executor.shutdownNow();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }

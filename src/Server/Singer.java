@@ -7,6 +7,7 @@ package Server;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -465,57 +466,64 @@ public class Singer implements Serializable {
         }
     }
 
-    public Singer(String search) throws IOException {
+    public Singer(String search) {
         //Pattern pattern = Pattern.compile("<extract xml:space=\"preserve\">" );
-        String nameSinger = "";
-        String add = "https://vi.wikipedia.org/w/index.php";
-        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
-                .data("search", search)
-                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
-                .data("go", "Xem")
-                .data("ns0", "1").ignoreContentType(true)
-                .get();
-        String st = docHTML.toString();
+        try {
+            String nameSinger = "";
+            String add = "https://vi.wikipedia.org/w/index.php";
+            org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
+                    .data("search", search)
+                    .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
+                    .data("go", "Xem")
+                    .data("ns0", "1").ignoreContentType(true)
+                    .get();
 
-        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
-        if (start != -1) {
-            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
-            int end = st.indexOf("\">", start);
-            nameSinger = st.substring(start, end);
-            System.out.println("name search>>" + nameSinger);
-        }
-        if (nameSinger.contains("%")) {
-            String temp = "";
-            search = search.replaceAll("\\s\\s+", " ").trim();
-            if (search.indexOf(" ") == -1) {
-                temp = search.substring(0, 1).toUpperCase() + search.substring(1);
-            } else {
-                String[] arr = search.split(" ");
-                for (String x : arr) {
-                    temp += (x.substring(0, 1).toUpperCase() + x.substring(1)) + " ";
+            String st = docHTML.toString();
+
+            int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
+            if (start != -1) {
+                start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
+                int end = st.indexOf("\">", start);
+                nameSinger = st.substring(start, end);
+                System.out.println("name search>>" + nameSinger);
+            }
+            if (nameSinger.contains("%")) {
+                String temp = "";
+                search = search.replaceAll("\\s\\s+", " ").trim();
+                if (search.indexOf(" ") == -1) {
+                    temp = search.substring(0, 1).toUpperCase() + search.substring(1);
+                } else {
+                    String[] arr = search.split(" ");
+                    for (String x : arr) {
+                        temp += (x.substring(0, 1).toUpperCase() + x.substring(1)) + " ";
+                    }
+                }
+                temp = temp.trim().replace(" ", "_");
+                if (nameSinger.contains("_(%C4%91%E1%BB%8Bnh_h%C6%B0%E1%BB%9Bng)")) {
+                    nameSinger = temp + "_(ca_sĩ_Việt_Nam)";
+                } else if (nameSinger.contains("_(ca_s%C4%A9)")) {
+                    nameSinger = temp + "_(ca_sĩ)";
+                } else {
+                    nameSinger = temp;
                 }
             }
-            temp = temp.trim().replace(" ", "_");
-            if (nameSinger.contains("_(%C4%91%E1%BB%8Bnh_h%C6%B0%E1%BB%9Bng)")) {
-                nameSinger = temp + "_(ca_sĩ_Việt_Nam)";
-            } else if (nameSinger.contains("_(ca_s%C4%A9)")) {
-                nameSinger = temp + "_(ca_sĩ)";
-            } else {
-                nameSinger = temp;
-            }
-        }
-        System.out.println(nameSinger);
+            System.out.println(nameSinger);
 
-        String ttcs = callAPI(nameSinger);
-        this.dateBirth = dateBirth(ttcs);
-        this.tieuSu = tieuSu(ttcs);
-        if (this.tieuSu.equals("")) {
-            this.tieuSu = inforSinger(ttcs);
+            String ttcs = callAPI(nameSinger);
+            this.dateBirth = dateBirth(ttcs);
+            this.tieuSu = tieuSu(ttcs);
+            if (this.tieuSu.equals("")) {
+                this.tieuSu = inforSinger(ttcs);
+            }
+            this.name = nameSinger(ttcs);
+            this.listMV = listMV(ttcs);
+            this.listSong = listSong(ttcs);
+            this.suNghiep = sunghiep(ttcs);
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
         }
-        this.name = nameSinger(ttcs);
-        this.listMV = listMV(ttcs);
-        this.listSong = listSong(ttcs);
-        this.suNghiep = sunghiep(ttcs);
     }
 
     public Singer(String name, String dateBirth, String listMV, String listSong, String tieuSu, String suNghiep) {

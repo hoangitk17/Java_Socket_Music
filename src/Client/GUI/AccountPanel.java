@@ -300,7 +300,17 @@ public class AccountPanel extends javax.swing.JPanel {
     private void btnSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMousePressed
         // TODO add your handling code here:
         try {
-            System.out.println("start login");
+            System.out.println("start update");
+            // handle when server shutdown => Client to Login
+            if(Client.isConnectionReset == 1) {
+                JOptionPane.showMessageDialog(this, "Update Fail. Server Connection reset");
+                client.send.message = "bye";
+                client.send.flag = true;
+                Client.isConnectionReset = 0;
+                new LogIn();
+                parent.dispose();
+                return;
+            }
             String userName = tfUserName.getText();
             String oldPass = tfOldPass.getText();
             String newPass = tfNewPass.getText();

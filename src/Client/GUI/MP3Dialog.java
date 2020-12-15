@@ -43,12 +43,13 @@ public class MP3Dialog extends javax.swing.JDialog {
     private JButton swingButton;  
     private WebEngine webEngine;
     private String url;
+    ObservableList<Node> children;
+    Group root;
     public MP3Dialog(java.awt.Frame parent, boolean modal, String url) {
         super(parent, modal);
         initComponents();
         jfxPanel = new JFXPanel();  
-        createScene();  
-         
+        createScene();         
         setLayout(new BorderLayout());  
         add(jfxPanel, BorderLayout.CENTER);  
         setLocationRelativeTo(null);
@@ -67,8 +68,16 @@ public class MP3Dialog extends javax.swing.JDialog {
         // implement windowClosing method
         public void windowClosing(WindowEvent e) {
             // exit the application when window's close button is clicked
-            PlatformImpl.isImplicitExit();
-            window.dispose();
+            
+            PlatformImpl.startup(new Runnable() { 
+                @Override
+                public void run() {
+                    root.getChildren().removeAll(children);
+                    window.dispose();
+                }
+            
+            });
+            
 
         }
     }
@@ -82,7 +91,7 @@ public class MP3Dialog extends javax.swing.JDialog {
                 stage.setTitle("Hello Java FX");  
                 stage.setResizable(true);  
    
-                Group root = new Group();  
+                root = new Group();  
                 Scene scene = new Scene(root,80,20);  
                 stage.setScene(scene);  
                 stage.centerOnScreen();
@@ -94,7 +103,7 @@ public class MP3Dialog extends javax.swing.JDialog {
                 browser = new WebView();
                 browser.getEngine().loadContent(htmlText2);
                 
-                ObservableList<Node> children = root.getChildren();
+                children = root.getChildren();
                 children.add(browser);                     
                  stage.setOnCloseRequest(new EventHandler<javafx.stage.WindowEvent>() {
                     @Override
