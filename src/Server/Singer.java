@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.StringTokenizer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 /**
  *
@@ -24,6 +25,24 @@ public class Singer implements Serializable {
     private String listMV;
     private String suNghiep;
     private String tieuSu;
+    private String mp3;
+    private String youtube;
+
+    public String getMp3() {
+        return mp3;
+    }
+
+    public void setMp3(String mp3) {
+        this.mp3 = mp3;
+    }
+
+    public String getYoutube() {
+        return youtube;
+    }
+
+    public void setYoutube(String youtube) {
+        this.youtube = youtube;
+    }
 
     public Singer() {
     }
@@ -572,6 +591,7 @@ public class Singer implements Serializable {
                 nameSinger = temp;
             }
         }
+
         System.out.println(nameSinger);
 
         String ttcs = callAPI(nameSinger);
@@ -584,15 +604,24 @@ public class Singer implements Serializable {
         this.listMV = listMV(ttcs);
         this.listSong = listSong(ttcs);
         this.suNghiep = sunghiep(ttcs);
+        String nameSearch = search.toLowerCase();
+        getFirstSong gf = new getFirstSong();
+        Element elesong = gf.findMusicFirst(nameSearch);
+        String name = gf.GetNameFromNCT(elesong);
+        String idmp3 = gf.GetIDFromNCT(elesong);
+        this.mp3 = gf.GetUrlMP3First(idmp3);
+        this.youtube = gf.GetIdYoutubeNCT(name);
+
     }
 
-    public Singer(String name, String dateBirth, String listMV, String listSong, String tieuSu, String suNghiep) {
+    public Singer(String name, String dateBirth, String listMV, String listSong, String tieuSu, String suNghiep, String mp3, String youtube) {
         this.name = name;
         this.dateBirth = dateBirth;
         this.listMV = listMV;
         this.listSong = listSong;
         this.tieuSu = tieuSu;
         this.suNghiep = suNghiep;
+        this.mp3 = mp3;
+        this.youtube = youtube;
     }
-
 }
