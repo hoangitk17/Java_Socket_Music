@@ -548,31 +548,17 @@ public class SongPanel extends javax.swing.JPanel {
     private void btnShowMP3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowMP3ActionPerformed
         // TODO add your handling code here:
         try {
-            if (!NativeInterface.isOpen()) {
-                NativeInterface.open();
-                new Thread(new Runnable() {
-                    public void run() {
-                        NativeInterface.runEventPump();
-                    }
-                }).start();
-
-            }
+                   
             if (song == null) {
                 JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
             } else {
                 if (song.getMp3() != null) {
-                    new MP3Dialog(parent, true, song.getMp3()).setVisible(true);
+                    new MP3DialogNew(parent, true, song.getMp3()).setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(this, "Không có file mp3.");
                 }
             }
-            // don't forget to properly close native components
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    NativeInterface.close();
-                }
-            }));
+            
         } catch (Exception e) {
 
         }
