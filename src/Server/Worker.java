@@ -104,21 +104,12 @@ public class Worker implements Runnable {
                 StringTokenizer stringToken = new StringTokenizer(input, ":");
                 String key = stringToken.nextToken();
                 String keyWord = stringToken.nextToken();
-                String value = stringToken.nextToken();
+                String value = stringToken.hasMoreTokens() ? stringToken.nextToken() : "";
                 try {
                     String msgSend = "";
                     switch (keyWord) {
                         case "singer":
-                            Singer singer = new Singer(value);
-                            System.out.println(singer.getName());
-                            if ("".equals(singer.getName())) {
-                                msgSend = FindSingerByShazam(value);
-                            } else {
-                                String data = gson.toJson(singer); // chuyển đôi đối tượng singer thành json
-                                msgSend = "key:singer:1:" + data;
-//                                obOut.reset();
-//                                obOut.writeObject((Singer) singer);                             obOut.flush();
-                            }
+                            msgSend = SearchSinger(value);
                             break;
                         case "login":
                             msgSend = checkLogin(value);
@@ -130,7 +121,7 @@ public class Worker implements Runnable {
                             msgSend = setPassword(value);
                             break;
                         case "music":
-                            int result = FindMusic(value);
+                            int result = SearchMusic(value);
                             switch (result) {
                                 case 0:
                                     msgSend = "key:music:0:Error Server";
@@ -138,11 +129,13 @@ public class Worker implements Runnable {
                                 case 1:
                                     String data = gson.toJson(listSongs);
                                     msgSend = "key:music:1:" + data;
-//                                    obOut.reset();
-//                                    obOut.writeObject((ArrayList<Song>) listSongs);
                                     for (Song s : listSongs) {
                                         s.ToString();
                                     }
+                                    break;
+                                case -1:
+                                    msgSend = "key:music:0:Không tìm thấy bài hát nào.";
+                                    break;
                             }
                             break;
                         case "musicE":
@@ -158,9 +151,6 @@ public class Worker implements Runnable {
                             }
                             String data = gson.toJson(s);
                             msgSend = "key:music:2:" + data;
-
-//                            obOut.reset();
-//                            obOut.writeObject((Song) listSongs.get(index));obOut.flush();
                             listSongs.get(index).ToStringExactly();
                             break;
                     }
@@ -207,7 +197,7 @@ public class Worker implements Runnable {
         System.out.println("Closed socket for Client " + myName);
     }
 
-    public int FindMusic(String keySearch) {
+    public int SearchMusic(String keySearch) {
         Handle handle = new Handle();
         listSongs.clear();
 
@@ -231,10 +221,16 @@ public class Worker implements Runnable {
         }
         handle.GetSongFormApiShazam(keySearch);
 
+        if (listSongs.isEmpty()) {
+            return -1;
+        }
+
+        ArrayList<String> strTemp = new ArrayList<>();
         ArrayList<Song> sTemp = new ArrayList<>();
         for (Song s : listSongs) { //xóa phần tử trùng
-            if (!sTemp.contains(s) && handle.checkName(s.getName(), keySearch)) {
+            if (!strTemp.contains(s.getName() + s.getSinger()) && handle.checkName(s.getName(), keySearch)) {
                 sTemp.add(s);
+                strTemp.add(s.getName() + s.getSinger());
             }
         }
         listSongs = sTemp.isEmpty() ? listSongs : sTemp;
@@ -315,7 +311,7 @@ public class Worker implements Runnable {
         return "key:password:0:User " + userName + " không tồn tại.";
     }
 
-    public String FindSingerByShazam(String key) {
+    public ArrayList FindSingerByShazam(String key) {
         Document doc = null;
         Gson gson = new Gson();
         try {
@@ -332,7 +328,7 @@ public class Worker implements Runnable {
         }
         if (doc.body().text().equals("{}")) {
             System.out.println("Không tìm thấy ca sĩ nào!!!");
-            return "key:singer:0:Không tìm thấy ca sĩ nào!!!";
+            return null;
         } else {
             ArrayList<String> arrayList = new ArrayList<>();
             JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
@@ -341,9 +337,56 @@ public class Worker implements Runnable {
                 String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
                 arrayList.add(nameSinger);
             }
-            String data = gson.toJson(arrayList);
-            System.out.println("ca sĩ gần đúng>>" + data);
+            return arrayList;
+        }
+    }
+
+    public String SearchSinger(String keySearch) throws IOException {
+        Gson gson = new Gson();
+        Document docWiki = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
+                .data("search", keySearch)
+                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
+                .data("go", "Xem")
+                .data("ns0", "1").get();
+        String stDocWiki = docWiki.toString();
+        if (stDocWiki.contains("title=%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm&amp;go=Xem&amp;ns0=1")) {
+            return "key:singer:0:Không có ca sĩ " + keySearch + "!!!";
+        }
+        if (!stDocWiki.contains("class=\"infobox")) {//<div class=\"mw-parser-output\">\n" + "      <p><b>
+            // kiểm tra kết quả trả về có danh sách gợi ý hay không
+            System.out.println("Không ca sĩ theo từ khóa tìm kiếm. Danh sách gợi ý:");
+            org.jsoup.nodes.Document docHTML = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
+                    .data("search", "ca sĩ " + keySearch)
+                    .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
+                    .data("go", "Xem")
+                    .data("ns0", "1").ignoreContentType(true)
+                    .get();
+            ArrayList<String> arr = new ArrayList<>();
+            Element frameUl = docHTML.getElementsByClass("mw-search-results").first();
+            Elements eleLi = frameUl.getElementsByClass("mw-search-result-heading");
+            for (Element li : eleLi) {
+                if (li.text().contains("(ca sĩ") && li.text().toLowerCase().contains(keySearch.toLowerCase())) {
+                    arr.add(li.text());
+                    System.out.println(">>" + li.text());
+                }
+            }
+            ArrayList<String> arrayList = FindSingerByShazam(keySearch);
+            for (String st : arrayList) {
+                if (st.toLowerCase().contains(keySearch.toLowerCase())) {
+                    arr.add(st);
+                    System.out.println(">>" + st);
+                }
+            }
+            String data = gson.toJson(arr);
             return "key:singer:2:" + data;
+        } else {
+            int start = stDocWiki.indexOf("<h1 id=\"firstHeading\" class=\"firstHeading\" lang=\"vi\">") + "<h1 id=\"firstHeading\" class=\"firstHeading\" lang=\"vi\">".length();
+            int end = stDocWiki.indexOf("</h1>", start);
+            String nameSinger = stDocWiki.substring(start, end).replace(" ", "_"); //lấy title truyền vào api wiki
+            System.out.println("name>." + nameSinger);
+            Singer singer = new Singer(nameSinger);
+            String data = gson.toJson(singer);
+            return "key:singer:1:" + data;
         }
     }
 }
