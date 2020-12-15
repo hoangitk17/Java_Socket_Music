@@ -35,7 +35,7 @@ public class Home extends javax.swing.JFrame {
     AccountPanel cardAccount;
     SingerPanel cardSinger;
     SongPanel cardSong = new SongPanel(this);
-    HomePanel cardHome = new HomePanel();
+    HomePanel cardHome;
     CardLayout cardLayout;
     private final String ABOUT = "about";
     private final String ACCOUNT = "account";
@@ -67,6 +67,7 @@ public class Home extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         cardAccount = new AccountPanel(this, this.client, this.account);
         cardSinger = new SingerPanel(this, this.client);
+        cardHome = new HomePanel(this, this.client);
         initCompCommon();
     }
 
@@ -77,6 +78,7 @@ public class Home extends javax.swing.JFrame {
         this.account = account;
         cardAccount = new AccountPanel(this, this.client, this.account);
         cardSinger = new SingerPanel(this, this.client);
+        cardHome = new HomePanel(this, this.client);
         initCompCommon();    
         cardSong.setClient(client);
         
@@ -131,6 +133,7 @@ public class Home extends javax.swing.JFrame {
         plCards.add(cardSinger, SINGER);
         plCards.add(cardSong, SONG);
         plCards.add(cardHome, HOME);
+        cardLayout.show(plCards, HOME);
 
         // set bgcolor for item
         for (JPanel panel : menuItems) {

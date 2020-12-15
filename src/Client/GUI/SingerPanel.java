@@ -6,6 +6,7 @@
 package Client.GUI;
 
 import Server.Singer;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
@@ -129,7 +130,8 @@ public class SingerPanel extends javax.swing.JPanel {
         plInfoArtist = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jLabel12 = new javax.swing.JLabel();
+        btnYoutube = new javax.swing.JButton();
+        btnMp3 = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtAlbum = new javax.swing.JTextArea();
@@ -225,10 +227,9 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addGap(55, 55, 55)
                 .addGroup(plNotFoundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
-                    .addGroup(plNotFoundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(lbNoFoundSinger, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(51, Short.MAX_VALUE))
+                    .addComponent(lbNoFoundSinger, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         plNotFoundLayout.setVerticalGroup(
             plNotFoundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -252,7 +253,7 @@ public class SingerPanel extends javax.swing.JPanel {
         plSearch.setLayout(plSearchLayout);
         plSearchLayout.setHorizontalGroup(
             plSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE)
         );
         plSearchLayout.setVerticalGroup(
             plSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,23 +262,39 @@ public class SingerPanel extends javax.swing.JPanel {
 
         plCards.add(plSearch, "first");
 
-        jLabel12.setBackground(new java.awt.Color(0, 255, 255));
-        jLabel12.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setText("Imge");
-        jLabel12.setOpaque(true);
+        btnYoutube.setText("Xem video bài hát nổi bật");
+        btnYoutube.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnYoutubeActionPerformed(evt);
+            }
+        });
+
+        btnMp3.setText("Nghe bài hát nổi bật");
+        btnMp3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMp3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(btnYoutube)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(btnMp3, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnYoutube, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                    .addComponent(btnMp3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         jLabel17.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
@@ -287,6 +304,7 @@ public class SingerPanel extends javax.swing.JPanel {
         txtAlbum.setColumns(20);
         txtAlbum.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtAlbum.setRows(5);
+        txtAlbum.setText("Không có thông tin về Album");
         jScrollPane3.setViewportView(txtAlbum);
 
         jLabel20.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
@@ -296,6 +314,7 @@ public class SingerPanel extends javax.swing.JPanel {
         txtSong.setColumns(20);
         txtSong.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtSong.setRows(5);
+        txtSong.setText("Không có thông tin về bài hát");
         jScrollPane4.setViewportView(txtSong);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -306,8 +325,8 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane4)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -326,7 +345,7 @@ public class SingerPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -334,13 +353,14 @@ public class SingerPanel extends javax.swing.JPanel {
         txtTieuSu.setColumns(20);
         txtTieuSu.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtTieuSu.setRows(5);
+        txtTieuSu.setText("Không có thông tin về tiểu sử");
         jScrollPane1.setViewportView(txtTieuSu);
 
         txtName.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
-        txtName.setText("Trần Văn Jack");
+        txtName.setText("Tên ca sĩ:");
 
         txtBirthDate.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
-        txtBirthDate.setText("25-10-1999");
+        txtBirthDate.setText("Ngày sinh:");
 
         jLabel16.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
         jLabel16.setText("Nghệ sĩ");
@@ -352,6 +372,7 @@ public class SingerPanel extends javax.swing.JPanel {
         txtThongTinSuNghiep.setColumns(20);
         txtThongTinSuNghiep.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         txtThongTinSuNghiep.setRows(5);
+        txtThongTinSuNghiep.setText("Không có thông tin về sự nghiệp");
         jScrollPane2.setViewportView(txtThongTinSuNghiep);
 
         jLabel19.setFont(new java.awt.Font("Roboto Mono", 1, 14)); // NOI18N
@@ -364,9 +385,9 @@ public class SingerPanel extends javax.swing.JPanel {
             .addGroup(plInfoArtistLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(plInfoArtistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                     .addComponent(txtBirthDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                     .addGroup(plInfoArtistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
@@ -584,9 +605,67 @@ public class SingerPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnSearchMousePressed
 
+    private void btnMp3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMp3ActionPerformed
+        // TODO add your handling code here:
+         try {
+                   
+//            if (song == null) {
+//                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
+//            } else {
+//                if (song.getMp3() != null) {
+//                    new MP3DialogNew(parent, true, song.getMp3()).setVisible(true);
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Không có file mp3.");
+//                }
+//            }
+            
+        } catch (Exception e) {
+
+        }
+    }//GEN-LAST:event_btnMp3ActionPerformed
+
+    private void btnYoutubeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnYoutubeActionPerformed
+        // TODO add your handling code here:
+        //https://sourceforge.net/p/djproject/discussion/671154/thread/e813001e/
+        try {
+            if (!NativeInterface.isOpen()) {
+                NativeInterface.open();
+                new Thread(new Runnable() {
+                    public void run() {
+                        NativeInterface.runEventPump();
+                    }
+                }).start();
+
+            }
+//            if (singer == null) {
+//                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
+//            } else {
+//                if (singer.getIDYoutube() != null) {
+////                    if (song.isHasKey()) {
+////                    new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+////                    } else {
+//                    new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
+////                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Bài hát không có video");
+//                }
+//            }
+
+            // don't forget to properly close native components
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    NativeInterface.close();
+                }
+            }));
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_btnYoutubeActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMp3;
     private javax.swing.JLabel btnSearch;
-    private javax.swing.JLabel jLabel12;
+    private javax.swing.JButton btnYoutube;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
