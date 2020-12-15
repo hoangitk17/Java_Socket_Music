@@ -166,6 +166,14 @@ public class Singer implements Serializable {
                     index_delete_sn = chuoi[i].indexOf("span id=\"Cuộc");
                     //System.out.println("dau " + index_delete_sn);
                 }
+                if (index_delete_sn < 0) {
+                    index_delete_sn = chuoi[i].indexOf("span id=\"Hoạt");
+                    //System.out.println("dau " + index_delete_sn);
+                }
+                if (index_delete_sn < 0) {
+                    index_delete_sn = chuoi[i].indexOf("span id=\"Thành");
+                    //System.out.println("dau " + index_delete_sn);
+                }
                 index_delete_sne = chuoi[i].indexOf("span id=\"", index_delete_sn + 300);
                 //System.out.println("cuoi" + index_delete_sne);
                 if (index_delete_sn < 0) {
@@ -234,6 +242,9 @@ public class Singer implements Serializable {
                 for (int j = 0; j < output.length; j++) {
                     index_delete_tt = output[j].indexOf("span id=\"Sự");
                     System.out.println(index_delete_tt);
+                    if (index_delete_tt < 0) {
+                        index_delete_tt = output[j].indexOf("span id=", 1000);
+                    }
                     if (index_delete_tt > 0) {
                         output[j] = output[j].substring(0, index_delete_tt);
                     }
@@ -318,8 +329,11 @@ public class Singer implements Serializable {
     public static String listSong(String nameSinger) {
         String kq = nameSinger;
         String result = "";
+        String song = "";
+        String lttbh = "";
         int index_delete_first = 0;
         int index_delete_second = 0;
+        int space = 0;
         String[] output;
         String catchuoi = "";
         int ttbh = 0;
@@ -328,11 +342,17 @@ public class Singer implements Serializable {
 
             while (true) {
                 index_delete_first = chuoi[i].indexOf("span id=\"Đĩa");
-                index_delete_second = chuoi[i].indexOf("span id=\"", index_delete_first + 4);
-                if (chuoi[i].indexOf("span id=\"Đĩa") == -1) {
+                if (index_delete_first < 0) {
+                    index_delete_first = chuoi[i].indexOf("span id=\"Album");
+                    //System.out.println(index_delete_first);
+                }
+                index_delete_second = chuoi[i].indexOf("span id=\"", index_delete_first + 100);
+                //System.out.println(index_delete_second);
+                if (index_delete_first < 0) {
                     break;
                 } else {
                     result = chuoi[i].substring(index_delete_first, index_delete_second);
+                    //System.out.println(result);
                 }
                 chuoi[i] = chuoi[i].replaceAll(result, "");
                 break;
@@ -366,16 +386,42 @@ public class Singer implements Serializable {
         result = result.replaceAll("ul", "");
         result = result.replaceAll("</extract", "");
         result = result.replaceAll("&amp;", "");
-        index_delete_first = result.indexOf("id=");
-        index_delete_second = result.indexOf('"', index_delete_first + 4);
-        catchuoi = result.substring(index_delete_first, index_delete_second + 1);
-        result = result.replaceAll(catchuoi, "");
-        return result;
+
+        //System.out.println("in lan 2||||" + result);
+        while (true) {
+            index_delete_first = result.indexOf("id=");
+            index_delete_second = result.indexOf('"', index_delete_first + 4);
+            if (result.indexOf("id=") == -1) {
+                break;
+            } else if (index_delete_first > 0 && index_delete_second > 0) {
+
+                catchuoi = result.substring(index_delete_first, index_delete_second + 1);
+            }
+            result = result.replace(catchuoi, "");
+        }
+        while (true) {
+            space = result.indexOf(")", song.length() + 1);
+            if (space == -1) {
+                break;
+            } else {
+                lttbh = result.substring(song.length(), space + 1);
+                song += lttbh + "\n";
+                space = -1;
+            }
+
+        }
+        song = song.replaceAll("Đĩa đơn hát chính", "");
+        song = song.replaceAll("Đĩa đơn", "");
+        song = song.substring(2, song.length());
+        return song;
     }
 
     public static String listMV(String nameSinger) {
         String kq = nameSinger;
+        String result = "";
+        int space = 0;
         String listMV = "";
+        String lttbh = "";
         int index_delete_first = 0;
         int index_delete_second = 0;
         String[] output;
@@ -386,51 +432,67 @@ public class Singer implements Serializable {
 
             while (true) {
                 index_delete_first = chuoi[i].indexOf("span id=\"MV");
-                index_delete_second = chuoi[i].indexOf("span id=\"", index_delete_first + 4);
+                index_delete_second = chuoi[i].indexOf("span id=\"", index_delete_first + 200);
                 if (chuoi[i].indexOf("span id=\"MV") == -1) {
                     break;
                 } else {
-                    listMV = chuoi[i].substring(index_delete_first, index_delete_second);
+                    result = chuoi[i].substring(index_delete_first, index_delete_second);
                 }
                 break;
             }
         }
-        if (listMV == "") {
-            listMV = "Không có MV";
-            return listMV;
-        }
-        listMV = listMV.replaceAll("/li&gt;", "");
-        listMV = listMV.replaceAll("li&gt;", "");
-        listMV = listMV.replaceAll("/i&gt;", "");
-        listMV = listMV.replaceAll("i&gt;", "");
-        listMV = listMV.replaceAll("/p&gt;", "");
-        listMV = listMV.replaceAll("p&gt;", "");
-        listMV = listMV.replaceAll("&lt;", "");
-        listMV = listMV.replaceAll("/b&gt;", "");
-        listMV = listMV.replaceAll("b&gt;", "");
-        listMV = listMV.replaceAll("/span&gt;", "");
-        listMV = listMV.replaceAll("&gt;", "");
-        listMV = listMV.replaceAll("/span", "");
-        listMV = listMV.replaceAll("span", "");
-        listMV = listMV.replaceAll("/li", "");
-        listMV = listMV.replaceAll("/h2", "");
-        listMV = listMV.replaceAll("h2", "");
-        listMV = listMV.replaceAll("/h3", "");
-        listMV = listMV.replaceAll("h3", "");
-        listMV = listMV.replaceAll("/h4", "");
-        listMV = listMV.replaceAll("h4", "");
-        listMV = listMV.replaceAll("/ul", "");
-        listMV = listMV.replaceAll("ul", "");
-        listMV = listMV.replaceAll("</extract", "");
-        listMV = listMV.replaceAll("&amp;", "");
-        index_delete_first = listMV.indexOf("id=");
-        index_delete_second = listMV.indexOf('"', index_delete_first + 4);
-        if (index_delete_first > 0) {
-            catchuoi = listMV.substring(index_delete_first - 1, index_delete_second - 3);
-        }
 
-        listMV = listMV.replaceAll(catchuoi, "");
-        listMV = listMV.replaceAll("\"MV\"", "");
+        result = result.replaceAll("/li&gt;", "");
+        result = result.replaceAll("li&gt;", "");
+        result = result.replaceAll("/i&gt;", "");
+        result = result.replaceAll("i&gt;", "");
+        result = result.replaceAll("/p&gt;", "");
+        result = result.replaceAll("p&gt;", "");
+        result = result.replaceAll("&lt;", "");
+        result = result.replaceAll("/b&gt;", "");
+        result = result.replaceAll("b&gt;", "");
+        result = result.replaceAll("/span&gt;", "");
+        result = result.replaceAll("&gt;", "");
+        result = result.replaceAll("/span", "");
+        result = result.replaceAll("span", "");
+        result = result.replaceAll("/li", "");
+        result = result.replaceAll("/h2", "");
+        result = result.replaceAll("h2", "");
+        result = result.replaceAll("/h3", "");
+        result = result.replaceAll("h3", "");
+        result = result.replaceAll("/h4", "");
+        result = result.replaceAll("h4", "");
+        result = result.replaceAll("/ul", "");
+        result = result.replaceAll("ul", "");
+        result = result.replaceAll("</extract", "");
+        result = result.replaceAll("&amp;", "");
+        while (true) {
+            index_delete_first = result.indexOf("id=");
+            index_delete_second = result.indexOf('"', index_delete_first + 4);
+            if (result.indexOf("id=") == -1) {
+                break;
+            } else if (index_delete_first > 0 && index_delete_second > 0) {
+
+                catchuoi = result.substring(index_delete_first, index_delete_second + 1);
+            }
+            result = result.replace(catchuoi, "");
+        }
+        while (true) {
+            space = result.indexOf(")", listMV.length() + 1);
+            if (space == -1) {
+                break;
+            } else {
+                lttbh = result.substring(listMV.length(), space + 1);
+                listMV += lttbh + "\n";
+                space = -1;
+            }
+
+        }
+        if (listMV.length() > 1) {
+            listMV = listMV.substring(1, listMV.length());
+        } else {
+            listMV = "Không có MV";
+        }
         return listMV;
     }
 
@@ -456,6 +518,7 @@ public class Singer implements Serializable {
         if (index_delete_first > 0) {
             dateBirth = chuoins.substring(index_delete_first + 6, index_delete_second);
         }
+//
         int start = dateBirth.indexOf("ngày") + 1;
         if (start > 0) {
             int end = dateBirth.indexOf("năm", start);
@@ -463,7 +526,12 @@ public class Singer implements Serializable {
             dateBirth = dateBirth.replaceAll("gày", "");
             return dateBirth;
         } else {
-            return "rỗng";
+            start = 0;
+
+            int end = dateBirth.indexOf("năm", start);
+            dateBirth = dateBirth.substring(start, end + 8);
+            return dateBirth;
+
         }
     }
 
