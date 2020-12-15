@@ -483,6 +483,16 @@ public class SingerPanel extends javax.swing.JPanel {
     
     public void SearchSingerWithNameExactly(String name) {
         try {
+            //handle when server shutdown
+            if(Client.isConnectionReset == 1) {
+                JOptionPane.showMessageDialog(this, "Server Connection reset");
+                client.send.message = "bye";
+                client.send.flag = true;
+                Client.isConnectionReset = 0;
+                new LogIn();
+                parent.dispose();
+                return;
+            }
             System.out.println("Click-exactly");
             keyWord = name;
             client.send.message = "key:singer:" + name;
@@ -523,7 +533,17 @@ public class SingerPanel extends javax.swing.JPanel {
 
     private void btnSearchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMousePressed
         // TODO add your handling code here:
-        try {
+        try 
+        {  //handle when server shutdown
+            if(Client.isConnectionReset == 1) {
+                JOptionPane.showMessageDialog(this, "Server Connection reset");
+                client.send.message = "bye";
+                client.send.flag = true;
+                Client.isConnectionReset = 0;
+                new LogIn();
+                parent.dispose();
+                return;
+            }
             System.out.println("click");
             String keyword = textInputSearch.getText();
             keyWord = keyword;

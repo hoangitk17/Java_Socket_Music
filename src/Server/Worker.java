@@ -375,14 +375,9 @@ public class Worker implements Runnable {
             int end = stDocWiki.indexOf("</h1>", start);
             String nameSinger = stDocWiki.substring(start, end).replace(" ", "_"); //lấy title truyền vào api wiki
             System.out.println("name>." + nameSinger);
-            try {
-                Singer singer = new Singer(nameSinger);
-                String data = gson.toJson(singer);
-                return "key:singer:1:" + data;
-            } catch (IOException ex) {
-                System.out.println("Error get singer.");
-                return "key:singer:0:Lỗi lấy dữ liệu ca sĩ!!!";
-            }
+            Singer singer = new Singer(nameSinger);
+            String data = gson.toJson(singer);
+            return "key:singer:1:" + data;
         }
     }
 }

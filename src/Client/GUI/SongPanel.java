@@ -414,6 +414,16 @@ public class SongPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         try {
             System.out.println("click");
+            // handle when server shutdown => Client to Login
+            if(Client.isConnectionReset == 1) {
+                JOptionPane.showMessageDialog(this, "Server Connection reset");
+                client.send.message = "bye";
+                client.send.flag = true;
+                Client.isConnectionReset = 0;
+                new LogIn();
+                parent.dispose();
+                return;
+            }
             String keyword = textInputSearch.getText();
             client.send.message = "key:music:" + keyword;
             client.send.flag = true;
@@ -436,6 +446,7 @@ public class SongPanel extends javax.swing.JPanel {
                         break;
                         case "nosong": {
                             showNotFound();
+                            JOptionPane.showMessageDialog(this, "Server search error");
                             System.out.println("No song");
                         }
                         break;
@@ -454,6 +465,16 @@ public class SongPanel extends javax.swing.JPanel {
 
     public void SearchSongWithIndex(int index) {
         try {
+            // handle when server shutdown => Client to Login
+            if(Client.isConnectionReset == 1) {
+                JOptionPane.showMessageDialog(this, "Server Connection reset");
+                client.send.message = "bye";
+                client.send.flag = true;
+                Client.isConnectionReset = 0;
+                new LogIn();
+                parent.dispose();
+                return;
+            }
             System.out.println("Click-exactly");
             String keyword = textInputSearch.getText();
             client.send.message = "key:musicE:" + index;
@@ -471,6 +492,7 @@ public class SongPanel extends javax.swing.JPanel {
                         break;
                         case "nosong": {
                             showNotFound();
+                            JOptionPane.showMessageDialog(this, "Server search error");
                             System.out.println("No song");
                         }
                         break;
