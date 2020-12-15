@@ -115,7 +115,7 @@ public class Handle {
             JsonObject jb = jsonA.getAsJsonObject();
             switch (jb.get("type").getAsString()) {
                 case "LYRICS":
-                    String lyrics = jb.get("text").toString().replace("\"", "").replace(",", "");
+                    String lyrics = jb.get("text").toString().replace("\",", "\n").replace("\"", "");
                     song.setLyrics(lyrics);
                     break;
                 case "VIDEO":
