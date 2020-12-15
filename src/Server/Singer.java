@@ -566,6 +566,8 @@ public class Singer implements Serializable {
             temp = temp.trim().replace(" ", "_");
             if (nameSinger.contains("_(%C4%91%E1%BB%8Bnh_h%C6%B0%E1%BB%9Bng)")) {
                 nameSinger = temp + "_(ca_sĩ_Việt_Nam)";
+            } else if (nameSinger.contains("_(ca_s%C4%A9)")) {
+                nameSinger = temp + "_(ca_sĩ)";
             } else {
                 nameSinger = temp;
             }
