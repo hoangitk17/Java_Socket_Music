@@ -44,7 +44,7 @@ public class MP3DialogNew extends JDialog {
         super(parent, modal);
         try {            
             initComponents();
-            setLocationRelativeTo(null);
+            
             setMinimumSize(new Dimension(440, 280));
             addWindowListener(new WindowListener() {
 
@@ -120,7 +120,7 @@ public class MP3DialogNew extends JDialog {
 //                }
 //            });
             swingButton.setText("Reload");
-
+            setLocationRelativeTo(null);
             add(swingButton, BorderLayout.SOUTH);
         } catch (Exception ex) {
 

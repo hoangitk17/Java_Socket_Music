@@ -66,7 +66,7 @@ public class LoadingDialog extends javax.swing.JDialog {
         });
 
         worker.execute();
-        Timer timer = new Timer(10000, new ActionListener() { // 10 sec
+        Timer timer = new Timer(20000, new ActionListener() { // 10 sec
             public void actionPerformed(ActionEvent e) {
                 itSefl.setVisible(false);
                 itSefl.dispose();
