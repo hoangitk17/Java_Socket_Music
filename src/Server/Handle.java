@@ -71,7 +71,7 @@ public class Handle {
             System.out.println("Error connection API Shazam!!!");
         }
         JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-        if (json.toString().equals("{}")) { //kiểm tra kết quả của API có rỗng thì thoát hàm
+        if (json.toString().equals("{}") || json.toString().equals("400 - Bad Request")) { //kiểm tra kết quả của API có rỗng thì thoát hàm
             System.out.println("API Shazam empty!!!");
             return;
         }
@@ -136,7 +136,12 @@ public class Handle {
         }
         if (docDetailSong != null) {
             Element eleLyrics = docDetailSong.getElementById("divLyric");
-            song.setLyrics(GetLyricNCT(eleLyrics));
+            String lyrics = GetLyricNCT(eleLyrics);
+            if (lyrics.contains("id=\"btnShowEditLyric\"")) {
+                lyrics = "Hiện chưa có lời bài hát nào cho " + song.getName() + " do ca sĩ " + song.getSinger() + " trình bày.";
+            }
+            song.setLyrics(lyrics);
+
             int startkey = docDetailSong.body().html().indexOf("key1=") + 5;
             int startKeySong = docDetailSong.body().html().indexOf("key: '") + 6;
             if (startkey != 4 && startKeySong != 4) {

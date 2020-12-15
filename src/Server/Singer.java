@@ -465,47 +465,7 @@ public class Singer implements Serializable {
         }
     }
 
-    public Singer(String search) throws IOException {
-        //Pattern pattern = Pattern.compile("<extract xml:space=\"preserve\">" );
-        String nameSinger = "";
-        String add = "https://vi.wikipedia.org/w/index.php";
-        org.jsoup.nodes.Document docHTML = Jsoup.connect(add)
-                .data("search", search)
-                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
-                .data("go", "Xem")
-                .data("ns0", "1").ignoreContentType(true)
-                .get();
-        String st = docHTML.toString();
-
-        int start = st.indexOf("<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/");
-        if (start != -1) {
-            start += "<link rel=\"canonical\" href=\"https://vi.wikipedia.org/wiki/".length();
-            int end = st.indexOf("\">", start);
-            nameSinger = st.substring(start, end);
-            System.out.println("name search>>" + nameSinger);
-        }
-        if (nameSinger.contains("%")) {
-            String temp = "";
-            search = search.replaceAll("\\s\\s+", " ").trim();
-            if (search.indexOf(" ") == -1) {
-                temp = search.substring(0, 1).toUpperCase() + search.substring(1);
-            } else {
-                String[] arr = search.split(" ");
-                for (String x : arr) {
-                    temp += (x.substring(0, 1).toUpperCase() + x.substring(1)) + " ";
-                }
-            }
-            temp = temp.trim().replace(" ", "_");
-            if (nameSinger.contains("_(%C4%91%E1%BB%8Bnh_h%C6%B0%E1%BB%9Bng)")) {
-                nameSinger = temp + "_(ca_sĩ_Việt_Nam)";
-            } else if (nameSinger.contains("_(ca_s%C4%A9)")) {
-                nameSinger = temp + "_(ca_sĩ)";
-            } else {
-                nameSinger = temp;
-            }
-        }
-        System.out.println(nameSinger);
-
+    public Singer(String nameSinger) throws IOException {
         String ttcs = callAPI(nameSinger);
         this.dateBirth = dateBirth(ttcs);
         this.tieuSu = tieuSu(ttcs);
