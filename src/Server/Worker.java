@@ -6,6 +6,10 @@
 package Server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -105,7 +109,7 @@ public class Worker implements Runnable {
                     String msgSend = "";
                     switch (keyWord) {
                         case "singer":
-                            msgSend = searchSinger(value);
+                            msgSend = SearchSinger(value);
                             break;
                         case "login":
                             msgSend = checkLogin(value);
@@ -117,7 +121,7 @@ public class Worker implements Runnable {
                             msgSend = setPassword(value);
                             break;
                         case "music":
-                            int result = FindMusic(value);
+                            int result = SearchMusic(value);
                             switch (result) {
                                 case 0:
                                     msgSend = "key:music:0:Error Server";
@@ -193,7 +197,7 @@ public class Worker implements Runnable {
         System.out.println("Closed socket for Client " + myName);
     }
 
-    public int FindMusic(String keySearch) {
+    public int SearchMusic(String keySearch) {
         Handle handle = new Handle();
         listSongs.clear();
 
@@ -307,38 +311,37 @@ public class Worker implements Runnable {
         return "key:password:0:User " + userName + " không tồn tại.";
     }
 
-//    public String FindSingerByShazam(String key) {
-//        Document doc = null;
-//        Gson gson = new Gson();
-//        try {
-//            doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
-//                    .data("term", key)
-//                    .data("offset", "0")
-//                    .data("limit", "10")
-//                    .data("locale", "vi-VN")
-//                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
-//                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
-//                    .get();
-//        } catch (IOException ex) {
-//            System.out.println("Error API Shazam!!!");
-//        }
-//        if (doc.body().text().equals("{}")) {
-//            System.out.println("Không tìm thấy ca sĩ nào!!!");
-//            return "key:singer:0:Không tìm thấy ca sĩ nào!!!";
-//        } else {
-//            ArrayList<String> arrayList = new ArrayList<>();
-//            JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-//            JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
-//            for (JsonElement jsonE : jsonArray) {
-//                String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
-//                arrayList.add(nameSinger);
-//            }
-//            String data = gson.toJson(arrayList);
-//            System.out.println("ca sĩ gần đúng>>" + data);
-//            return "key:singer:2:" + data;
-//        }
-//    }
-    public String searchSinger(String keySearch) throws IOException {
+    public ArrayList FindSingerByShazam(String key) {
+        Document doc = null;
+        Gson gson = new Gson();
+        try {
+            doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
+                    .data("term", key)
+                    .data("offset", "0")
+                    .data("limit", "10")
+                    .data("locale", "vi-VN")
+                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
+                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
+                    .get();
+        } catch (IOException ex) {
+            System.out.println("Error API Shazam!!!");
+        }
+        if (doc.body().text().equals("{}")) {
+            System.out.println("Không tìm thấy ca sĩ nào!!!");
+            return null;
+        } else {
+            ArrayList<String> arrayList = new ArrayList<>();
+            JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+            JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
+            for (JsonElement jsonE : jsonArray) {
+                String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
+                arrayList.add(nameSinger);
+            }
+            return arrayList;
+        }
+    }
+
+    public String SearchSinger(String keySearch) throws IOException {
         Gson gson = new Gson();
         Document docWiki = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
                 .data("search", keySearch)
@@ -362,12 +365,18 @@ public class Worker implements Runnable {
             Element frameUl = docHTML.getElementsByClass("mw-search-results").first();
             Elements eleLi = frameUl.getElementsByClass("mw-search-result-heading");
             for (Element li : eleLi) {
-                if (li.text().contains("(ca sĩ")) {
+                if (li.text().contains("(ca sĩ") && li.text().toLowerCase().contains(keySearch.toLowerCase())) {
                     arr.add(li.text());
                     System.out.println(">>" + li.text());
                 }
             }
-
+            ArrayList<String> arrayList = FindSingerByShazam(keySearch);
+            for (String st : arrayList) {
+                if (st.toLowerCase().contains(keySearch.toLowerCase())) {
+                    arr.add(st);
+                    System.out.println(">>" + st);
+                }
+            }
             String data = gson.toJson(arr);
             return "key:singer:2:" + data;
         } else {
