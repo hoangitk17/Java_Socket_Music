@@ -499,7 +499,7 @@ public class SingerPanel extends javax.swing.JPanel {
                 } 
             }
         });
-        cardLayout.show(plCards, NOT_FOUND);;
+        cardLayout.show(plCards, NOT_FOUND);
     }
     
     public void SearchSingerWithNameExactly(String name) {
@@ -556,6 +556,11 @@ public class SingerPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         try 
         {  //handle when server shutdown
+            String keyword = textInputSearch.getText();
+            if(keyword.equals("") || keyword.equals(SEARCH_PLACE_HOLDER)) {
+                 cardLayout.show(plCards, SEARCH);
+                return;
+            }
             if(Client.isConnectionReset == 1) {
                 JOptionPane.showMessageDialog(this, "Server Connection reset");
                 client.send.message = "bye";
@@ -566,7 +571,7 @@ public class SingerPanel extends javax.swing.JPanel {
                 return;
             }
             System.out.println("click");
-            String keyword = textInputSearch.getText();
+            
             keyWord = keyword;
             client.send.message = "key:singer:" + keyword;
             client.send.flag = true;
@@ -609,15 +614,15 @@ public class SingerPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
          try {
                    
-//            if (song == null) {
-//                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
-//            } else {
-//                if (song.getMp3() != null) {
-//                    new MP3DialogNew(parent, true, song.getMp3()).setVisible(true);
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Không có file mp3.");
-//                }
-//            }
+            if (singer == null) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
+            } else {
+                if (singer.getMp3() != null) {
+                    new MP3DialogNew(parent, true, singer.getMp3()).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không có file mp3.");
+                }
+            }
             
         } catch (Exception e) {
 
@@ -637,19 +642,19 @@ public class SingerPanel extends javax.swing.JPanel {
                 }).start();
 
             }
-//            if (singer == null) {
-//                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
-//            } else {
-//                if (singer.getIDYoutube() != null) {
-////                    if (song.isHasKey()) {
-////                    new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
-////                    } else {
-//                    new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
-////                    }
-//                } else {
-//                    JOptionPane.showMessageDialog(this, "Bài hát không có video");
-//                }
-//            }
+            if (singer == null) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
+            } else {
+                if (singer.getYoutube()!= null) {
+//                    if (song.isHasKey()) {
+//                    new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+//                    } else {
+                    new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + singer.getYoutube()).setVisible(true);
+//                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bài hát không có video");
+                }
+            }
 
             // don't forget to properly close native components
             Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

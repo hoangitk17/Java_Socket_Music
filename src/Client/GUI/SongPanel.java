@@ -413,6 +413,11 @@ public class SongPanel extends javax.swing.JPanel {
     private void btnSearchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMousePressed
         // TODO add your handling code here:
         try {
+            String keyword = textInputSearch.getText();
+            if(keyword.equals("") || keyword.equals(SEARCH_PLACE_HOLDER)) {
+                cardLayout.show(plCards, TOP_SONG);
+                return;
+            }
             System.out.println("click");
             // handle when server shutdown => Client to Login
             if(Client.isConnectionReset == 1) {
@@ -424,7 +429,6 @@ public class SongPanel extends javax.swing.JPanel {
                 parent.dispose();
                 return;
             }
-            String keyword = textInputSearch.getText();
             client.send.message = "key:music:" + keyword;
             client.send.flag = true;
             String message;
