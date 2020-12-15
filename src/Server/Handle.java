@@ -23,8 +23,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -235,20 +233,38 @@ public class Handle {
         return result;
     }
 
-    public void SortListSongByName(ArrayList<Song> listSongs) {
-        Collections.sort(listSongs, new Comparator<Song>() {
-            @Override
-            public int compare(Song s1, Song s2) {
-                String name1 = s1.getName() + s1.getSinger();
-                String name2 = s2.getName() + s2.getSinger();
-                return (name1.compareTo(name2));
-            }
-        });
-    }
-
     public boolean checkName(String name, String nameSearch) {
         String match = "^" + nameSearch.toLowerCase() + ".{0,}";
         return name.toLowerCase().matches(match);
     }
 
+}
+
+class GetTop20 extends Thread {
+
+    public GetTop20() {
+    }
+
+    @Override
+    public void run() {
+        Worker.Top20.clear();
+        Handle handle = new Handle();
+        try {
+            Document docSearch = Jsoup.connect("https://www.nhaccuatui.com/bai-hat/top-20.nhac-viet.html").get();
+            Element list_show_chart = docSearch.getElementsByClass("list_show_chart").first();
+            Elements box_info_field = list_show_chart.getElementsByClass("box_info_field");
+            for (Element box : box_info_field) {
+                String addSong = box.getElementsByTag("a").attr("href");
+                String nameSong = box.getElementsByTag("a").attr("title");
+                String singer = box.getElementsByTag("h4").text();
+                String img = box.getElementsByTag("img").attr("src");
+                Song temp = new Song(img, true, img, singer, img);
+                handle.GetDetailSongNCT(addSong, temp);
+                Worker.Top20.add(temp);
+            }
+            System.out.println("size arr top 20 >>" + Worker.Top20.size());
+        } catch (IOException ex) {
+            System.out.println("Error top 20 music.");
+        }
+    }
 }

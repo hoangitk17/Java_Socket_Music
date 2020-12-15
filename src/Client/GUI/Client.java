@@ -238,7 +238,7 @@ class ReceiveMessage implements Runnable {
                 Client.singerFlag = "nearly";
             } else {
                 // xu ly fail
-                String infoError = stringToken.nextToken();
+                System.out.println("Singer key 0");
                 Client.singerFlag = "nosinger";
             }
         } catch (Exception e) {
@@ -306,7 +306,7 @@ class ReceiveMessage implements Runnable {
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            if(ex.getMessage().equals("Connection reset")) {
+            if (ex.getMessage().equals("Connection reset")) {
                 Client.isConnectionReset = 1;
             }
         }
@@ -357,14 +357,14 @@ public class Client {
                     System.out.println("Connect Refused");
                 }
                 System.out.println(e.getMessage());
-                if(out != null) {
+                if (out != null) {
                     out.close();
                 }
-                if(socket != null) {
+                if (socket != null) {
                     socket.close();
                 }
                 //shutdown 2 threads send and receive at Client
-                if(Client.executor != null) {
+                if (Client.executor != null) {
                     Client.executor.shutdownNow();
                 }
             } catch (IOException ex) {
