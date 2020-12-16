@@ -255,10 +255,10 @@ class GetTop20 extends Thread {
             Elements box_info_field = list_show_chart.getElementsByClass("box_info_field");
             for (Element box : box_info_field) {
                 String addSong = box.getElementsByTag("a").attr("href");
-                String nameSong = box.getElementsByTag("a").attr("title");
+                String name = box.getElementsByTag("h3").text();
                 String singer = box.getElementsByTag("h4").text();
                 String img = box.getElementsByTag("img").attr("src");
-                Song temp = new Song(img, true, img, singer, img);
+                Song temp = new Song(addSong, true, name, singer, img);
                 handle.GetDetailSongNCT(addSong, temp);
                 Worker.Top20.add(temp);
             }
