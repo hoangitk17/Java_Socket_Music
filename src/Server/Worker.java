@@ -244,162 +244,187 @@ public class Worker implements Runnable {
     }
 
     public String checkLogin(String message) {
-        StringTokenizer str = new StringTokenizer(message, " ");
-        String user = str.nextToken();
-        String password = str.nextToken();
-        password = new Handle().md5(password); //băm md5
-        System.out.println("Check Login.");
+        try {
+            StringTokenizer str = new StringTokenizer(message, " ");
+            String user = str.nextToken();
+            String password = str.nextToken();
+            password = new Handle().md5(password); //băm md5
+            System.out.println("Check Login.");
 
-        for (String string : Server.listUsers) {
-            StringTokenizer st = new StringTokenizer(string, " ");
-            String u = st.nextToken();
-            String pass = st.nextToken();
-            if (user.equals(u) && password.equals(pass)) {
-                System.out.println("Login OK");
-                Gson gson = new Gson();
-                return "key:login:1:" + gson.toJson(Top20);
+            for (String string : Server.listUsers) {
+                StringTokenizer st = new StringTokenizer(string, " ");
+                String u = st.nextToken();
+                String pass = st.nextToken();
+                if (user.equals(u) && password.equals(pass)) {
+                    System.out.println("Login OK");
+                    Gson gson = new Gson();
+                    return "key:login:1:" + gson.toJson(Top20);
+                }
             }
+            System.out.println("Login FAIL");
+            return "key:login:0:Tài khoản hoặc mật khẩu không đúng.";
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        System.out.println("Login FAIL");
         return "key:login:0:Tài khoản hoặc mật khẩu không đúng.";
     }
 
     public String checkSignUp(String message) {
-        StringTokenizer str = new StringTokenizer(message, " ");
-        String user = str.nextToken();
-        String password = str.nextToken();
-        password = new Handle().md5(password);
-        System.out.println("Check sign up");
+        try {
+            StringTokenizer str = new StringTokenizer(message, " ");
+            String user = str.nextToken();
+            String password = str.nextToken();
+            password = new Handle().md5(password);
+            System.out.println("Check sign up");
 
-        for (String string : Server.listUsers) {
-            StringTokenizer st = new StringTokenizer(string, " ");
-            String u = st.nextToken();
-            String pass = st.nextToken();
-            if (user.equals(u)) { //kiểm tra tài khoản đã tồn tại
-                System.out.println("FAIL");
-                return "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
+            for (String string : Server.listUsers) {
+                StringTokenizer st = new StringTokenizer(string, " ");
+                String u = st.nextToken();
+                String pass = st.nextToken();
+                if (user.equals(u)) { //kiểm tra tài khoản đã tồn tại
+                    System.out.println("FAIL");
+                    return "key:signup:0:Tài khoản \"" + user + "\" đã tồn tại.";
+                }
             }
+            try {   //write vào file
+                BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
+                bf.write("\n" + user + " " + password);
+                bf.flush();
+                Server.listUsers.add(user + " " + password);
+                System.out.println("OKE");
+                bf.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return "key:signup:1";
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        try {   //write vào file
-            BufferedWriter bf = new BufferedWriter(new FileWriter("user.txt", true));
-            bf.write("\n" + user + " " + password);
-            bf.flush();
-            Server.listUsers.add(user + " " + password);
-            System.out.println("OKE");
-            bf.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return "key:signup:1";
+        return "key:signup:0:Lỗi xử lý tại server";
     }
 
     public String setPassword(String msg) {
-        Handle handle = new Handle();
-        StringTokenizer value = new StringTokenizer(msg, " ");
-        String userName = value.nextToken();
-        String passNew = value.nextToken();
-        passNew = handle.md5(passNew);
+        try {
+            Handle handle = new Handle();
+            StringTokenizer value = new StringTokenizer(msg, " ");
+            String userName = value.nextToken();
+            String passNew = value.nextToken();
+            passNew = handle.md5(passNew);
 
-        for (int i = 0; i < Server.listUsers.size(); i++) {
-            StringTokenizer valueStr = new StringTokenizer(Server.listUsers.get(i), " ");
-            String user = valueStr.nextToken();
-            String pass = valueStr.nextToken();
-            if (userName.equals(user)) {
-                if (!passNew.equals(pass)) {//nếu giống pass cũ thì bỏ qua ghi file
-                    Server.listUsers.set(i, userName + " " + passNew);
-                    handle.writeFileLogin();
+            for (int i = 0; i < Server.listUsers.size(); i++) {
+                StringTokenizer valueStr = new StringTokenizer(Server.listUsers.get(i), " ");
+                String user = valueStr.nextToken();
+                String pass = valueStr.nextToken();
+                if (userName.equals(user)) {
+                    if (!passNew.equals(pass)) {//nếu giống pass cũ thì bỏ qua ghi file
+                        Server.listUsers.set(i, userName + " " + passNew);
+                        handle.writeFileLogin();
+                    }
+                    System.out.println("Set password>> succes.");
+                    return "key:password:1";
                 }
-                System.out.println("Set password>> succes.");
-                return "key:password:1";
             }
+            System.out.println("Set password>> fails!!!");
+            return "key:password:0:User " + userName + " không tồn tại.";
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        System.out.println("Set password>> fails!!!");
-        return "key:password:0:User " + userName + " không tồn tại.";
+        return "key:password:0:Lỗi trong quá trình xử lý.";
     }
 
     public ArrayList FindSingerByShazam(String key) {
-        Document doc = null;
-        Gson gson = new Gson();
         try {
-            doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
-                    .data("term", key)
-                    .data("offset", "0")
-                    .data("limit", "10")
-                    .data("locale", "vi-VN")
-                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
-                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
-                    .get();
-        } catch (IOException ex) {
-            System.out.println("Error API Shazam!!!");
-        }
-        if (doc.body().text().equals("{}")) {
-            System.out.println("Không tìm thấy ca sĩ nào!!!");
-            return null;
-        } else {
-            ArrayList<String> arrayList = new ArrayList<>();
-            JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+            Document doc = null;
+            Gson gson = new Gson();
             try {
-                JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
-                for (JsonElement jsonE : jsonArray) {
-                    String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
-                    arrayList.add(nameSinger);
-                }
-            } catch (Exception e) {
-                System.out.println("Lỗi!!! API không có thẻ  'artist'.");
+                doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
+                        .data("term", key)
+                        .data("offset", "0")
+                        .data("limit", "10")
+                        .data("locale", "vi-VN")
+                        .header("x-rapidapi-host", "shazam.p.rapidapi.com")
+                        .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
+                        .get();
+            } catch (IOException ex) {
+                System.out.println("Error API Shazam!!!");
             }
-            return arrayList;
+            if (doc.body().text().equals("{}")) {
+                System.out.println("Không tìm thấy ca sĩ nào!!!");
+                return null;
+            } else {
+                ArrayList<String> arrayList = new ArrayList<>();
+                JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+                try {
+                    JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
+                    for (JsonElement jsonE : jsonArray) {
+                        String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
+                        arrayList.add(nameSinger);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Lỗi!!! API không có thẻ  'artist'.");
+                }
+                return arrayList;
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
+        return null;
     }
 
     public String SearchSinger(String keySearch) throws IOException {
-        Gson gson = new Gson();
-        Document docWiki = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
-                .data("search", keySearch)
-                .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
-                .data("go", "Xem")
-                .data("ns0", "1").get();
-        String stDocWiki = docWiki.toString();
-        if (stDocWiki.contains("title=%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm&amp;go=Xem&amp;ns0=1")) {
-            return "key:singer:0:Không có ca sĩ " + keySearch + "!!!";
-        }
-        if (!stDocWiki.contains("class=\"infobox")) {//<div class=\"mw-parser-output\">\n" + "      <p><b>
-            // kiểm tra kết quả trả về có danh sách gợi ý hay không
-            System.out.println("Không ca sĩ theo từ khóa tìm kiếm. Danh sách gợi ý:");
-            org.jsoup.nodes.Document docHTML = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
-                    .data("search", "ca sĩ " + keySearch)
+        try {
+            Gson gson = new Gson();
+            Document docWiki = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
+                    .data("search", keySearch)
                     .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
                     .data("go", "Xem")
-                    .data("ns0", "1").ignoreContentType(true)
-                    .get();
-            ArrayList<String> arr = new ArrayList<>();
-            Element frameUl = docHTML.getElementsByClass("mw-search-results").first();
-            Elements eleLi = frameUl.getElementsByClass("mw-search-result-heading");
-            for (Element li : eleLi) {
-                if (li.text().contains("(ca sĩ") && li.text().toLowerCase().contains(keySearch.toLowerCase())) {
-                    arr.add(li.text());
-                    System.out.println(">>" + li.text());
+                    .data("ns0", "1").get();
+            String stDocWiki = docWiki.toString();
+            if (stDocWiki.contains("title=%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm&amp;go=Xem&amp;ns0=1")) {
+                return "key:singer:0:Không có ca sĩ " + keySearch + "!!!";
+            }
+            if (!stDocWiki.contains("class=\"infobox")) {//<div class=\"mw-parser-output\">\n" + "      <p><b>
+                // kiểm tra kết quả trả về có danh sách gợi ý hay không
+                System.out.println("Không ca sĩ theo từ khóa tìm kiếm. Danh sách gợi ý:");
+                org.jsoup.nodes.Document docHTML = Jsoup.connect("https://vi.wikipedia.org/w/index.php")
+                        .data("search", "ca sĩ " + keySearch)
+                        .data("title", "%C4%90%E1%BA%B7c_bi%E1%BB%87t%3AT%C3%ACm_ki%E1%BA%BFm")
+                        .data("go", "Xem")
+                        .data("ns0", "1").ignoreContentType(true)
+                        .get();
+                ArrayList<String> arr = new ArrayList<>();
+                Element frameUl = docHTML.getElementsByClass("mw-search-results").first();
+                Elements eleLi = frameUl.getElementsByClass("mw-search-result-heading");
+                for (Element li : eleLi) {
+                    if (li.text().contains("(ca sĩ") && li.text().toLowerCase().contains(keySearch.toLowerCase())) {
+                        arr.add(li.text());
+                        System.out.println(">>" + li.text());
+                    }
                 }
-            }
-            ArrayList<String> arrayList = FindSingerByShazam(keySearch);
-            for (String st : arrayList) {
-                if (st.toLowerCase().contains(keySearch.toLowerCase())) {
-                    arr.add(st);
-                    System.out.println(">>" + st);
+                ArrayList<String> arrayList = FindSingerByShazam(keySearch);
+                for (String st : arrayList) {
+                    if (st.toLowerCase().contains(keySearch.toLowerCase())) {
+                        arr.add(st);
+                        System.out.println(">>" + st);
+                    }
                 }
+                if (arr.isEmpty() || keySearch.equals(arr.get(0))) {
+                    return "key:singer:0:Lỗi tìm kiếm!!!";
+                }
+                String data = gson.toJson(arr);
+                return "key:singer:2:" + data;
+            } else {
+                int start = stDocWiki.indexOf("<h1 id=\"firstHeading\" class=\"firstHeading\" lang=\"vi\">") + "<h1 id=\"firstHeading\" class=\"firstHeading\" lang=\"vi\">".length();
+                int end = stDocWiki.indexOf("</h1>", start);
+                String nameSinger = stDocWiki.substring(start, end).replace(" ", "_"); //lấy title truyền vào api wiki
+                System.out.println("name>." + nameSinger);
+                Singer singer = new Singer(nameSinger);
+                String data = gson.toJson(singer);
+                return "key:singer:1:" + data;
             }
-            if (arr.isEmpty() || keySearch.equals(arr.get(0))) {
-                return "key:singer:0:Lỗi tìm kiếm!!!";
-            }
-            String data = gson.toJson(arr);
-            return "key:singer:2:" + data;
-        } else {
-            int start = stDocWiki.indexOf("<h1 id=\"firstHeading\" class=\"firstHeading\" lang=\"vi\">") + "<h1 id=\"firstHeading\" class=\"firstHeading\" lang=\"vi\">".length();
-            int end = stDocWiki.indexOf("</h1>", start);
-            String nameSinger = stDocWiki.substring(start, end).replace(" ", "_"); //lấy title truyền vào api wiki
-            System.out.println("name>." + nameSinger);
-            Singer singer = new Singer(nameSinger);
-            String data = gson.toJson(singer);
-            return "key:singer:1:" + data;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
+        return "key:singer:0:Lỗi trong quá trình xử lý!!!";
     }
 }

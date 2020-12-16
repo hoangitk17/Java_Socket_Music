@@ -38,124 +38,145 @@ public class Handle {
     }
 
     public void GetSongFromNCT(Elements eleSong, String nameSearch) {
-        List<Element> listSongNCT = eleSong.size() > 20 ? eleSong.subList(0, 20) : eleSong;
-        for (Element element : listSongNCT) {
-            String addSong = element.getElementsByTag("a").attr("href");
-            String nameSong = element.getElementsByTag("a").attr("title");
-            String singer = element.getElementsByTag("h4").text();
-            String img = element.getElementsByTag("img").attr("data-src");
-            if (img.equals("")) { //nếu bài hát không có ảnh thì sẽ lấy mặc định của NCT
-                img = "https://stc-id.nixcdn.com/v11/images/avatar_default.jpg"; //link ảnh mặc định của NCT
+        try {
+            List<Element> listSongNCT = eleSong.size() > 20 ? eleSong.subList(0, 20) : eleSong;
+            for (Element element : listSongNCT) {
+                String addSong = element.getElementsByTag("a").attr("href");
+                String nameSong = element.getElementsByTag("a").attr("title");
+                String singer = element.getElementsByTag("h4").text();
+                String img = element.getElementsByTag("img").attr("data-src");
+                if (img.equals("")) { //nếu bài hát không có ảnh thì sẽ lấy mặc định của NCT
+                    img = "https://stc-id.nixcdn.com/v11/images/avatar_default.jpg"; //link ảnh mặc định của NCT
+                }
+                Song temp = new Song(addSong, false, nameSong, singer, img);
+                Worker.listSongs.add(temp);
+                //Worker.listSongs.get(Worker.listSongs.size() - 1).ToString();
             }
-            Song temp = new Song(addSong, false, nameSong, singer, img);
-            Worker.listSongs.add(temp);
-            //Worker.listSongs.get(Worker.listSongs.size() - 1).ToString();
+            System.out.println("Get Song NCT end<<");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        System.out.println("Get Song NCT end<<");
     }
 
     public void GetSongFormApiShazam(String nameSearch) {
-        ArrayList<Song> array = new ArrayList<>();
-        Document doc = null;
         try {
-            doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
-                    .data("term", nameSearch)
-                    .data("offset", "0")
-                    .data("limit", "10")
-                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
-                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
-                    .get();
-        } catch (IOException ex) {
-            System.out.println("Error connection API Shazam!!!");
-        }
-        JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-        if (json.toString().equals("{}") || json.toString().equals("400 - Bad Request")) { //kiểm tra kết quả của API có rỗng thì thoát hàm
-            System.out.println("API Shazam empty!!!");
-            return;
-        }
-
-        JsonArray jsonArray = json.getAsJsonObject("tracks").getAsJsonArray("hits");//lấy json chứa array song
-        for (JsonElement jsonA : jsonArray) {
-            JsonObject jb = jsonA.getAsJsonObject().getAsJsonObject("track");
-            String img = "https://stc-id.nixcdn.com/v11/images/avatar_default.jpg"; //gắn tạm ảnh mặc định
+            ArrayList<Song> array = new ArrayList<>();
+            Document doc = null;
             try {
-                img = jb.getAsJsonObject("images").get("background").getAsString();
-            } catch (Exception e) {
-                System.out.println(e);
+                doc = Jsoup.connect("https://shazam.p.rapidapi.com/search")
+                        .data("term", nameSearch)
+                        .data("offset", "0")
+                        .data("limit", "10")
+                        .header("x-rapidapi-host", "shazam.p.rapidapi.com")
+                        .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
+                        .get();
+            } catch (IOException ex) {
+                System.out.println("Error connection API Shazam!!!");
             }
-            Song temp = new Song(jb.get("key").getAsString(), true, jb.get("title").getAsString(), jb.get("subtitle").getAsString(), img);
-            array.add(temp);
-        }
-        //boolean isFirst = true;
-        for (Song s : array) { //lọc ra những bài hát trùng tên với keySearch
-            if (checkName(s.getName(), nameSearch)) {
-                listSongs.add(s);
+            JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+            if (json.toString().equals("{}") || json.toString().equals("400 - Bad Request")) { //kiểm tra kết quả của API có rỗng thì thoát hàm
+                System.out.println("API Shazam empty!!!");
+                return;
             }
+
+            JsonArray jsonArray = json.getAsJsonObject("tracks").getAsJsonArray("hits");//lấy json chứa array song
+            for (JsonElement jsonA : jsonArray) {
+                JsonObject jb = jsonA.getAsJsonObject().getAsJsonObject("track");
+                String img = "https://stc-id.nixcdn.com/v11/images/avatar_default.jpg"; //gắn tạm ảnh mặc định
+                try {
+                    img = jb.getAsJsonObject("images").get("background").getAsString();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                Song temp = new Song(jb.get("key").getAsString(), true, jb.get("title").getAsString(), jb.get("subtitle").getAsString(), img);
+                array.add(temp);
+            }
+            //boolean isFirst = true;
+            for (Song s : array) { //lọc ra những bài hát trùng tên với keySearch
+                if (checkName(s.getName(), nameSearch)) {
+                    listSongs.add(s);
+                }
+            }
+            System.out.println("Get API End<<");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        System.out.println("Get API End<<");
     }
 
     public void GetDetailSongApi(String key, Song song) {
-        Document doc = null;
         try {
-            doc = Jsoup.connect("https://shazam.p.rapidapi.com/songs/get-details")
-                    .data("key", key)
-                    .header("x-rapidapi-host", "shazam.p.rapidapi.com")
-                    .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
-                    .get();
-        } catch (IOException ex) {
-            System.out.println("Error API Shazam!!!");
-        }
-        JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-
-        JsonArray jsonArray = json.getAsJsonArray("sections"); //lấy json chứa lyrics và ID youtube
-        for (JsonElement jsonA : jsonArray) {
-            JsonObject jb = jsonA.getAsJsonObject();
-            switch (jb.get("type").getAsString()) {
-                case "LYRICS":
-                    String lyrics = jb.get("text").toString().replace("\",", "\n").replace("\"", "");
-                    song.setLyrics(lyrics);
-                    break;
-                case "VIDEO":
-                    String urlYoutube = jb.getAsJsonObject("youtubeurl").getAsJsonArray("actions").get(0).getAsJsonObject().get("uri").getAsString();
-                    song.setIDYoutube(urlYoutube.substring(17, 28));
-                    break;
+            Document doc = null;
+            try {
+                doc = Jsoup.connect("https://shazam.p.rapidapi.com/songs/get-details")
+                        .data("key", key)
+                        .header("x-rapidapi-host", "shazam.p.rapidapi.com")
+                        .header("x-rapidapi-key", "7dad103eb0mshfcc38b63c58db04p151074jsnf095567b964d").ignoreContentType(true)
+                        .get();
+            } catch (IOException ex) {
+                System.out.println("Error API Shazam!!!");
             }
+            JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
+
+            JsonArray jsonArray = json.getAsJsonArray("sections"); //lấy json chứa lyrics và ID youtube
+            for (JsonElement jsonA : jsonArray) {
+                JsonObject jb = jsonA.getAsJsonObject();
+                switch (jb.get("type").getAsString()) {
+                    case "LYRICS":
+                        String lyrics = jb.get("text").toString().replace("\",", "\n").replace("\"", "");
+                        song.setLyrics(lyrics);
+                        break;
+                    case "VIDEO":
+                        String urlYoutube = jb.getAsJsonObject("youtubeurl").getAsJsonArray("actions").get(0).getAsJsonObject().get("uri").getAsString();
+                        song.setIDYoutube(urlYoutube.substring(17, 28));
+                        break;
+                }
+            }
+            System.out.println("Get detail API End<<");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        System.out.println("Get detail API End<<");
     }
 
     public void GetDetailSongNCT(String addSong, Song song) {
-        Document docDetailSong = null;
         try {
-            docDetailSong = Jsoup.connect(addSong).get();
-        } catch (IOException ex) {
-            Logger.getLogger(Handle.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if (docDetailSong != null) {
-            Element eleLyrics = docDetailSong.getElementById("divLyric");
-            String lyrics = GetLyricNCT(eleLyrics);
-            if (lyrics.contains("id=\"btnShowEditLyric\"")) {
-                lyrics = "Hiện chưa có lời bài hát nào cho " + song.getName() + " do ca sĩ " + song.getSinger() + " trình bày.";
+            Document docDetailSong = null;
+            try {
+                docDetailSong = Jsoup.connect(addSong).get();
+            } catch (IOException ex) {
+                Logger.getLogger(Handle.class.getName()).log(Level.SEVERE, null, ex);
             }
-            song.setLyrics(lyrics);
+            if (docDetailSong != null) {
+                Element eleLyrics = docDetailSong.getElementById("divLyric");
+                String lyrics = GetLyricNCT(eleLyrics);
+                if (lyrics.contains("id=\"btnShowEditLyric\"")) {
+                    lyrics = "Hiện chưa có lời bài hát nào cho " + song.getName() + " do ca sĩ " + song.getSinger() + " trình bày.";
+                }
+                song.setLyrics(lyrics);
 
-            int startkey = docDetailSong.body().html().indexOf("key1=") + 5;
-            int startKeySong = docDetailSong.body().html().indexOf("key: '") + 6;
-            if (startkey != 4 && startKeySong != 4) {
-                String key = docDetailSong.body().html().substring(startkey, startkey + 32);
-                String keySong = docDetailSong.body().html().substring(startKeySong, startKeySong + 12);
-                song.setMp3(GetUrlMP3(key, keySong));
+                int startkey = docDetailSong.body().html().indexOf("key1=") + 5;
+                int startKeySong = docDetailSong.body().html().indexOf("key: '") + 6;
+                if (startkey != 4 && startKeySong != 4) {
+                    String key = docDetailSong.body().html().substring(startkey, startkey + 32);
+                    String keySong = docDetailSong.body().html().substring(startKeySong, startKeySong + 12);
+                    song.setMp3(GetUrlMP3(key, keySong));
+                }
             }
+            song.setIDYoutube(GetIdYoutubeNCT(song.getName() + " " + song.getSinger()));
+            System.out.println("Get detail NCT End<<");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        song.setIDYoutube(GetIdYoutubeNCT(song.getName() + " " + song.getSinger()));
-        System.out.println("Get detail NCT End<<");
     }
 
     public String GetLyricNCT(Element eleLyrics) {
-        String lyrics = eleLyrics.html().replace("<br>", "\n");
-        System.out.println("Get lyrics succes.");
-        return lyrics;
+        try {
+            String lyrics = eleLyrics.html().replace("<br>", "\n");
+            System.out.println("Get lyrics succes.");
+            return lyrics;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return "";
     }
 
     public String GetUrlMP3(String key, String keySong) {
