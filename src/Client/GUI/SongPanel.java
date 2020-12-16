@@ -492,7 +492,9 @@ public class SongPanel extends javax.swing.JPanel {
                         break;
                         case "nosong": {
                             showNotFound();
+                            cardLayout.show(plCards, TOP_SONG);
                             JOptionPane.showMessageDialog(this, "Server search error");
+                             
                             System.out.println("No song");
                         }
                         break;

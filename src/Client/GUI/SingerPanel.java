@@ -554,14 +554,13 @@ public class SingerPanel extends javax.swing.JPanel {
 
     private void btnSearchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMousePressed
         // TODO add your handling code here:
-        try 
-        {  //handle when server shutdown
+        try {  //handle when server shutdown
             String keyword = textInputSearch.getText();
-            if(keyword.equals("") || keyword.equals(SEARCH_PLACE_HOLDER)) {
-                 cardLayout.show(plCards, SEARCH);
+            if (keyword.equals("") || keyword.equals(SEARCH_PLACE_HOLDER)) {
+                cardLayout.show(plCards, SEARCH);
                 return;
             }
-            if(Client.isConnectionReset == 1) {
+            if (Client.isConnectionReset == 1) {
                 JOptionPane.showMessageDialog(this, "Server Connection reset");
                 client.send.message = "bye";
                 client.send.flag = true;
@@ -571,7 +570,7 @@ public class SingerPanel extends javax.swing.JPanel {
                 return;
             }
             System.out.println("click");
-            
+
             keyWord = keyword;
             client.send.message = "key:singer:" + keyword;
             client.send.flag = true;
@@ -593,8 +592,10 @@ public class SingerPanel extends javax.swing.JPanel {
                         }
                         break;
                         case "nosinger": {
+                            cardLayout.show(plCards, SEARCH);
                             JOptionPane.showMessageDialog(this, "Không tìm thấy ca sĩ nào.");
                             System.out.println("No singer");
+                            
                         }
                         break;
                     }
@@ -612,8 +613,8 @@ public class SingerPanel extends javax.swing.JPanel {
 
     private void btnMp3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMp3ActionPerformed
         // TODO add your handling code here:
-         try {
-                   
+        try {
+
             if (singer == null) {
                 JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
             } else {
@@ -623,7 +624,7 @@ public class SingerPanel extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(this, "Không có file mp3.");
                 }
             }
-            
+
         } catch (Exception e) {
 
         }
@@ -645,7 +646,7 @@ public class SingerPanel extends javax.swing.JPanel {
             if (singer == null) {
                 JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
             } else {
-                if (singer.getYoutube()!= null) {
+                if (singer.getYoutube() != null) {
 //                    if (song.isHasKey()) {
 //                    new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
 //                    } else {
