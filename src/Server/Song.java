@@ -26,12 +26,6 @@ public class Song implements Serializable {
     public Song() {
     }
 
-//    public Song(String key, boolean hasKey, String name, String singer) {
-//        this.key = key;
-//        this.hasKey = hasKey;
-//        this.name = name;
-//        this.singer = singer;
-//    }
     public Song(String key, boolean hasKey, String name, String singer, String Image) {
         this.key = key;
         this.hasKey = hasKey;
