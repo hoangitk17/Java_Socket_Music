@@ -38,6 +38,7 @@ public class SingerPanel extends javax.swing.JPanel {
     JFrame parent;
     Singer singer;
     String keyWord = "";
+
     public SingerPanel() {
         initComponents();
         initCompCommon();
@@ -493,19 +494,19 @@ public class SingerPanel extends javax.swing.JPanel {
                     // Double-click detected
                     int index = list.locationToIndex(evt.getPoint());
                     System.out.println("Click " + listsSinger.getSelectedValue());
-                   if(listsSinger.getSelectedValue() != null) {
-                       SearchSingerWithNameExactly(listsSinger.getSelectedValue());
-                   }
-                } 
+                    if (listsSinger.getSelectedValue() != null) {
+                        SearchSingerWithNameExactly(listsSinger.getSelectedValue());
+                    }
+                }
             }
         });
         cardLayout.show(plCards, NOT_FOUND);
     }
-    
+
     public void SearchSingerWithNameExactly(String name) {
         try {
             //handle when server shutdown
-            if(Client.isConnectionReset == 1) {
+            if (Client.isConnectionReset == 1) {
                 JOptionPane.showMessageDialog(this, "Server Connection reset");
                 client.send.message = "bye";
                 client.send.flag = true;
@@ -534,7 +535,7 @@ public class SingerPanel extends javax.swing.JPanel {
                             System.out.println("Nearly");
                         }
                         break;
-                        case "nosong": {
+                        case "nosinger": {
                             JOptionPane.showMessageDialog(this, "Không tìm thấy ca sĩ nào.");
                             System.out.println("No singer");
                         }
@@ -592,7 +593,7 @@ public class SingerPanel extends javax.swing.JPanel {
                             System.out.println("Nearly");
                         }
                         break;
-                        case "nosong": {
+                        case "nosinger": {
                             JOptionPane.showMessageDialog(this, "Không tìm thấy ca sĩ nào.");
                             System.out.println("No singer");
                         }

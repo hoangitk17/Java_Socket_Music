@@ -109,6 +109,7 @@ class ReceiveMessage implements Runnable {
 
     public void HandleLogin(String res) {
         try {
+            Gson gson = new Gson();
             StringTokenizer stringToken = new StringTokenizer(res, ":");
             String key = stringToken.nextToken();
             String keyWord = stringToken.nextToken();
@@ -117,6 +118,10 @@ class ReceiveMessage implements Runnable {
             if (status.equals("1")) {
                 // xu ly success
                 System.out.println("Success Login");
+                String data = res.substring("key:login:1:".length());
+                Client.topSongs = gson.fromJson(data, new TypeToken<ArrayList<Song>>() {
+                }.getType());
+                System.out.println("\nSize>>" + Client.topSongs.size());
                 Client.userFlag = "success";
             } else if (status.equals("0")) {
                 // xu ly fail
@@ -238,7 +243,7 @@ class ReceiveMessage implements Runnable {
                 Client.singerFlag = "nearly";
             } else {
                 // xu ly fail
-                String infoError = stringToken.nextToken();
+                System.out.println("Singer key 0");
                 Client.singerFlag = "nosinger";
             }
         } catch (Exception e) {
@@ -306,7 +311,7 @@ class ReceiveMessage implements Runnable {
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            if(ex.getMessage().equals("Connection reset")) {
+            if (ex.getMessage().equals("Connection reset")) {
                 Client.isConnectionReset = 1;
             }
         }
@@ -321,6 +326,7 @@ public class Client {
     private static int port = 1234;
     private static Socket socket;
     public static ArrayList<Song> listsSongs;
+    public static ArrayList<Song> topSongs;
     public static ArrayList<String> listsSinger;
     public static Song song;
     public static Singer singer;
@@ -357,14 +363,14 @@ public class Client {
                     System.out.println("Connect Refused");
                 }
                 System.out.println(e.getMessage());
-                if(out != null) {
+                if (out != null) {
                     out.close();
                 }
-                if(socket != null) {
+                if (socket != null) {
                     socket.close();
                 }
                 //shutdown 2 threads send and receive at Client
-                if(Client.executor != null) {
+                if (Client.executor != null) {
                     Client.executor.shutdownNow();
                 }
             } catch (IOException ex) {

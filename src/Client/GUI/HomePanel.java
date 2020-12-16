@@ -6,6 +6,7 @@
 package Client.GUI;
 
 import Server.Song;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import java.awt.CardLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -30,14 +32,17 @@ public class HomePanel extends javax.swing.JPanel {
     Client client;
     Song song = null;
     JFrame parent;
+    ArrayList<Song> topSongs;
 
     public HomePanel(JFrame frame, Client client) {
         initComponents();
         parent = frame;
         cardLayout = (CardLayout) plCards.getLayout();
-        cardLayout.show(plCards, LIST_SONG);
+        cardLayout.show(plCards,SONG);
         lbLyric.setWrapStyleWord(true);
         lbLyric.setLineWrap(true);
+        topSongs = Client.topSongs;
+        showListSong(topSongs);
         this.client = client;
     }
 
@@ -56,7 +61,7 @@ public class HomePanel extends javax.swing.JPanel {
         plCards = new javax.swing.JPanel();
         cardListSong = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        ListSong = new javax.swing.JList<Song>();
         cardSong = new javax.swing.JPanel();
         lbSongName = new javax.swing.JLabel();
         lbSingerName = new javax.swing.JLabel();
@@ -84,8 +89,8 @@ public class HomePanel extends javax.swing.JPanel {
 
         cardListSong.setBackground(new java.awt.Color(255, 255, 255));
 
-        jList1.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
-        jScrollPane1.setViewportView(jList1);
+        ListSong.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
+        jScrollPane1.setViewportView(ListSong);
 
         javax.swing.GroupLayout cardListSongLayout = new javax.swing.GroupLayout(cardListSong);
         cardListSong.setLayout(cardListSongLayout);
@@ -114,8 +119,18 @@ public class HomePanel extends javax.swing.JPanel {
         lbSingerName.setText("Tên ca sĩ");
 
         btnYoutube.setText("Xem Video");
+        btnYoutube.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnYoutubeActionPerformed(evt);
+            }
+        });
 
         btnMp3.setText("Nghe Mp3");
+        btnMp3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMp3ActionPerformed(evt);
+            }
+        });
 
         lbLyric.setColumns(20);
         lbLyric.setRows(5);
@@ -189,45 +204,159 @@ public class HomePanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-//    public void showSongNearCorrect(ArrayList<Song> listsSongs) {
-//        System.out.println("Show song near correct");
-//        DefaultListModel<Song> listModel = new DefaultListModel<>();
-//        for (Song song : listsSongs) {
-//            listModel.addElement(song);
-//            ListSong.setModel(listModel);
-//        }
-//        ListSong.setCellRenderer(new SongRenderer());
-//        ListSong.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        ListSong.addMouseListener(new MouseAdapter() {
-//            public void mouseClicked(MouseEvent evt) {
-//                JList list = (JList) evt.getSource();
-//                if (evt.getClickCount() == 2) {
-//
-//                    // Double-click detected
-//                    int index = list.locationToIndex(evt.getPoint());
-////                    final Song element = ListSong.getModel().getElementAt(index);
-//                    SearchSongWithIndex(index);
-//                    System.out.println("2" + index);
-//                } else if (evt.getClickCount() == 3) {
-//
-//                    // Triple-click detected
-//                    int index = list.locationToIndex(evt.getPoint());
-//                    System.out.println("3" + index);
-//                }
-//            }
-//        });
-//        cardLayout.show(plCards, NEARLY_SONG);
-//
-//    }
+    private void btnYoutubeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnYoutubeActionPerformed
+        // TODO add your handling code here:
+        //https://sourceforge.net/p/djproject/discussion/671154/thread/e813001e/
+        try {
+            if (!NativeInterface.isOpen()) {
+                NativeInterface.open();
+                new Thread(new Runnable() {
+                    public void run() {
+                        NativeInterface.runEventPump();
+                    }
+                }).start();
+
+            }
+            if (song == null) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để xem");
+            } else {
+                if (song.getIDYoutube() != null) {
+//                    if (song.isHasKey()) {
+//                    new YoutubeViewerDialog(parent, true, song.getIDYoutube() + ";fs=1").setVisible(true);
+//                    } else {
+                    new YoutubeViewerDialog(parent, true, "https://www.youtube.com/embed/" + song.getIDYoutube()).setVisible(true);
+//                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bài hát không có video");
+                }
+            }
+
+            // don't forget to properly close native components
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    NativeInterface.close();
+                }
+            }));
+        } catch (Exception e) {
+        }
+
+    }//GEN-LAST:event_btnYoutubeActionPerformed
+
+    private void btnMp3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMp3ActionPerformed
+        // TODO add your handling code here:
+        try {
+                   
+            if (song == null) {
+                JOptionPane.showMessageDialog(this, "Bạn chưa chọn bài hát để nghe");
+            } else {
+                if (song.getMp3() != null) {
+                    new MP3DialogNew(parent, true, song.getMp3()).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Không có file mp3.");
+                }
+            }
+            
+        } catch (Exception e) {
+
+        }
+    }//GEN-LAST:event_btnMp3ActionPerformed
+
+    public void showListSong(ArrayList<Song> listsSongs) {
+        System.out.println("Show song near correct");
+        DefaultListModel<Song> listModel = new DefaultListModel<>();
+        for (Song song : listsSongs) {
+            listModel.addElement(song);
+            ListSong.setModel(listModel);
+        }
+        ListSong.setCellRenderer(new SongRenderer());
+        ListSong.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ListSong.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList) evt.getSource();
+                if (evt.getClickCount() == 2) {
+
+                    // Double-click detected
+                    int index = list.locationToIndex(evt.getPoint());
+//                    final Song element = ListSong.getModel().getElementAt(index);
+                    SearchSongWithIndex(index);
+                    System.out.println("2" + index);
+                } else if (evt.getClickCount() == 3) {
+
+                    // Triple-click detected
+                    int index = list.locationToIndex(evt.getPoint());
+                    System.out.println("3" + index);
+                }
+            }
+        });
+
+    }
+
+    public void showSongOfSinger(Song s) {
+        System.out.println("Show song of singer");
+        this.song = s;
+        cardLayout.show(plCards, SONG);
+        lbSongName.setText("Bài hát : " + song.getName());
+        lbSingerName.setText("Ca sĩ : " + song.getSinger());
+        lbLyric.setText(song.getLyrics());
+        System.out.println(s.getLyrics());
+    }
+
+    public void SearchSongWithIndex(int index) {
+        try {
+            // handle when server shutdown => Client to Login
+            if (Client.isConnectionReset == 1) {
+                JOptionPane.showMessageDialog(this, "Server Connection reset");
+                client.send.message = "bye";
+                client.send.flag = true;
+                Client.isConnectionReset = 0;
+                new LogIn();
+                parent.dispose();
+                return;
+            }
+            System.out.println("Click-exactly");
+            client.send.message = "key:musicE:" + index;
+            client.send.flag = true;
+            String message;
+            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_SONG);
+            while (true) {
+                message = new String(Client.songFlag);
+                if (!message.equals("")) {
+                    switch (message) {
+                        case "exactly": {
+                            showSongOfSinger(Client.song);
+                            System.out.println("Exactly");
+                        }
+                        break;
+                        case "nosong": {
+                            JOptionPane.showMessageDialog(this, "Server search error");
+                            System.out.println("No song");
+                        }
+                        break;
+                        default: {
+                            JOptionPane.showMessageDialog(this, "Server search error");
+                        }
+                    }
+                    Client.song = null;
+                    Client.songFlag = "";
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<Song> ListSong;
     private javax.swing.JButton btnMp3;
     private javax.swing.JButton btnYoutube;
     private javax.swing.JPanel cardListSong;
     private javax.swing.JPanel cardSong;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

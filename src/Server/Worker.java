@@ -44,6 +44,7 @@ public class Worker implements Runnable {
     BufferedWriter out;
     ObjectOutputStream obOut;
     public static ArrayList<Song> listSongs = new ArrayList<>();
+    public static ArrayList<Song> Top20 = new ArrayList<>();
 
     public Worker(Socket s, String name) throws IOException {
         this.socket = s;
@@ -59,6 +60,8 @@ public class Worker implements Runnable {
         Handle handle = new Handle();
         Gson gson = new Gson();
         String input = "";
+        GetTop20 threadTop20 = new GetTop20();
+        threadTop20.start();
 
         String[] RSA = new String[20];
         String[] keyAES = new String[20];
@@ -78,7 +81,9 @@ public class Worker implements Runnable {
         } catch (Exception ex) {
             System.err.println("Key loi!!");
         }
-
+        while (threadTop20.isAlive()) {
+        }
+        System.out.println("thread get top 20 end.");
         while (true) {
             try {
                 input = in.readLine();
@@ -251,7 +256,8 @@ public class Worker implements Runnable {
             String pass = st.nextToken();
             if (user.equals(u) && password.equals(pass)) {
                 System.out.println("Login OK");
-                return "key:login:1";
+                Gson gson = new Gson();
+                return "key:login:1:" + gson.toJson(Top20);
             }
         }
         System.out.println("Login FAIL");
@@ -332,10 +338,14 @@ public class Worker implements Runnable {
         } else {
             ArrayList<String> arrayList = new ArrayList<>();
             JsonObject json = (JsonObject) JsonParser.parseString(doc.body().text());
-            JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
-            for (JsonElement jsonE : jsonArray) {
-                String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
-                arrayList.add(nameSinger);
+            try {
+                JsonArray jsonArray = json.getAsJsonObject("artists").getAsJsonArray("hits");
+                for (JsonElement jsonE : jsonArray) {
+                    String nameSinger = jsonE.getAsJsonObject().getAsJsonObject("artist").get("name").getAsString();
+                    arrayList.add(nameSinger);
+                }
+            } catch (Exception e) {
+                System.out.println("Lỗi!!! API không có thẻ  'artist'.");
             }
             return arrayList;
         }
@@ -376,6 +386,9 @@ public class Worker implements Runnable {
                     arr.add(st);
                     System.out.println(">>" + st);
                 }
+            }
+            if (arr.isEmpty() || keySearch.equals(arr.get(0))) {
+                return "key:singer:0:Lỗi tìm kiếm!!!";
             }
             String data = gson.toJson(arr);
             return "key:singer:2:" + data;
