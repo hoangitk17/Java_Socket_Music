@@ -38,7 +38,7 @@ public class HomePanel extends javax.swing.JPanel {
         initComponents();
         parent = frame;
         cardLayout = (CardLayout) plCards.getLayout();
-        cardLayout.show(plCards,SONG);
+        cardLayout.show(plCards,LIST_SONG);
         lbLyric.setWrapStyleWord(true);
         lbLyric.setLineWrap(true);
         topSongs = Client.topSongs;
@@ -293,6 +293,7 @@ public class HomePanel extends javax.swing.JPanel {
     }
 
     public void showSongOfSinger(Song s) {
+        System.out.println(s.getName());
         System.out.println("Show song of singer");
         this.song = s;
         cardLayout.show(plCards, SONG);
@@ -304,44 +305,7 @@ public class HomePanel extends javax.swing.JPanel {
 
     public void SearchSongWithIndex(int index) {
         try {
-            // handle when server shutdown => Client to Login
-            if (Client.isConnectionReset == 1) {
-                JOptionPane.showMessageDialog(this, "Server Connection reset");
-                client.send.message = "bye";
-                client.send.flag = true;
-                Client.isConnectionReset = 0;
-                new LogIn();
-                parent.dispose();
-                return;
-            }
-            System.out.println("Click-exactly");
-            client.send.message = "key:musicE:" + index;
-            client.send.flag = true;
-            String message;
-            LoadingDialog load = new LoadingDialog(parent, true, LoadingDialog.FLAG_SONG);
-            while (true) {
-                message = new String(Client.songFlag);
-                if (!message.equals("")) {
-                    switch (message) {
-                        case "exactly": {
-                            showSongOfSinger(Client.song);
-                            System.out.println("Exactly");
-                        }
-                        break;
-                        case "nosong": {
-                            JOptionPane.showMessageDialog(this, "Server search error");
-                            System.out.println("No song");
-                        }
-                        break;
-                        default: {
-                            JOptionPane.showMessageDialog(this, "Server search error");
-                        }
-                    }
-                    Client.song = null;
-                    Client.songFlag = "";
-                    break;
-                }
-            }
+            showSongOfSinger(topSongs.get(index));
         } catch (Exception e) {
 
         }
