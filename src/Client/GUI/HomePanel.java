@@ -44,6 +44,7 @@ public class HomePanel extends javax.swing.JPanel {
         topSongs = Client.topSongs;
         showListSong(topSongs);
         this.client = client;
+        btnBack.setVisible(false);
     }
 
     /**
@@ -69,6 +70,7 @@ public class HomePanel extends javax.swing.JPanel {
         btnMp3 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         lbLyric = new javax.swing.JTextArea();
+        btnBack = new javax.swing.JLabel();
 
         setName("cardAbout"); // NOI18N
 
@@ -98,13 +100,13 @@ public class HomePanel extends javax.swing.JPanel {
             cardListSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cardListSongLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
                 .addContainerGap())
         );
         cardListSongLayout.setVerticalGroup(
             cardListSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cardListSongLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -118,14 +120,22 @@ public class HomePanel extends javax.swing.JPanel {
         lbSingerName.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         lbSingerName.setText("Tên ca sĩ");
 
+        btnYoutube.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         btnYoutube.setText("Xem Video");
+        btnYoutube.setContentAreaFilled(false);
+        btnYoutube.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnYoutube.setOpaque(true);
         btnYoutube.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnYoutubeActionPerformed(evt);
             }
         });
 
+        btnMp3.setFont(new java.awt.Font("Roboto Mono", 0, 13)); // NOI18N
         btnMp3.setText("Nghe Mp3");
+        btnMp3.setContentAreaFilled(false);
+        btnMp3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMp3.setOpaque(true);
         btnMp3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMp3ActionPerformed(evt);
@@ -141,50 +151,67 @@ public class HomePanel extends javax.swing.JPanel {
         cardSongLayout.setHorizontalGroup(
             cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cardSongLayout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addGroup(cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbSingerName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbSongName, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
-                .addComponent(btnYoutube)
-                .addGap(64, 64, 64)
-                .addComponent(btnMp3)
-                .addGap(46, 46, 46))
-            .addGroup(cardSongLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addGroup(cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+                    .addGroup(cardSongLayout.createSequentialGroup()
+                        .addGroup(cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(cardSongLayout.createSequentialGroup()
+                                .addComponent(btnYoutube)
+                                .addGap(29, 29, 29)
+                                .addComponent(btnMp3))
+                            .addComponent(lbSongName, javax.swing.GroupLayout.PREFERRED_SIZE, 688, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbSingerName, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         cardSongLayout.setVerticalGroup(
             cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cardSongLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnMp3)
-                        .addComponent(btnYoutube))
-                    .addComponent(lbSongName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbSongName)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbSingerName)
-                .addGap(40, 40, 40)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(cardSongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnYoutube)
+                    .addComponent(btnMp3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
         );
 
         plCards.add(cardSong, "song");
+
+        btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icon/icons8_back_arrow_40px.png"))); // NOI18N
+        btnBack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnBackMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(plCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 531, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(95, 95, 95))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(btnBack)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(plCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -262,6 +289,15 @@ public class HomePanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnMp3ActionPerformed
 
+    private void btnBackMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMousePressed
+        // TODO add your handling code here:
+        cardLayout.show(plCards, LIST_SONG);
+        lbSongName.setText("Tên bài hát : ");
+        lbSingerName.setText("Tên ca sĩ : ");
+        lbLyric.setText("");
+        btnBack.setVisible(false);
+    }//GEN-LAST:event_btnBackMousePressed
+
     public void showListSong(ArrayList<Song> listsSongs) {
         System.out.println("Show song near correct");
         DefaultListModel<Song> listModel = new DefaultListModel<>();
@@ -301,6 +337,7 @@ public class HomePanel extends javax.swing.JPanel {
         lbSingerName.setText("Ca sĩ : " + song.getSinger());
         lbLyric.setText(song.getLyrics());
         System.out.println(s.getLyrics());
+        btnBack.setVisible(true);
     }
 
     public void SearchSongWithIndex(int index) {
@@ -315,6 +352,7 @@ public class HomePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<Song> ListSong;
+    private javax.swing.JLabel btnBack;
     private javax.swing.JButton btnMp3;
     private javax.swing.JButton btnYoutube;
     private javax.swing.JPanel cardListSong;
